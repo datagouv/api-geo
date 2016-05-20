@@ -1,0 +1,31 @@
+{
+  "name": "api-communes",
+  "version": "0.1.0",
+  "description": "Prototype",
+  "main": "index.js",
+  "dependencies": {
+    "JSONStream": "^1.1.1",
+    "bluebird": "^3.4.0",
+    "cors": "^2.7.1",
+    "debug": "^2.2.0",
+    "express": "^4.13.4",
+    "lodash": "^4.12.0",
+    "lunr": "^0.7.1",
+    "morgan": "^1.7.0",
+    "rbush": "^1.4.3",
+    "through2": "^2.0.1",
+    "turf-centroid": "^3.0.5"
+  },
+  "devDependencies": {
+    "benchmark": "^2.1.0",
+    "eslint": "^2.10.2"
+  },
+  "scripts": {
+    "bench": "DEBUG=store,bench node bench",
+    "lint": "eslint *.js lib",
+    "start": "node --max_old_space_size=2048 server",
+    "test": "npm run lint"
+  },
+  "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
+  "license": "AGPL-3.0"
+}

@@ -1,0 +1,104 @@
+swagger: '2.0'
+info:
+  title: API Référentiels géographiques
+  version: '0.1.0'
+host: geo.api.gouv.fr
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /communes:
+    get:
+      summary: Recherche des communes
+      tags:
+        - Communes
+      parameters:
+        - name: codePostal
+          in: query
+          description: Code postal associé
+          type: string
+        - name: lat
+          in: query
+          description: Latitude (en degrés)
+          type: number
+          format: float
+        - name: lon
+          in: query
+          description: Longitude (en degrés)
+          type: number
+          format: float
+        - name: nom
+          in: query
+          description: Nom de la commune
+          type: number
+          format: float
+      responses:
+        200:
+          description: Liste de communes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+
+
+  /communes/{codeInsee}:
+    get:
+      summary: Récupérer les informations concernant une commune
+      tags:
+        - Communes
+      parameters:
+        - name: codeInsee
+          in: path
+          description: Code INSEE de la commune
+          required: true
+          type: string
+      responses:
+        200:
+          description: Informations concernant une commune
+          schema:
+            $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Commune introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: Code HTTP de l'erreur
+      message:
+        type: string
+        description: Libellé de l'erreur
+      description:
+        type: string
+        description: Explication
+  Commune:
+    type: object
+    properties:
+      codeInsee:
+        type: string
+        description: Code INSEE de la commune
+      nom:
+        type: string
+        description: Nom de la commune
+      codesPostaux:
+        type: array
+        description: Liste des codes postaux associés à la commune
+        items:
+          type: string
+      surface:
+        type: number
+        format: float
+        description: Surface de la commune, en mètres-carrés
