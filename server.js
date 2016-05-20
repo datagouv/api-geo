@@ -74,6 +74,10 @@ require('./lib/communeStore')()
       }
     });
 
+    app.get('/definition.yml', function (req, res) {
+      res.sendFile(__dirname + '/definition.yml');
+    });
+
     const port = process.env.PORT || 5000;
 
     app.listen(port, () => {
