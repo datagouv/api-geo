@@ -7,6 +7,31 @@ schemes:
   - https
 produces:
   - application/json
+parameters:
+  communeFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum: ['nom','codeInsee','codesPostaux','centre','surface', 'contour']
+    collectionFormat: csv
+    default: ['nom','codeInsee','codesPostaux','centre','surface']
+  formatParam:
+    name: format
+    in: query
+    description: Format de réponse attendu
+    type: string
+    enum: ['json', 'geojson']
+    default: json
+  communeGeometryParam:
+    name: geometry
+    in: query
+    description: Géométrie à utiliser pour la sortie géographique
+    type: string
+    enum: ['centre', 'contour']
+    default: centre
 paths:
   /communes:
     get:
@@ -31,8 +56,10 @@ paths:
         - name: nom
           in: query
           description: Nom de la commune
-          type: number
-          format: float
+          type: string
+        - $ref: '#/parameters/communeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Liste de communes
@@ -57,6 +84,9 @@ paths:
           description: Code INSEE de la commune
           required: true
           type: string
+        - $ref: '#/parameters/communeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Informations concernant une commune
@@ -102,3 +132,9 @@ definitions:
         type: number
         format: float
         description: Surface de la commune, en mètres-carrés
+      centre:
+        type: object
+        description: Centre de la commune (Point GeoJSON)
+      contour:
+        type: object
+        description: Contour de la commune (Polygon GeoJSON)
