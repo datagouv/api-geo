@@ -13,6 +13,7 @@ require('./lib/communeStore')()
     app.get('/communes', function (req, res) {
       let result;
       let fields;
+      const format = ['json', 'geojson'].indexOf(req.query.format) >= 0 ? req.query.format : 'json';
       if (req.query.fields) {
         fields = new Set(req.query.fields.split(','));
       } else {
@@ -31,7 +32,19 @@ require('./lib/communeStore')()
         return res.sendStatus(400);
       }
 
-      if (result) {
+      if (format === 'geojson') {
+        const geom = ['contour', 'centre'].indexOf(req.query.geometry) >= 0 ? req.query.geometry : 'centre';
+        fields.delete('contour');
+        fields.delete('centre');
+        res.send({
+          type: 'FeatureCollection',
+          features: result.map(commune => ({
+            type: 'Feature',
+            properties: pick(commune, Array.from(fields)),
+            geometry: commune[geom]
+          }))
+        });
+      } else {
         res.send(result.map(commune => pick(commune, Array.from(fields))));
       }
     });
