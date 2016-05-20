@@ -65,6 +65,15 @@ require('./lib/communeStore')()
       }
     });
 
+    app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (req, res) {
+      let commune = db.queryByCodeInsee(req.params.codeInsee);
+      if (!commune) {
+        res.sendStatus(404);
+      } else {
+        res.send(formatCommune(req, commune));
+      }
+    });
+
     const port = process.env.PORT || 5000;
 
     app.listen(port, () => {
