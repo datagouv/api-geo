@@ -24,7 +24,8 @@
     "bench": "DEBUG=store,bench node bench",
     "lint": "eslint *.js lib",
     "start": "node --max_old_space_size=2048 server",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "fetch-data": "./fetch_data.sh"
   },
   "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
   "license": "AGPL-3.0"
