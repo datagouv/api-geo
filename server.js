@@ -35,7 +35,8 @@ function formatCommune(req, commune) {
   }
 }
 
-require('./lib/communeStore')()
+
+module.exports = require('./lib/communeStore')()
   .then(db => {
     const app = express();
     app.use(cors());
