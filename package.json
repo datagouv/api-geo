@@ -20,13 +20,14 @@
     "benchmark": "^2.1.0",
     "eslint": "^2.10.2",
     "expect.js": "^0.3.1",
+    "istanbul": "^0.4.3",
     "mocha": "^2.5.3"
   },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
     "lint": "eslint *.js lib",
     "start": "node --max_old_space_size=2048 server",
-    "test-unit": "mocha test/**",
+    "test-int": "istanbul cover _mocha -- test/**",
     "test": "npm run lint && npm run test-unit",
     "fetch-data": "./fetch_data.sh"
   },
