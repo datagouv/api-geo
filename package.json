@@ -18,13 +18,15 @@
   },
   "devDependencies": {
     "benchmark": "^2.1.0",
-    "eslint": "^2.10.2"
+    "eslint": "^2.10.2",
+    "expect.js": "^0.3.1",
+    "mocha": "^2.5.3"
   },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
     "lint": "eslint *.js lib",
     "start": "node --max_old_space_size=2048 server",
-    "test": "npm run lint",
+    "test": "npm run lint && mocha test/**",
     "fetch-data": "./fetch_data.sh"
   },
   "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
