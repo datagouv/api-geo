@@ -27,7 +27,7 @@
     "bench": "DEBUG=store,bench node bench",
     "lint": "eslint *.js lib",
     "start": "node --max_old_space_size=2048 server",
-    "test-int": "istanbul cover _mocha -- test/**",
+    "test-unit": "istanbul cover _mocha -- test/**",
     "test": "npm run lint && npm run test-unit",
     "fetch-data": "./fetch_data.sh"
   },
