@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-// /* global run */
 const communeStore = require('../../lib/communeStore');
 const expect = require('expect.js');
 
@@ -37,4 +36,3 @@ describe('communeStore', function() {
     });
   });
 });
-// run();
