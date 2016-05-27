@@ -1,13 +1,15 @@
 const Benchmark = require('benchmark');
-const db = require('./lib/db');
 const debug = require('debug')('bench');
 
+debug('will load database');
+const db = require('./lib/db');
+debug('database loaded');
 
 const suite = new Benchmark.Suite;
 
 suite
   .add('spatial search (point)', function() {
-    db.query([6.175882816314696, 49.11830706404367]);
+    db.queryByLonLat([6.175882816314696, 49.11830706404367]);
   })
   .add('text search', function() {
     db.queryByName('metz');
