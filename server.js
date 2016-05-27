@@ -44,7 +44,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
 
   if (req.query.lat && req.query.lon) {
-    result = db.query([parseFloat(req.query.lon), parseFloat(req.query.lat)]);
+    result = db.queryByLonLat([parseFloat(req.query.lon), parseFloat(req.query.lat)]);
   } else if (req.query.nom) {
     req.fields.add('_score');
     result = db.queryByName(req.query.nom);
