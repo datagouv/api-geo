@@ -5,3 +5,5 @@ cache:
   directories:
     - node_modules
     - data
+after_script:
+    - npm install coveralls && cat ./coverage/lcov.info | coveralls
