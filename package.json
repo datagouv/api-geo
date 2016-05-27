@@ -5,7 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "JSONStream": "^1.1.1",
-    "bluebird": "^3.4.0",
     "cors": "^2.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.4",
@@ -13,6 +12,7 @@
     "lunr": "^0.7.1",
     "morgan": "^1.7.0",
     "rbush": "^1.4.3",
+    "stream-array": "^1.1.2",
     "through2": "^2.0.1",
     "turf-centroid": "^3.0.5"
   },
@@ -29,7 +29,8 @@
     "start": "node --max_old_space_size=2048 server",
     "test-unit": "istanbul cover _mocha -- test/**",
     "test": "npm run lint && npm run test-unit",
-    "fetch-data": "./fetch_data.sh"
+    "fetch-data": "./fetch_data.sh",
+    "integrate-data": "DEBUG=integration node integration"
   },
   "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
   "license": "AGPL-3.0"
