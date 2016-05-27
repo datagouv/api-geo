@@ -16,11 +16,11 @@ function getByCodeInsee(codeInsee) {
   return communes.get(codeInsee);
 }
 
-function loadCommunes() {
+function loadCommunes(filePath) {
   debug('Chargement du jeu de données communes-dp25 (géométries + noms)');
   let count = 0;
   return new Promise((resolve, reject) => {
-    fs.createReadStream(__dirname + '/data/communes-dp25.json')
+    fs.createReadStream(filePath)
       .pipe(JSONStream.parse('features.*'))
       .pipe(t((communeFeature, enc, cb) => {
         const codeInsee = communeFeature.properties.insee;
@@ -113,7 +113,9 @@ function serialize() {
   });
 }
 
-loadCommunes()
+const filePath = __dirname + '/data/communes-dp25.json';
+
+loadCommunes(filePath)
   .then(loadCodePostaux)
   .then(serialize)
   .then(() => debug('Terminé !'))

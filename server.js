@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { pick } = require('lodash');
-const db = require('./lib/indexCommune');
+const db = require('./lib/db');
 
 function initCommuneFields(req, res, next) {
   if (req.query.fields) {

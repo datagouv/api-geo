@@ -1,9 +1,9 @@
 /* eslint-env mocha */
-const db = require('../../lib/communeStore');
+const db = require('../../lib/db');
 const normalizeNom = db.normalizeNom;
 const expect = require('expect.js');
 
-describe('communeStore', function() {
+describe('db', function() {
 
   describe('normalizeNom()', function() {
     describe('empty string', function() {

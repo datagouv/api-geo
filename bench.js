@@ -1,5 +1,5 @@
 const Benchmark = require('benchmark');
-const db = require('./lib/indexCommune');
+const db = require('./lib/db');
 const debug = require('debug')('bench');
 
 
