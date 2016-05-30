@@ -1,8 +1,11 @@
 {
   "name": "api-communes",
   "version": "0.1.0",
-  "description": "Prototype",
-  "main": "index.js",
+  "description": "API for French administrative units",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sgmap/api-communes.git"
+  },
   "dependencies": {
     "JSONStream": "^1.1.1",
     "cors": "^2.7.1",
@@ -28,10 +31,15 @@
     "lint": "eslint *.js lib",
     "start": "node --max_old_space_size=2048 server",
     "test-unit": "istanbul cover _mocha -- test/**",
-    "test": "npm run lint && npm run fetch-data && npm run integrate-data && npm run test-unit",
+    "test": "npm run lint && npm run test-unit",
     "fetch-data": "./fetch_data.sh",
-    "integrate-data": "DEBUG=integration node integration"
+    "integrate-data": "DEBUG=integration node integration",
+    "prepare-data": "npm run fetch-data && npm run integrate-data",
+    "postinstall": "npm run prepare-data"
   },
-  "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
-  "license": "AGPL-3.0"
+  "author": "Jérôme Desboeufs <jerome.desboeufs@beta.gouv.fr>",
+  "contributors": [
+    "Théophile Merlière <theophile.merliere@beta.gouv.fr>"
+  ],
+  "license": "MIT"
 }
