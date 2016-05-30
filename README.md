@@ -11,18 +11,25 @@
 
 ## Installation
 
+_Note : Le téléchargement initial des données (~200 Mo) peut prendre un certain temps._
+
 ```bash
 npm install
 ```
 
-## Récupération des données
+## Démarrage de l'API
 
 ```bash
-npm run fetch-data
+npm start
 ```
 
-## Benchmark
+## Lancer les tests
 
 ```bash
-npm run bench
+npm test
 ```
+
+## TODO
+
+* Supprimer la dépendance à `bash` et `wget`
+* Plus de tests
