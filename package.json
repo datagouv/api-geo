@@ -1,8 +1,11 @@
 {
   "name": "api-communes",
   "version": "0.1.0",
-  "description": "Prototype",
-  "main": "index.js",
+  "description": "API for French administrative units",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sgmap/api-communes.git"
+  },
   "dependencies": {
     "JSONStream": "^1.1.1",
     "cors": "^2.7.1",
@@ -34,6 +37,9 @@
     "prepare-data": "npm run fetch-data && npm run integrate-data",
     "postinstall": "npm run prepare-data"
   },
-  "author": "Jérôme Desboeufs <jerome.desboeufs@gmail.com>",
+  "author": "Jérôme Desboeufs <jerome.desboeufs@beta.gouv.fr>",
+  "contributors": [
+    "Théophile Merlière <theophile.merliere@beta.gouv.fr>"
+  ],
   "license": "AGPL-3.0"
 }
