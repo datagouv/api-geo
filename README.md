@@ -33,6 +33,11 @@ npm start
 npm test
 ```
 
+## Données sources
+
+* [Découpage administratif communal français issu d'OpenStreetMap](https://www.data.gouv.fr/fr/datasets/decoupage-administratif-communal-francais-issu-d-openstreetmap/) (licence ODbL)
+* [Base officielle des codes postaux](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/) (licence ODbL)
+
 ## TODO
 
 * Supprimer la dépendance à `bash` et `wget`
