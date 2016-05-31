@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const expect = require('expect.js');
-const { initCommuneFields, initCommuneFormat } = require('../lib/communeHelpers');
+const { initCommuneFields, initCommuneFormat, formatCommune } = require('../lib/communeHelpers');
 
 describe('communeHelpers', function () {
 
@@ -82,6 +82,44 @@ describe('communeHelpers', function () {
         done();
       });
     });
+  });
+
+  describe('formatCommune()', function () {
+    it('should support `json` formatting', function () {
+      expect(formatCommune(
+        { outputFormat: 'json', fields: new Set() },
+        { a: 1, b: 2, c: 3, d: 4 }
+      )).to.eql({});
+    });
+
+    it('should support `geojson` formatting with `centre` as default geometry', function () {
+      expect(formatCommune(
+        { query: {}, outputFormat: 'geojson', fields: new Set() },
+        { a: 1, b: 2, c: 3, centre: 4, contour: 6 }
+      )).to.eql({ type: 'Feature', properties: {}, geometry: 4 });
+    });
+
+    it('should support `geojson` formatting with `contour` as alternative geometry', function () {
+      expect(formatCommune(
+        { query: { geometry: 'contour' }, outputFormat: 'geojson', fields: new Set() },
+        { a: 1, b: 2, c: 3, centre: 4, contour: 6 }
+      )).to.eql({ type: 'Feature', properties: {}, geometry: 6 });
+    });
+
+    it('should filter specified fields for `json`', function () {
+      expect(formatCommune(
+        { outputFormat: 'json', fields: new Set(['a', 'c']) },
+        { a: 1, b: 2, c: 3, d: 4 }
+      )).to.eql({ a: 1, c: 3 });
+    });
+
+    it('should filter specified fields for `geojson`', function () {
+      expect(formatCommune(
+        { query: {}, outputFormat: 'geojson', fields: new Set(['a', 'c']) },
+        { a: 1, b: 2, c: 3, centre: 4, contour: 6 }
+      )).to.eql({ type: 'Feature', properties: { a: 1, c: 3 }, geometry: 4 });
+    });
+
   });
 
 });
