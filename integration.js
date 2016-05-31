@@ -13,7 +13,10 @@ function getByCodeInsee(codeInsee) {
     const commune = { codeInsee, codesPostaux: new Set() };
     communes.set(codeInsee, commune);
   }
-  return communes.get(codeInsee);
+  return {
+    commune: communes.get(codeInsee),
+    communesLoad: communes.size
+  };
 }
 
 function loadCommunes(filePath) {
@@ -24,7 +27,7 @@ function loadCommunes(filePath) {
       .pipe(JSONStream.parse('features.*'))
       .pipe(t((communeFeature, enc, cb) => {
         const codeInsee = communeFeature.properties.insee;
-        const commune = getByCodeInsee(codeInsee);
+        const commune = getByCodeInsee(codeInsee).commune;
 
         commune.nom = communeFeature.properties.nom;
         commune.contour = communeFeature.geometry;
@@ -37,17 +40,17 @@ function loadCommunes(filePath) {
       .on('error', reject)
       .on('finish', () => {
         debug('Nombre de géométries chargées : %d', count);
-        resolve();
+        resolve(count);
       });
   });
 }
 
-function loadCodePostaux() {
+function loadCodePostaux(filePath) {
   debug('Chargement du jeu de données hexasmal (codes postaux)');
   let count = 0;
 
   return new Promise((resolve, reject) => {
-    fs.createReadStream(__dirname + '/data/laposte_hexasmal.json')
+    fs.createReadStream(filePath)
       .pipe(JSONStream.parse('*'))
       .pipe(t((correspondance, enc, cb) => {
         let codeInsee = correspondance.Code_commune_INSEE;
@@ -78,7 +81,7 @@ function loadCodePostaux() {
           return cb();
         }
 
-        getByCodeInsee(codeInsee).codesPostaux.add(codePostal);
+        getByCodeInsee(codeInsee).commune.codesPostaux.add(codePostal);
         count++;
 
         cb();
@@ -86,7 +89,7 @@ function loadCodePostaux() {
       .on('error', reject)
       .on('finish', () => {
         debug('Nombre de correspondances chargées : %d', count);
-        resolve();
+        resolve(count);
       });
   });
 }
@@ -113,10 +116,15 @@ function serialize() {
   });
 }
 
-const filePath = __dirname + '/data/communes-dp25.json';
+const communeFilePath = __dirname + '/data/communes-dp25.json';
+const codesPostauxFilePath = __dirname + '/data/laposte_hexasmal.json';
 
-loadCommunes(filePath)
-  .then(loadCodePostaux)
-  .then(serialize)
-  .then(() => debug('Terminé !'))
-  .catch(console.error);
+const integration = function() {
+  loadCommunes(communeFilePath)
+    .then(codesPostauxFilePath)
+    .then(serialize)
+    .then(() => debug('Terminé !'))
+    .catch(console.error);
+};
+
+module.exports = { integration, communes, getByCodeInsee, loadCommunes, loadCodePostaux, serialize };
