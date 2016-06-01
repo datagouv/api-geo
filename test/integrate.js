@@ -45,11 +45,9 @@ describe('integration', function() {
   });
 
   describe('loadCommunes()', function() {
-    describe('undefined file path', function() {
+    describe('bad file path', function() {
       it('should thrown an error', function(done) {
-        const options = {communesPath: ''};
-        const integration = integrate(options);
-        integration.loadCommunes()
+        integrate({ communesFilePath: '_' }).loadCommunes()
           .then(function(data) {
             expect(data).to.be.undefined;
             done();
@@ -76,10 +74,9 @@ describe('integration', function() {
   });
 
   describe('loadCodePostaux()', function() {
-    describe('undefined file path', function() {
+    describe('bad file path', function() {
       it('should thrown an error', function(done) {
-        const integration = integrate();
-        integration.loadCodePostaux()
+        integrate({ codesPostauxFilePath: '_' }).loadCodePostaux()
           .then(function(data) {
             expect(data).to.be.undefined;
             done();
