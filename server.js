@@ -46,7 +46,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
 });
 
 app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (req, res) {
-  let commune = db.queryByCodeInsee(req.params.codeInsee);
+  let commune = db.queryByCodeInsee(req.params.codeInsee)[0];
   if (!commune) {
     res.sendStatus(404);
   } else {
