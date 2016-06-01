@@ -38,7 +38,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   if (req.outputFormat === 'geojson') {
     res.send({
       type: 'FeatureCollection',
-      features: result.map(commune => formatCommune(req, commune))
+      features: result.map(commune => formatCommune(req, commune)),
     });
   } else {
     res.send(result.map(commune => formatCommune(req, commune)));
