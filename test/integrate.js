@@ -1,10 +1,19 @@
 /* eslint-env mocha */
-const integrate = require('../lib/integrate').integration;
+const { integrate } = require('../lib/integrate');
 const fs = require('fs');
 const expect = require('expect.js');
 
 
 describe('integration', function() {
+
+  describe('init paths', function() {
+    it('should init all paths with default value', function() {
+      const integration = integrate();
+      expect(integration.paths.communesFilePath).to.exist;
+      expect(integration.paths.codesPostauxFilePath).to.exist;
+      expect(integration.paths.outputFilePath).to.exist;
+    });
+  });
 
   describe('getByCodeInsee()', function() {
     describe('set a new communes', function() {
@@ -38,13 +47,14 @@ describe('integration', function() {
   describe('loadCommunes()', function() {
     describe('undefined file path', function() {
       it('should thrown an error', function(done) {
-        const integration = integrate();
+        const options = {communesPath: ''};
+        const integration = integrate(options);
         integration.loadCommunes()
           .then(function(data) {
             expect(data).to.be.undefined;
             done();
-          }, function(error) {
-            expect(error.message).to.equal('path must be a string or Buffer');
+          }).catch(function(error) {
+            expect(error.code).to.equal('ENOENT');
             done();
           });
       });
@@ -52,7 +62,8 @@ describe('integration', function() {
 
     describe('good file path', function() {
       it('should return the number of loaded communes.', function(done) {
-        const integration = integrate(__dirname + '/integration-data/communes.json', null, null);
+        const options = {communesFilePath: __dirname + '/integration-data/communes.json'};
+        const integration = integrate(options);
         integration.loadCommunes()
           .then(function(data) {
             expect(data).to.equal(1);
@@ -73,29 +84,63 @@ describe('integration', function() {
             expect(data).to.be.undefined;
             done();
           }, function(error) {
-            expect(error.message).to.equal('path must be a string or Buffer');
+            expect(error.code).to.equal('ENOENT');
             done();
           });
       });
     });
 
     describe('good file path', function() {
-      it('should load 3 correspondances', function(done) {
-        const integration = integrate(null, __dirname + '/integration-data/cp.json', null);
+      it('should load 1 correspondances', function(done) {
+        const options = { communesFilePath: __dirname + '/integration-data/communes.json',
+                          codesPostauxFilePath: __dirname + '/integration-data/cp.json'};
+        const integration = integrate(options);
+        integration.loadCommunes();
         integration.loadCodePostaux()
           .then(function(data) {
             expect(data).to.equal(1);
             done();
           }, function(error) {
-            expect(error).to.be.undefined;
+            done(error);
+          });
+      });
+    });
+
+    describe('unknown codeInsee', function() {
+      it('should load 0 correspondances', function(done) {
+        const options = {codesPostauxFilePath: __dirname + '/integration-data/unknown-cp.json'};
+        const integration = integrate(options);
+        integration.loadCodePostaux()
+          .then(function(data) {
+            expect(data).to.equal(0);
             done();
+          }, function(error) {
+            done(error);
+          });
+      });
+    });
+
+    describe('MARSEILLE vs MARSEILLETTE', function() {
+      it('should not override MARSEILLETTE with MARSEILLE codeInsee', function(done) {
+        const options = { communesFilePath: __dirname + '/integration-data/communes.json',
+                          codesPostauxFilePath: __dirname + '/integration-data/cp.json'};
+        const integration = integrate(options);
+        integration.loadCommunes();
+        integration.loadCodePostaux()
+          .then(function(data) {
+            expect(data).to.equal(1);
+            expect(integration.communes.has(11220)).to.true;
+            done();
+          }, function(error) {
+            done(error);
           });
       });
     });
 
     describe('Exclusion', function() {
       it('should exclude Polynesia.', function(done) {
-        const integration = integrate(null, __dirname + '/integration-data/polynesie-cp.json', null);
+        const options = {codesPostauxFilePath: __dirname + '/integration-data/polynesie-cp.json'};
+        const integration = integrate(options);
         integration.loadCodePostaux()
           .then(function(data) {
             expect(data).to.equal(0);
@@ -105,7 +150,8 @@ describe('integration', function() {
           });
       });
       it('should exclude Monaco.', function(done) {
-        const integration = integrate(null, __dirname + '/integration-data/monaco-cp.json', null);
+        const options = {codesPostauxFilePath: __dirname + '/integration-data/monaco-cp.json'};
+        const integration = integrate(options);
         integration.loadCodePostaux()
           .then(function(data) {
             expect(data).to.equal(0);
@@ -119,8 +165,8 @@ describe('integration', function() {
 
   describe('serialize()', function() {
     describe('no communes', function() {
-      const path = __dirname + '/integration-data/serialize-test.json';
-      const integration = integrate(null, null, path);
+      const options = {outputFilePath: __dirname + '/integration-data/serialize-test.json'};
+      const integration = integrate(options);
       it('should return an error', function(done) {
         integration.serialize()
         .then(function(data) {
@@ -131,7 +177,7 @@ describe('integration', function() {
         });
       });
       it('should not create file', function(done) {
-        fs.stat(path, function(err) {
+        fs.stat(options.outputFilePath, function(err) {
           expect(err.code).to.equal('ENOENT');
           done();
         });
@@ -139,25 +185,25 @@ describe('integration', function() {
     });
 
     describe('normal way', function() {
-      const communesPath = __dirname + '/integration-data/communes.json';
-      const destinationPath = __dirname + '/integration-data/serialize-test.json';
-      const integration = integrate(communesPath, null, destinationPath);
+      const options = { outputFilePath: __dirname + '/integration-data/serialize-test.json',
+                        communesFilePath: __dirname + '/integration-data/communes.json'};
+      const integration = integrate(options);
       it('should return 1 and create file', function(done) {
         integration.loadCommunes()
           .then(integration.serialize)
           .then(function(data) {
             expect(data).to.equal(1);
-            fs.stat(destinationPath, function(err) {
+            fs.stat(options.outputFilePath, function(err) {
               expect(err).to.be.undefined;
             });
-            const result = require(destinationPath);
-            expect(result[0].codeInsee).to.equal('66213');
+            const result = require(options.outputFilePath);
+            expect(result[0].codeInsee).to.equal('11220');
             expect(result[0].codesPostaux).to.empty;
-            expect(result[0].nom).to.equal('Toulouges');
+            expect(result[0].nom).to.equal('Marseillette');
             expect(result[0].contour).to.exist;
             expect(result[0].centre).to.exist;
             expect(result[0].surface).to.equal(801);
-            fs.unlink(destinationPath);
+            fs.unlink(options.outputFilePath);
             done();
           }).catch(function(error) {
             done(error);
