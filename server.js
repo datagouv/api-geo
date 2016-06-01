@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { initCommuneFields, initCommuneFormat, formatCommune } = require('./lib/communeHelpers');
-const db = require('./lib/db');
+const db = require('./lib/communes');
 const { pick } = require('lodash');
 
 const app = express();
