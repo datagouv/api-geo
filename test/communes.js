@@ -112,4 +112,21 @@ describe('communes', function () {
     });
   });
 
+  describe('queryByLonLat()', function () {
+    const geom = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 10], [10, 10], [10, -10], [-10, -10]]] };
+    const commune1 = { nom: 'abc', codeInsee: '12345', codesPostaux: [], contour: geom };
+    const db = communes.getIndexedDb({ communes: [commune1] });
+
+    describe('Point in no man\'s land', function () {
+      it('should return an empty array', function () {
+        expect(db.queryByLonLat([-20, -20])).to.eql([]);
+      });
+    });
+    describe('Point inside the commune contour', function () {
+      it('should return an array with 1 commune', function () {
+        expect(db.queryByLonLat([0, 0])).to.eql([commune1]);
+      });
+    });
+  });
+
 });
