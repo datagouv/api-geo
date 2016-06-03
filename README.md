@@ -33,6 +33,12 @@ npm start
 npm test
 ```
 
+## Docker
+
+```bash
+docker compose up
+```
+
 ## Données sources
 
 * [Découpage administratif communal français issu d'OpenStreetMap](https://www.data.gouv.fr/fr/datasets/decoupage-administratif-communal-francais-issu-d-openstreetmap/) (licence ODbL)
