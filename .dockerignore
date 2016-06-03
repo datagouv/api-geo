@@ -1,0 +1,9 @@
+*.md
+.dockerignore
+.git
+Dockerfile*
+LICENSE
+
+### Project ###
+data
+node_modules
