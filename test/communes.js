@@ -157,6 +157,11 @@ describe('communes', function () {
         expect(db.search({ nom: 'efg', codePostal: '11111' })).to.eql([commune2, commune3]);
       });
     });
+    describe('All criteria', function () {
+      it('should return an array with 1 commune', function () {
+        expect(db.search({ nom: 'efg', codeInsee: '67890', codePostal: '11111', lon: 0, lat: 0 })).to.eql([commune3]);
+      });
+    });
   });
 
 });
