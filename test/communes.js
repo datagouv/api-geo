@@ -130,10 +130,12 @@ describe('communes', function () {
   });
 
   describe('search()', function () {
-    const geom = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 10], [10, 10], [10, -10], [-10, -10]]] };
-    const commune1 = { nom: 'abc', codeInsee: '12345', codesPostaux: ['11111', '22222'], contour: geom };
-    const commune2 = { nom: 'efg', codeInsee: '23456', codesPostaux: ['11111'], contour: geom };
-    const commune3 = { nom: 'efg', codeInsee: '67890', codesPostaux: ['11111'], contour: geom };
+    const geom1 = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 0], [0, 0], [0, -10], [-10, -10]]] };
+    const geom2 = { type: 'Polygon', coordinates: [[[-10, 0], [-10, 10], [0, 10], [0, 0], [-10, 0]]] };
+    const geom3 = { type: 'Polygon', coordinates: [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] };
+    const commune1 = { nom: 'abc', codeInsee: '12345', codesPostaux: ['11111', '22222'], contour: geom1 };
+    const commune2 = { nom: 'efg', codeInsee: '23456', codesPostaux: ['11111'], contour: geom2 };
+    const commune3 = { nom: 'efg', codeInsee: '67890', codesPostaux: ['11111'], contour: geom3 };
     const db = communes.getIndexedDb({ communes: [commune1, commune2, commune3] });
 
     describe('Simple matching criteria', function () {
@@ -159,7 +161,7 @@ describe('communes', function () {
     });
     describe('All criteria', function () {
       it('should return an array with 1 commune', function () {
-        expect(db.search({ nom: 'efg', codeInsee: '67890', codePostal: '11111', lon: 0, lat: 0 })).to.eql([commune3]);
+        expect(db.search({ nom: 'efg', codeInsee: '67890', codePostal: '11111', lon: 5, lat: 5 })).to.eql([commune3]);
       });
     });
   });
