@@ -129,4 +129,34 @@ describe('communes', function () {
     });
   });
 
+  describe('search()', function () {
+    const geom = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 10], [10, 10], [10, -10], [-10, -10]]] };
+    const commune1 = { nom: 'abc', codeInsee: '12345', codesPostaux: ['11111', '22222'], contour: geom };
+    const commune2 = { nom: 'efg', codeInsee: '23456', codesPostaux: ['11111'], contour: geom };
+    const commune3 = { nom: 'efg', codeInsee: '67890', codesPostaux: ['11111'], contour: geom };
+    const db = communes.getIndexedDb({ communes: [commune1, commune2, commune3] });
+
+    describe('Simple matching criteria', function () {
+      it('should return an array with 1 commune', function () {
+        expect(db.search({ codeInsee: '12345' })).to.eql([commune1]);
+      });
+    });
+
+    describe('Disjoint criteria', function () {
+      it('should return an empty array', function () {
+        expect(db.search({ codeInsee: '23456', codePostal: '22222' })).to.eql([]);
+      });
+    });
+    describe('Intersecting criteria (1 commune)', function () {
+      it('should return an array with 1 commune', function () {
+        expect(db.search({ codeInsee: '23456', codePostal: '11111' })).to.eql([commune2]);
+      });
+    });
+    describe('Intersecting criteria (2 communes)', function () {
+      it('should return an array with 2 communes', function () {
+        expect(db.search({ nom: 'efg', codePostal: '11111' })).to.eql([commune2, commune3]);
+      });
+    });
+  });
+
 });
