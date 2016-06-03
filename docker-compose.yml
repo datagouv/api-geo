@@ -1,7 +1,5 @@
-app:
+services:
   build: .
   dockerfile: Dockerfile
   ports:
     - "5000:5000"
-  expose:
-    - "5000"
