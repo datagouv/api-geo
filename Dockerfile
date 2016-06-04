@@ -6,7 +6,10 @@ WORKDIR /usr/src/api-communes
 
 # Install app dependencies
 COPY . /usr/src/api-communes
-RUN npm install -—production -—unsafe-perm
+RUN npm install -—production
+
+# Prepare data
+RUN npm run prepare-data
 
 EXPOSE 5000
 CMD [ "npm", "start" ]
