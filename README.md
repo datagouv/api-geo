@@ -36,7 +36,7 @@ npm test
 ## Docker
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 ## Données sources
