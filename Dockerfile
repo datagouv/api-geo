@@ -5,8 +5,11 @@ RUN mkdir -p /usr/src/api-communes
 WORKDIR /usr/src/api-communes
 
 # Install app dependencies
-COPY . /usr/src/api-communes
+COPY package.json /usr/src/api-communes
 RUN npm install -—production
+
+# Copy sources
+COPY . /usr/src/api-communes
 
 # Prepare data
 RUN npm run prepare-data
