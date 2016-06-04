@@ -1,5 +1,5 @@
-services:
+api:
   build: .
-  dockerfile: Dockerfile
+  container_name: api-communes
   ports:
-    - "5000:5000"
+    - 5000:5000
