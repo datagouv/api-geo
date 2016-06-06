@@ -1,0 +1,5 @@
+api:
+  build: .
+  container_name: api-communes
+  ports:
+    - 5000:5000

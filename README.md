@@ -18,7 +18,8 @@
 _Note : Le téléchargement initial des données (~200 Mo) peut prendre un certain temps._
 
 ```bash
-npm install
+npm install # (--production)
+npm run prepare-data
 ```
 
 ## Démarrage de l'API
@@ -31,6 +32,12 @@ npm start
 
 ```bash
 npm test
+```
+
+## Docker
+
+```bash
+docker-compose up
 ```
 
 ## Données sources

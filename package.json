@@ -35,8 +35,7 @@
     "test": "npm run lint && npm run test-unit",
     "fetch-data": "./fetch_data.sh",
     "integrate-data": "DEBUG=integration node integration",
-    "prepare-data": "npm run fetch-data && npm run integrate-data",
-    "postinstall": "npm run prepare-data"
+    "prepare-data": "npm run fetch-data && npm run integrate-data"
   },
   "author": "Jérôme Desboeufs <jerome.desboeufs@beta.gouv.fr>",
   "contributors": [
