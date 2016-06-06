@@ -2,7 +2,7 @@ const Benchmark = require('benchmark');
 const debug = require('debug')('bench');
 
 debug('will load database');
-const db = require('./lib/db');
+const db = require('./lib/communes').getIndexedDb();
 debug('database loaded');
 
 const suite = new Benchmark.Suite;
