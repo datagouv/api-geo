@@ -64,3 +64,5 @@ app.listen(port, () => {
   /* eslint no-console: 0 */
   console.log('Start listening on port %d', port);
 });
+
+module.exports = app;
