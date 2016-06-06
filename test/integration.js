@@ -73,7 +73,7 @@ describe('#integration', () => {
         getByCodeInsee: codeInsee => {
           commune.codeInsee = codeInsee;
           return commune;
-        }
+        },
       };
     });
 
@@ -104,7 +104,7 @@ describe('#integration', () => {
           getByCodeInsee: codeInsee => {
             commune.codeInsee = codeInsee;
             return commune;
-          }
+          },
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
@@ -119,7 +119,7 @@ describe('#integration', () => {
     describe('Ignore some code INSEE classes', () => {
       [
         { className: 'Polynésie', file: 'polynesie-cp.json' },
-        { className: 'Monaco', file: 'monaco-cp.json' }
+        { className: 'Monaco', file: 'monaco-cp.json' },
       ].forEach(testCase => {
         describe(`Processing a file containing a relation with ${testCase.className}`, () => {
           it('should be ignored', done => {
@@ -143,7 +143,7 @@ describe('#integration', () => {
             getByCodeInsee: codeInsee => {
               codes.push(codeInsee);
               return { codesPostaux: new Set() };
-            }
+            },
           };
           loadCodePostaux({ srcPath: `${__dirname}/integration-data/arrondissements-cp.json` })(ctx, err => {
             expect(err).to.be(undefined);
@@ -158,7 +158,7 @@ describe('#integration', () => {
       it('entry should be ignored', done => {
         const ctx = {
           debug: () => {},
-          communes: { has: () => false }
+          communes: { has: () => false },
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/unknown-cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
@@ -186,8 +186,8 @@ describe('#integration', () => {
           ['12345', {
             codeInsee: '12345',
             nom: 'Ville-sur-Loire',
-            codesPostaux: new Set(['11111', '22222'])
-          }]
+            codesPostaux: new Set(['11111', '22222']),
+          }],
         ]) };
         serialize({ destPath: __dirname + '/../data/test-serialize-commune.json' })(ctx, err => {
           expect(err).to.be(undefined);
@@ -196,7 +196,7 @@ describe('#integration', () => {
           expect(communes[0]).to.eql({
             codeInsee: '12345',
             nom: 'Ville-sur-Loire',
-            codesPostaux: ['11111', '22222']
+            codesPostaux: ['11111', '22222'],
           });
           done();
         });
@@ -230,7 +230,7 @@ describe('#pipeline', () => {
         (ctx, next) => {
           passedStages++;
           next();
-        }
+        },
       ], err => {
         expect(err).not.to.be.ok();
         expect(passedStages).to.be(2);
@@ -247,7 +247,7 @@ describe('#pipeline', () => {
         (ctx, next) => {
           expect(ctx).to.be(firstCtx);
           next();
-        }
+        },
       ], done);
     });
   });
