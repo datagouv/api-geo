@@ -4,7 +4,7 @@ const pipeline = require('../lib/integration/pipeline');
 const expect = require('expect.js');
 
 
-describe('#integration', () => {
+describe('#integration communes', () => {
 
   describe('init()', () => {
     let ctx;
