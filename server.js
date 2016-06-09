@@ -19,7 +19,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);
-    if ( Number.isFinite(lat)
+    if (Number.isFinite(lat)
       && lat >= -90
       && lat <= 90
       && Number.isFinite(lon)
