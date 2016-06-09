@@ -64,7 +64,7 @@ app.get('/departements', initDepartementFields, function (req, res) {
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
 
   if (Object.keys(query).length === 0) {
-    return res.sendStatus(400);
+    return res.send(dbDepartements.departements);
   }
 
   if (query.nom) req.fields.add('_score');

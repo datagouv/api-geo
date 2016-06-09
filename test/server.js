@@ -98,10 +98,18 @@ describe('Test api', function() {
   /* Départements */
   describe('Departements', function() {
     describe('with no input', function() {
-      it('should reply with 400', done => {
+      it('should reply with 200', done => {
         request(server)
             .get('/departements')
-            .expect(400, done);
+            .expect(200, done);
+      });
+      it('should reply all 101 departements', done => {
+        request(server)
+            .get('/departements')
+            .expect(res => {
+              expect(res.body.length).to.equal(101);
+            })
+            .end(done);
       });
     });
 
