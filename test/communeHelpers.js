@@ -6,7 +6,7 @@ describe('communeHelpers', function () {
 
   describe('initCommuneFields()', function () {
     function runTestCase(reqParams, expectedFields, done) {
-      const req = { query: reqParams.query ? reqParams.query : {}};
+      const req = { query: reqParams.query ? reqParams.query : {} };
       initCommuneFields(req, undefined, function (err) {
         expect(err).to.be(undefined);
         expect(req.fields).to.be.a(Set);

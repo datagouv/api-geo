@@ -18,3 +18,27 @@ rules:
   comma-dangle:
     - error
     - always-multiline
+  keyword-spacing:
+    - error
+  key-spacing:
+    - error
+  array-bracket-spacing:
+    - error
+    - never
+  block-spacing:
+    - error
+    - always
+  arrow-spacing:
+    - error
+  space-before-blocks:
+    - error
+  space-infix-ops:
+    - error
+  no-whitespace-before-property:
+    - error
+  space-in-parens:
+    - error
+    - never
+  object-curly-spacing:
+    - error
+    - always

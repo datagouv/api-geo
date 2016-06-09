@@ -79,7 +79,7 @@ describe('#integration departements', () => {
       it('should store 1 departement', done => {
         loadDepartements({ srcPath: __dirname + '/integration-data/departements.tsv' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(departement).to.eql({code: '42',codeRegion: '21',nom: 'Test'});
+          expect(departement).to.eql({ code: '42',codeRegion: '21',nom: 'Test' });
           done();
         });
       });

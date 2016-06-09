@@ -38,7 +38,7 @@ describe('Test api', function() {
     });
 
     describe('with code insee', function() {
-      it('should work for insee 94067', function(){
+      it('should work for insee 94067', function() {
         request(server)
             .get('/communes/?codeInsee=94067')
             .expect(200);
@@ -83,7 +83,7 @@ describe('Test api', function() {
     });
 
     describe('with format', function() {
-      it('should return geojson data', done =>{
+      it('should return geojson data', done => {
         request(server)
             .get('/communes/?codeInsee=94067&format=geojson')
             .expect(res => {
@@ -114,7 +114,7 @@ describe('Test api', function() {
     });
 
     describe('with code', function() {
-      it('should work for 75', function(){
+      it('should work for 75', function() {
         request(server)
             .get('/departements/?code=75')
             .expect(200);
@@ -148,7 +148,7 @@ describe('Test api', function() {
           .expect(res => {
             expect(res.body.length).to.equal(1);
             const departement = res.body[0];
-            expect(departement).to.eql({nom: 'Eure', code: '27', codeRegion: '28'});
+            expect(departement).to.eql({ nom: 'Eure', code: '27', codeRegion: '28' });
           })
           .end(done);
       });
