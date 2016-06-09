@@ -28,6 +28,16 @@ parameters:
       enum: ['nom','code','codeRegion']
     collectionFormat: csv
     default: ['nom','code','codeRegion']
+  regionFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum: ['nom','code']
+    collectionFormat: csv
+    default: ['nom','code']
   formatParam:
     name: format
     in: query
@@ -168,6 +178,59 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /regions:
+      get:
+        summary: Recherche des régions
+        tags:
+          - Régions
+        parameters:
+          - name: code
+            in: query
+            description: Code de la région
+            type: string
+          - name: nom
+            in: query
+            description: Nom de la région
+            type: string
+          - $ref: '#/parameters/regionFieldsParam'
+        responses:
+          200:
+            description: La ou les régions
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Region'
+          400:
+            description: Erreur. Requête mal formée
+            schema:
+              $ref: '#/definitions/Error'
+
+  /regions/{code}:
+    get:
+      summary: Récupérer les informations concernant une région
+      tags:
+        - Région
+      parameters:
+        - name: code
+          in: path
+          description: Code de la région
+          required: true
+          type: string
+        - $ref: '#/parameters/regionFieldsParam'
+      responses:
+        200:
+          description: Informations concernant la région
+          schema:
+            $ref: '#/definitions/Departement'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Région introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Error:
     type: object
@@ -219,3 +282,12 @@ definitions:
         description: Code de la région
         items:
           type: string
+  Region:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code de la région
+      nom:
+        type: string
+        description: Nom de la région
