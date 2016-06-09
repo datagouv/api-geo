@@ -59,19 +59,15 @@ app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (
 
 /* Departements */
 app.get('/departements', initDepartementFields, function (req, res) {
-  let result;
-
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
 
   if (query.nom) req.fields.add('_score');
 
-  if (Object.keys(query).length === 0) {
-    result = dbDepartements.getAll();
-  } else {
-    result = dbDepartements.search(query);
-  }
-
-  res.send(result.map(departement => formatDepartement(req, departement)));
+  res.send(
+    dbDepartements
+      .search(query)
+      .map(departement => formatDepartement(req, departement))
+  );
 });
 
 app.get('/departements/:code', initDepartementFields, function (req, res) {

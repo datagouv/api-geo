@@ -104,6 +104,11 @@ describe('departements', function () {
   });
 
   describe('search()', function () {
+    describe('No criteria', function () {
+      it('should return everything', function () {
+        expect(db.search()).to.eql([departement1, departement2, departement3]);
+      });
+    });
     describe('Simple matching criteria', function () {
       it('should return an array with 1 departement', function () {
         expect(db.search({ code: '11' })).to.eql([departement1]);
