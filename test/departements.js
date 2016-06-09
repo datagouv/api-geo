@@ -3,6 +3,15 @@ const expect = require('expect.js');
 const departements = require('../lib/departements');
 
 describe('departements', function () {
+  let db;
+  const departement1 = { nom: 'one', code: '11', codeRegion: '00' };
+  const departement2 = { nom: 'two', code: '22', codeRegion: '11' };
+  const departement3 = { nom: 'three', code: '33', codeRegion: '11' };
+
+  beforeEach(done => {
+    db = departements.getIndexedDb({ departements: [departement1, departement2, departement3] });
+    done();
+  });
 
   describe('getIndexedDb()', function () {
     describe('bad departements db path', function () {
@@ -12,11 +21,6 @@ describe('departements', function () {
     });
 
     describe('regionIndex', function () {
-      const db = departements.getIndexedDb({ departements: [
-        { nom: 'one', code: '11', codeRegion: '00' },
-        { nom: 'two', code: '22', codeRegion: '11' },
-        { nom: 'three', code: '33', codeRegion: '11' },
-      ]});
       describe('Unknown codeRegion', function () {
         it('should not match', function () {
           expect(db.regionIndex.has('22')).not.to.be.ok();
@@ -46,10 +50,6 @@ describe('departements', function () {
     });
 
     describe('inseeIndex', function () {
-      const departement1 = { nom: 'abc', code: '11', codeRegion: '00' };
-      const departement2 = { nom: 'def', code: '22', codeRegion: '00' };
-      const db = departements.getIndexedDb({ departements: [departement1, departement2] });
-
       describe('Unknown code', function () {
         it('should not match', function () {
           expect(db.inseeIndex.has('66')).not.to.be.ok();
@@ -64,8 +64,8 @@ describe('departements', function () {
         });
       });
       describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.inseeIndex.keys())).to.have.length(2);
+        it('should be equals to number of different values (3)', function () {
+          expect(Array.from(db.inseeIndex.keys())).to.have.length(3);
         });
       });
     });
@@ -73,11 +73,6 @@ describe('departements', function () {
   });
 
   describe('queryByCodeRegion()', function () {
-    const departement1 = { nom: 'one', code: '11', codeRegion: '00' };
-    const departement2 = { nom: 'two', code: '22', codeRegion: '11' };
-    const departement3 = { nom: 'three', code: '33', codeRegion: '11' };
-    const db = departements.getIndexedDb({ departements: [departement1, departement2, departement3] });
-
     describe('Unknown codeRegion', function () {
       it('should return an empty array', function () {
         expect(db.queryByCodeRegion('22')).to.eql([]);
@@ -96,10 +91,6 @@ describe('departements', function () {
   });
 
   describe('queryByCode()', function () {
-    const departement1 = { nom: 'abc', code: '11', codeRegion: '00' };
-    const departement2 = { nom: 'def', code: '22', codeRegion: '00' };
-    const db = departements.getIndexedDb({ departements: [departement1, departement2] });
-
     describe('Unknown code', function () {
       it('should return an empty array', function () {
         expect(db.queryByCode('00')).to.eql([]);
@@ -113,11 +104,6 @@ describe('departements', function () {
   });
 
   describe('search()', function () {
-    const departement1 = { nom: 'one', code: '11', codeRegion: '00' };
-    const departement2 = { nom: 'two', code: '22', codeRegion: '00' };
-    const departement3 = { nom: 'three', code: '33', codeRegion: '44' };
-    const db = departements.getIndexedDb({ departements: [departement1, departement2, departement3] });
-
     describe('Simple matching criteria', function () {
       it('should return an array with 1 departement', function () {
         expect(db.search({ code: '11' })).to.eql([departement1]);
@@ -125,17 +111,17 @@ describe('departements', function () {
     });
     describe('Disjoint criteria', function () {
       it('should return an empty array', function () {
-        expect(db.search({ code: '22', codeRegion: '11' })).to.eql([]);
+        expect(db.search({ code: '22', codeRegion: '00' })).to.eql([]);
       });
     });
     describe('Intersecting criteria (1 departement)', function () {
       it('should return an array with 1 departement', function () {
-        expect(db.search({ code: '33', codeRegion: '44' })).to.eql([departement3]);
+        expect(db.search({ code: '33', codeRegion: '11' })).to.eql([departement3]);
       });
     });
     describe('All criteria', function () {
       it('should return an array with 1 departement', function () {
-        expect(db.search({ nom: 'three', code: '33', codeRegion: '44' })).to.eql([departement3]);
+        expect(db.search({ nom: 'three', code: '33', codeRegion: '11' })).to.eql([departement3]);
       });
     });
   });
