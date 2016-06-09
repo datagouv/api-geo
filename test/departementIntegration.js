@@ -16,23 +16,23 @@ describe('#integration departements', () => {
         expect(ctx.departements).to.be.a(Map);
         expect(ctx.departements.size).to.be(0);
       });
-      it('should set ctx.getByCode function',
-        () => expect(ctx.getByCode).to.be.a(Function));
+      it('should set ctx.getDepartement function',
+        () => expect(ctx.getDepartement).to.be.a(Function));
     });
 
-    describe('getByCode()', () => {
+    describe('getDepartement()', () => {
       describe('New departement', () => {
         beforeEach(() => {
           expect(ctx.departements.size).to.be(0);
         });
         it('should return a departement with given code', () => {
-          const departement = ctx.getByCode('42');
+          const departement = ctx.getDepartement('42');
           expect(departement).to.be.an(Object);
           expect(departement).to.only.have.keys('code');
           expect(departement.code).to.be('42');
         });
         it('should store the departement', () => {
-          ctx.getByCode('21');
+          ctx.getDepartement('21');
           expect(ctx.departements.size).to.be(1);
           expect(ctx.departements.has('21')).to.be.ok();
           const departement = ctx.departements.get('21');
@@ -43,17 +43,17 @@ describe('#integration departements', () => {
 
       describe('Existing departement', () => {
         beforeEach(() => {
-          ctx.getByCode('11');
+          ctx.getDepartement('11');
           expect(ctx.departements.size).to.be(1);
         });
         it('should return a departement with given code', () => {
-          const departement = ctx.getByCode('11');
+          const departement = ctx.getDepartement('11');
           expect(departement).to.be.an(Object);
           expect(departement).to.only.have.keys('code');
           expect(departement.code).to.be('11');
         });
         it('should have no impact on storage', () => {
-          ctx.getByCode('11');
+          ctx.getDepartement('11');
           expect(ctx.departements.has('11')).to.be.ok();
           expect(ctx.departements.size).to.be(1);
         });
@@ -68,7 +68,7 @@ describe('#integration departements', () => {
       departement = { };
       ctx = {
         debug: () => {},
-        getByCode: code => {
+        getDepartement: code => {
           departement.code = code;
           return departement;
         },

@@ -18,23 +18,23 @@ describe('#integration communes', () => {
         expect(ctx.communes).to.be.a(Map);
         expect(ctx.communes.size).to.be(0);
       });
-      it('should set ctx.getByCodeInsee function',
-        () => expect(ctx.getByCodeInsee).to.be.a(Function));
+      it('should set ctx.getCommune function',
+        () => expect(ctx.getCommune).to.be.a(Function));
     });
 
-    describe('getByCodeInsee()', () => {
+    describe('getCommune()', () => {
       describe('New commune', () => {
         beforeEach(() => {
           expect(ctx.communes.size).to.be(0);
         });
         it('should return a commune with given codeInsee', () => {
-          const commune = ctx.getByCodeInsee('12345');
+          const commune = ctx.getCommune('12345');
           expect(commune).to.be.an(Object);
           expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
           expect(commune.codeInsee).to.be('12345');
         });
         it('should store the commune', () => {
-          ctx.getByCodeInsee('23456');
+          ctx.getCommune('23456');
           expect(ctx.communes.size).to.be(1);
           expect(ctx.communes.has('23456')).to.be.ok();
           const commune = ctx.communes.get('23456');
@@ -45,17 +45,17 @@ describe('#integration communes', () => {
 
       describe('Existing commune', () => {
         beforeEach(() => {
-          ctx.getByCodeInsee('11111');
+          ctx.getCommune('11111');
           expect(ctx.communes.size).to.be(1);
         });
         it('should return a commune with given codeInsee', () => {
-          const commune = ctx.getByCodeInsee('11111');
+          const commune = ctx.getCommune('11111');
           expect(commune).to.be.an(Object);
           expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
           expect(commune.codeInsee).to.be('11111');
         });
         it('should have no impact on storage', () => {
-          ctx.getByCodeInsee('11111');
+          ctx.getCommune('11111');
           expect(ctx.communes.has('11111')).to.be.ok();
           expect(ctx.communes.size).to.be(1);
         });
@@ -70,7 +70,7 @@ describe('#integration communes', () => {
       commune = { codesPostaux: new Set() };
       ctx = {
         debug: () => {},
-        getByCodeInsee: codeInsee => {
+        getCommune: codeInsee => {
           commune.codeInsee = codeInsee;
           return commune;
         },
@@ -101,7 +101,7 @@ describe('#integration communes', () => {
         const ctx = {
           communes: { has: () => true },
           debug: () => {},
-          getByCodeInsee: codeInsee => {
+          getCommune: codeInsee => {
             commune.codeInsee = codeInsee;
             return commune;
           },
@@ -140,7 +140,7 @@ describe('#integration communes', () => {
           const ctx = {
             debug: () => {},
             communes: { has: () => false },
-            getByCodeInsee: codeInsee => {
+            getCommune: codeInsee => {
               codes.push(codeInsee);
               return { codesPostaux: new Set() };
             },
