@@ -27,7 +27,7 @@ describe('departements', function () {
           expect(db.regionIndex.has('00')).to.be.ok();
         });
         it('should return 1 entry', function () {
-          expect(db.regionIndex.get('00').length).to.be(1);
+          expect(db.regionIndex.get('00')).to.have.length(1);
         });
       });
       describe('region with 2 departements', function () {
@@ -35,12 +35,12 @@ describe('departements', function () {
           expect(db.regionIndex.has('11')).to.be.ok();
         });
         it('should return 2 entries', function () {
-          expect(db.regionIndex.get('11').length).to.be(2);
+          expect(db.regionIndex.get('11')).to.have.length(2);
         });
       });
       describe('index size', function () {
         it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.regionIndex.keys()).length).to.be(2);
+          expect(Array.from(db.regionIndex.keys())).to.have.length(2);
         });
       });
     });
@@ -65,7 +65,7 @@ describe('departements', function () {
       });
       describe('index size', function () {
         it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.inseeIndex.keys()).length).to.be(2);
+          expect(Array.from(db.inseeIndex.keys())).to.have.length(2);
         });
       });
     });

@@ -28,7 +28,7 @@ describe('communes', function () {
           expect(db.cpIndex.has('00000')).to.be.ok();
         });
         it('should return 1 entry', function () {
-          expect(db.cpIndex.get('00000').length).to.be(1);
+          expect(db.cpIndex.get('00000')).to.have.length(1);
         });
       });
       describe('codePostal in 2 communes', function () {
@@ -36,12 +36,12 @@ describe('communes', function () {
           expect(db.cpIndex.has('11111')).to.be.ok();
         });
         it('should return 2 entries', function () {
-          expect(db.cpIndex.get('11111').length).to.be(2);
+          expect(db.cpIndex.get('11111')).to.have.length(2);
         });
       });
       describe('index size', function () {
         it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.cpIndex.keys()).length).to.be(2);
+          expect(Array.from(db.cpIndex.keys())).to.have.length(2);
         });
       });
     });
@@ -66,7 +66,7 @@ describe('communes', function () {
       });
       describe('index size', function () {
         it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.inseeIndex.keys()).length).to.be(2);
+          expect(Array.from(db.inseeIndex.keys())).to.have.length(2);
         });
       });
     });
