@@ -63,15 +63,15 @@ app.get('/departements', initDepartementFields, function (req, res) {
 
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
 
-  if (Object.keys(query).length === 0) {
-    return res.send(dbDepartements.departements);
-  }
-
   if (query.nom) req.fields.add('_score');
 
-  result = dbDepartements.search(query);
+  if (Object.keys(query).length === 0) {
+    result = dbDepartements.getAll();
+  } else {
+    result = dbDepartements.search(query);
+  }
 
-  res.send(result.map(commune => formatDepartement(req, commune)));
+  res.send(result.map(departement => formatDepartement(req, departement)));
 });
 
 app.get('/departements/:code', initDepartementFields, function (req, res) {
