@@ -2,13 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { initCommuneFields, initCommuneFormat, formatCommune } = require('./lib/communeHelpers');
-const db = require('./lib/communes').getIndexedDb();
+const { initDepartementFields, formatDepartement } = require('./lib/departementHelpers');
+const dbCommunes = require('./lib/communes').getIndexedDb();
+const dbDepartements = require('./lib/departements').getIndexedDb();
 const { pick } = require('lodash');
 
 const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 
+/* Communes */
 app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
 
@@ -33,7 +36,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
     return res.sendStatus(400);
   }
 
-  result = db.search(query);
+  result = dbCommunes.search(query);
 
   if (req.outputFormat === 'geojson') {
     res.send({
@@ -46,7 +49,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
 });
 
 app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (req, res) {
-  let commune = db.queryByCodeInsee(req.params.codeInsee)[0];
+  let commune = dbCommunes.queryByCodeInsee(req.params.codeInsee)[0];
   if (!commune) {
     res.sendStatus(404);
   } else {
@@ -54,6 +57,29 @@ app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (
   }
 });
 
+/* Departements */
+app.get('/departements', initDepartementFields, function (req, res) {
+  const query = pick(req.query, 'code', 'nom', 'codeRegion');
+
+  if (query.nom) req.fields.add('_score');
+
+  res.send(
+    dbDepartements
+      .search(query)
+      .map(departement => formatDepartement(req, departement))
+  );
+});
+
+app.get('/departements/:code', initDepartementFields, function (req, res) {
+  let departement = dbDepartements.queryByCode(req.params.code)[0];
+  if (!departement) {
+    res.sendStatus(404);
+  } else {
+    res.send(formatDepartement(req, departement));
+  }
+});
+
+/* Definition */
 app.get('/definition.yml', function (req, res) {
   res.sendFile(__dirname + '/definition.yml');
 });

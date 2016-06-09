@@ -18,6 +18,16 @@ parameters:
       enum: ['nom','codeInsee','codesPostaux','centre','surface', 'contour']
     collectionFormat: csv
     default: ['nom','codeInsee','codesPostaux','centre','surface']
+  departementFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum: ['nom','code','codeRegion']
+    collectionFormat: csv
+    default: ['nom','code','codeRegion']
   formatParam:
     name: format
     in: query
@@ -101,6 +111,63 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /departements:
+      get:
+        summary: Recherche des départements
+        tags:
+          - Département
+        parameters:
+          - name: code
+            in: query
+            description: Code du département
+            type: string
+          - name: codeRegion
+            in: query
+            description: Code région associé
+            type: string
+          - name: nom
+            in: query
+            description: Nom du département
+            type: string
+          - $ref: '#/parameters/departementFieldsParam'
+        responses:
+          200:
+            description: Le ou les départements
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Departement'
+          400:
+            description: Erreur. Requête mal formée
+            schema:
+              $ref: '#/definitions/Error'
+
+  /departements/{code}:
+    get:
+      summary: Récupérer les informations concernant un département
+      tags:
+        - Département
+      parameters:
+        - name: code
+          in: path
+          description: Code du département
+          required: true
+          type: string
+        - $ref: '#/parameters/departementFieldsParam'
+      responses:
+        200:
+          description: Informations concernant un département
+          schema:
+            $ref: '#/definitions/Departement'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Département introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Error:
     type: object
@@ -138,3 +205,17 @@ definitions:
       contour:
         type: object
         description: Contour de la commune (Polygon GeoJSON)
+  Departement:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code du département
+      nom:
+        type: string
+        description: Nom du département
+      codeRegion:
+        type: array
+        description: Code de la région
+        items:
+          type: string
