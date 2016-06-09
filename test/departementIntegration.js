@@ -99,7 +99,7 @@ describe('#integration departements', () => {
     });
 
     describe('One departement', () => {
-      const path = require.resolve('../data/test-serialize-departement.json');
+      const path = '../data/test-serialize-departement.json';
       it('should generate a JSON file with one departement inside', done => {
         const ctx = { debug: () => {}, departements: new Map([
           ['42', {
@@ -108,7 +108,7 @@ describe('#integration departements', () => {
             codeRegion: '24',
           }],
         ]) };
-        serialize({ destPath: path })(ctx, err => {
+        serialize({ destPath: __dirname + '/' + path })(ctx, err => {
           expect(err).to.be(undefined);
           const departements = require(path);
           expect(departements).to.have.length(1);
