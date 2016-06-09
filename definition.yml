@@ -136,7 +136,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/definitions/Commune'
+                $ref: '#/definitions/Departement'
           400:
             description: Erreur. Requête mal formée
             schema:
