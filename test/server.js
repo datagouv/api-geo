@@ -66,7 +66,7 @@ describe('Test api', function() {
         });
       });
 
-      it('should reply a commune containing a valid Feature', done => {
+      it('should reply a commune', done => {
         request(server)
           .get('/communes/?codeInsee=55001')
           .expect(res => {
@@ -134,7 +134,7 @@ describe('Test api', function() {
         });
       });
 
-      it('should reply a departement containing a valid Feature', done => {
+      it('should reply a departement', done => {
         request(server)
           .get('/departements/?code=27')
           .expect(res => {
