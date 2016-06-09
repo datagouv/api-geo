@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const expect = require('expect.js');
 const departements = require('../lib/departements');
+const { cloneDeep } = require('lodash');
 
 describe('departements', function () {
   let db;
@@ -9,7 +10,7 @@ describe('departements', function () {
   const departement3 = { nom: 'three', code: '33', codeRegion: '11' };
 
   beforeEach(done => {
-    db = departements.getIndexedDb({ departements: [departement1, departement2, departement3] });
+    db = departements.getIndexedDb({ departements: [departement1, departement2, departement3].map(cloneDeep) });
     done();
   });
 
@@ -60,7 +61,7 @@ describe('departements', function () {
           expect(db.inseeIndex.has('11')).to.be.ok();
         });
         it('should return 1 entry', function () {
-          expect(db.inseeIndex.get('11')).to.be(departement1);
+          expect(db.inseeIndex.get('11')).to.eql(departement1);
         });
       });
       describe('index size', function () {
@@ -126,7 +127,9 @@ describe('departements', function () {
     });
     describe('All criteria', function () {
       it('should return an array with 1 departement', function () {
-        expect(db.search({ nom: 'three', code: '33', codeRegion: '11' })).to.eql([departement3]);
+        expect(db.search({ nom: 'three', code: '33', codeRegion: '11' })).to.eql([
+          { nom: 'three', code: '33', codeRegion: '11', _score: 1 },
+        ]);
       });
     });
   });
