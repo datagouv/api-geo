@@ -32,10 +32,10 @@ describe('departementHelpers', function () {
       );
     });
 
-    it('`nom`, `code` and `codeRegion` should always be present', function (done) {
+    it('`nom` and `code` should always be present', function (done) {
       runTestCase(
-        { query: { fields: 'codeRegion' } },
-        ['nom', 'code', 'codeRegion'],
+        { query: { fields: 'nom' } },
+        ['nom', 'code'],
         done
       );
     });
