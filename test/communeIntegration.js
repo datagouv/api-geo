@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const { init, loadCommunes, loadCodePostaux, serialize } = require('../lib/integration/communes');
+const { init, loadGeometries, loadCodePostaux, serialize } = require('../lib/integration/communes');
 const pipeline = require('../lib/integration/pipeline');
 const expect = require('expect.js');
 
@@ -63,7 +63,7 @@ describe('#integration communes', () => {
     });
   });
 
-  describe('loadCommunes()', () => {
+  describe('loadGeometries()', () => {
     let ctx;
     let commune;
     beforeEach(() => {
@@ -79,7 +79,7 @@ describe('#integration communes', () => {
 
     describe('Processing a file containing 1 commune', () => {
       it('should store 1 commune', done => {
-        loadCommunes({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
+        loadGeometries({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
           expect(err).to.be(undefined);
           expect(commune).to.only.have.keys('codeInsee', 'codesPostaux', 'surface', 'centre', 'contour', 'nom');
           expect(commune.codeInsee).to.be('11220');
