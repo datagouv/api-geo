@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const { init, loadCommunes, loadCodePostaux, serialize } = require('../lib/integration');
+const { init, loadCommunes, loadCodePostaux, serialize } = require('../lib/integration/communes');
 const pipeline = require('../lib/integration/pipeline');
 const expect = require('expect.js');
 
