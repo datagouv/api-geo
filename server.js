@@ -17,7 +17,7 @@ app.use(morgan('dev'));
 app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
 
-  const query = pick(req.query, 'codeInsee', 'codePostal', 'nom');
+  const query = pick(req.query, 'code', 'codePostal', 'nom');
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);
@@ -50,8 +50,8 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   }
 });
 
-app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (req, res) {
-  let commune = dbCommunes.queryByCodeInsee(req.params.codeInsee)[0];
+app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, res) {
+  let commune = dbCommunes.queryBycode(req.params.code)[0];
   if (!commune) {
     res.sendStatus(404);
   } else {

@@ -27,19 +27,19 @@ describe('#integration communes', () => {
         beforeEach(() => {
           expect(ctx.communes.size).to.be(0);
         });
-        it('should return a commune with given codeInsee', () => {
+        it('should return a commune with given code', () => {
           const commune = ctx.getCommune('12345');
           expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('12345');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('12345');
         });
         it('should store the commune', () => {
           ctx.getCommune('23456');
           expect(ctx.communes.size).to.be(1);
           expect(ctx.communes.has('23456')).to.be.ok();
           const commune = ctx.communes.get('23456');
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('23456');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('23456');
         });
       });
 
@@ -48,11 +48,11 @@ describe('#integration communes', () => {
           ctx.getCommune('11111');
           expect(ctx.communes.size).to.be(1);
         });
-        it('should return a commune with given codeInsee', () => {
+        it('should return a commune with given code', () => {
           const commune = ctx.getCommune('11111');
           expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('11111');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('11111');
         });
         it('should have no impact on storage', () => {
           ctx.getCommune('11111');
@@ -70,8 +70,8 @@ describe('#integration communes', () => {
       commune = { codesPostaux: new Set() };
       ctx = {
         debug: () => {},
-        getCommune: codeInsee => {
-          commune.codeInsee = codeInsee;
+        getCommune: code => {
+          commune.code = code;
           return commune;
         },
       };
@@ -81,8 +81,8 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadGeometries({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux', 'surface', 'centre', 'contour', 'nom');
-          expect(commune.codeInsee).to.be('11220');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'surface', 'centre', 'contour', 'nom');
+          expect(commune.code).to.be('11220');
           expect(commune.nom).to.be('Marseillette');
           expect(commune.surface).to.be(801);
           expect(commune.codesPostaux.size).to.be(0);
@@ -126,15 +126,15 @@ describe('#integration communes', () => {
         const ctx = {
           communes: { has: () => true },
           debug: () => {},
-          getCommune: codeInsee => {
-            commune.codeInsee = codeInsee;
+          getCommune: code => {
+            commune.code = code;
             return commune;
           },
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('11220');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('11220');
           expect(Array.from(commune.codesPostaux)).to.eql(['11800']);
           done();
         });
@@ -165,8 +165,8 @@ describe('#integration communes', () => {
           const ctx = {
             debug: () => {},
             communes: { has: () => false },
-            getCommune: codeInsee => {
-              codes.push(codeInsee);
+            getCommune: code => {
+              codes.push(code);
               return { codesPostaux: new Set() };
             },
           };
@@ -209,7 +209,7 @@ describe('#integration communes', () => {
       it('should generate a JSON file with one commune inside', done => {
         const ctx = { debug: () => {}, communes: new Map([
           ['12345', {
-            codeInsee: '12345',
+            code: '12345',
             nom: 'Ville-sur-Loire',
             codesPostaux: new Set(['11111', '22222']),
           }],
@@ -219,7 +219,7 @@ describe('#integration communes', () => {
           const communes = require('../data/test-serialize-commune.json');
           expect(communes).to.have.length(1);
           expect(communes[0]).to.eql({
-            codeInsee: '12345',
+            code: '12345',
             nom: 'Ville-sur-Loire',
             codesPostaux: ['11111', '22222'],
           });

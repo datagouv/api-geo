@@ -40,7 +40,7 @@ describe('Test api', function() {
     describe('with code insee', function() {
       it('should work for insee 94067', function() {
         request(server)
-            .get('/communes/?codeInsee=94067')
+            .get('/communes/?code=94067')
             .expect(200);
       });
 
@@ -68,12 +68,12 @@ describe('Test api', function() {
 
       it('should reply a commune', done => {
         request(server)
-          .get('/communes/?codeInsee=55001')
+          .get('/communes/?code=55001')
           .expect(res => {
             expect(res.body.length).to.equal(1);
             const commune = res.body[0];
             expect(commune.nom).to.equal('Abainville');
-            expect(commune.codeInsee).to.equal('55001');
+            expect(commune.code).to.equal('55001');
             expect(commune.codesPostaux).to.eql(['55130']);
             expect(commune.surface).to.equal(1367);
             expect(commune.centre).to.exist;
@@ -85,7 +85,7 @@ describe('Test api', function() {
     describe('with format', function() {
       it('should return geojson data', done => {
         request(server)
-            .get('/communes/?codeInsee=94067&format=geojson')
+            .get('/communes/?code=94067&format=geojson')
             .expect(res => {
               const commune = res.body;
               expect(commune.FeatureCollection).to.exist;

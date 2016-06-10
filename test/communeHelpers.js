@@ -18,23 +18,23 @@ describe('communeHelpers', function () {
     it('empty request should return default fields', function (done) {
       runTestCase(
         {},
-        ['nom', 'codeInsee', 'codesPostaux', 'centre', 'surface'],
+        ['nom', 'code', 'codesPostaux', 'centre', 'surface'],
         done
       );
     });
 
     it('fields should be read from query', function (done) {
       runTestCase(
-        { query: { fields: 'nom,codeInsee,centre' } },
-        ['nom', 'codeInsee', 'centre'],
+        { query: { fields: 'nom,code,centre' } },
+        ['nom', 'code', 'centre'],
         done
       );
     });
 
-    it('`nom` and `codeInsee` should always be present', function (done) {
+    it('`nom` and `code` should always be present', function (done) {
       runTestCase(
         { query: { fields: 'contour' } },
-        ['nom', 'codeInsee', 'contour'],
+        ['nom', 'code', 'contour'],
         done
       );
     });
@@ -62,23 +62,23 @@ describe('communeHelpers', function () {
     });
 
     it('`contour` and `centre` should be removed from fields when in `geojson`', function (done) {
-      const req = { query: { format: 'geojson' }, fields: new Set(['codeInsee', 'centre', 'contour']) };
+      const req = { query: { format: 'geojson' }, fields: new Set(['code', 'centre', 'contour']) };
       initCommuneFormat(req, undefined, function (err) {
         expect(err).to.be(undefined);
         expect(req.outputFormat).to.be('geojson');
         expect(req.fields).to.be.a(Set);
-        expect(Array.from(req.fields).sort()).to.eql(['codeInsee'].sort());
+        expect(Array.from(req.fields).sort()).to.eql(['code'].sort());
         done();
       });
     });
 
     it('`contour` and `centre` should be kept in fields when in `json`', function (done) {
-      const req = { query: { format: 'json' }, fields: new Set(['codeInsee', 'centre', 'contour']) };
+      const req = { query: { format: 'json' }, fields: new Set(['code', 'centre', 'contour']) };
       initCommuneFormat(req, undefined, function (err) {
         expect(err).to.be(undefined);
         expect(req.outputFormat).to.be('json');
         expect(req.fields).to.be.a(Set);
-        expect(Array.from(req.fields).sort()).to.eql(['codeInsee', 'centre', 'contour'].sort());
+        expect(Array.from(req.fields).sort()).to.eql(['code', 'centre', 'contour'].sort());
         done();
       });
     });
