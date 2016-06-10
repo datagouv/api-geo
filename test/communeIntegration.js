@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const { init, loadGeometries, loadCodePostaux, serialize } = require('../lib/integration/communes');
+const { init, loadGeometries, loadCommunes, loadCodePostaux, serialize } = require('../lib/integration/communes');
 const pipeline = require('../lib/integration/pipeline');
 const expect = require('expect.js');
 
@@ -88,6 +88,31 @@ describe('#integration communes', () => {
           expect(commune.codesPostaux.size).to.be(0);
           expect(commune.centre.type).to.be('Point');
           expect(commune.contour.type).to.be('Polygon');
+          done();
+        });
+      });
+    });
+  });
+
+  describe('loadCommunes()', () => {
+    let ctx;
+    let commune;
+    beforeEach(() => {
+      commune = { };
+      ctx = {
+        debug: () => {},
+        getCommune: code => {
+          commune.code = code;
+          return commune;
+        },
+      };
+    });
+
+    describe('Processing a file containing 1 commune', () => {
+      it('should store 1 commune', done => {
+        loadCommunes({ srcPath: __dirname + '/integration-data/communes.tsv' })(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(commune).to.eql({ code: '01001', codeDepartement: '01', codeRegion: '84',nom: 'Abergement-Clémenciat' });
           done();
         });
       });
