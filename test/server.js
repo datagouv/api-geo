@@ -140,17 +140,61 @@ describe('Test api', function() {
               })
               .end(done);
         });
+        it('should reply a departement', done => {
+          request(server)
+            .get('/departements/?code=27')
+            .expect(res => {
+              expect(res.body.length).to.equal(1);
+              const departement = res.body[0];
+              expect(departement).to.eql({ nom: 'Eure', code: '27', codeRegion: '28' });
+            })
+            .end(done);
+        });
       });
+    });
+  });
 
+  /* Régions */
+  describe('Regions', function() {
+    describe('with no input', function() {
+      it('should reply with 200', done => {
+        request(server)
+            .get('/regions')
+            .expect(200, done);
+      });
+      it('should reply all 18 regions', done => {
+        request(server)
+            .get('/regions')
+            .expect(res => {
+              expect(res.body.length).to.equal(18);
+            })
+            .end(done);
+      });
+    });
+
+    describe('with code', function() {
+      it('should work for 28', function() {
+        request(server)
+            .get('/regions/?code=28')
+            .expect(200);
+      });
       it('should reply a departement', done => {
         request(server)
-          .get('/departements/?code=27')
+          .get('/regions/?code=28')
           .expect(res => {
             expect(res.body.length).to.equal(1);
             const departement = res.body[0];
-            expect(departement).to.eql({ nom: 'Eure', code: '27', codeRegion: '28' });
+            expect(departement).to.eql({ nom: 'Normandie', code: '28' });
           })
           .end(done);
+      });
+    });
+
+    describe('with name', function() {
+      it('should work for Normandie', done => {
+        request(server)
+            .get('/regions/?nom=normandie')
+            .expect(200, done);
       });
     });
   });

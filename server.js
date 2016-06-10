@@ -3,8 +3,10 @@ const cors = require('cors');
 const morgan = require('morgan');
 const { initCommuneFields, initCommuneFormat, formatCommune } = require('./lib/communeHelpers');
 const { initDepartementFields, formatDepartement } = require('./lib/departementHelpers');
+const { initRegionFields, formatRegion } = require('./lib/regionHelpers');
 const dbCommunes = require('./lib/communes').getIndexedDb();
 const dbDepartements = require('./lib/departements').getIndexedDb();
+const dbRegions = require('./lib/regions').getIndexedDb();
 const { pick } = require('lodash');
 
 const app = express();
@@ -57,7 +59,7 @@ app.get('/communes/:codeInsee', initCommuneFields, initCommuneFormat, function (
   }
 });
 
-/* Departements */
+/* Départements */
 app.get('/departements', initDepartementFields, function (req, res) {
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
 
@@ -76,6 +78,28 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
     res.sendStatus(404);
   } else {
     res.send(formatDepartement(req, departement));
+  }
+});
+
+/* Régions */
+app.get('/regions', initRegionFields, function (req, res) {
+  const query = pick(req.query, 'code', 'nom', 'codeRegion');
+
+  if (query.nom) req.fields.add('_score');
+
+  res.send(
+    dbRegions
+      .search(query)
+      .map(departement => formatRegion(req, departement))
+  );
+});
+
+app.get('/regions/:code', initRegionFields, function (req, res) {
+  let departement = dbRegions.queryByCode(req.params.code)[0];
+  if (!departement) {
+    res.sendStatus(404);
+  } else {
+    res.send(formatRegion(req, departement));
   }
 });
 
