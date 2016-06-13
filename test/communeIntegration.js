@@ -295,23 +295,6 @@ describe('#integration communes', () => {
             nom: 'Ville-sur-Loire',
             codeDepartement: '11',
             contour: { type: 'Polygon', coordinates: [[Object]] },
-          }],
-        ]) };
-        expect(ctx.communes.size).to.be(1);
-        checkCommunes()(ctx, err => {
-          expect(err).to.be(undefined);
-          expect(ctx.communes.size).to.be(0);
-          done();
-        });
-      });
-
-      it('should delete commune', done => {
-        const ctx = { debug: () => {}, communes: new Map([
-          ['12345', {
-            code: '12345',
-            nom: 'Ville-sur-Loire',
-            codeDepartement: '11',
-            contour: { type: 'Polygon', coordinates: [[Object]] },
             codesPostaux: new Set([]),
           }],
         ]) };
