@@ -236,7 +236,7 @@ describe('#integration communes', () => {
             code: '12345',
             nom: 'Ville-sur-Loire',
             codeDepartement: '11',
-            contour: ['1', '2', '3'],
+            contour: { type: 'Polygon', coordinates: [[Object]] },
             codesPostaux: new Set(['11111', '22222']),
           }],
         ]) };
@@ -274,7 +274,7 @@ describe('#integration communes', () => {
           ['12345', {
             code: '12345',
             nom: 'Ville-sur-Loire',
-            contour: ['1', '2', '3'],
+            contour: { type: 'Polygon', coordinates: [[Object]] },
             codesPostaux: new Set(['11111', '22222']),
           }],
         ]) };
@@ -294,7 +294,25 @@ describe('#integration communes', () => {
             code: '12345',
             nom: 'Ville-sur-Loire',
             codeDepartement: '11',
-            contour: ['1', '2', '3'],
+            contour: { type: 'Polygon', coordinates: [[Object]] },
+          }],
+        ]) };
+        expect(ctx.communes.size).to.be(1);
+        checkCommunes()(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(ctx.communes.size).to.be(0);
+          done();
+        });
+      });
+
+      it('should delete commune', done => {
+        const ctx = { debug: () => {}, communes: new Map([
+          ['12345', {
+            code: '12345',
+            nom: 'Ville-sur-Loire',
+            codeDepartement: '11',
+            contour: { type: 'Polygon', coordinates: [[Object]] },
+            codesPostaux: new Set([]),
           }],
         ]) };
         expect(ctx.communes.size).to.be(1);
