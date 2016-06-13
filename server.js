@@ -51,7 +51,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
 });
 
 app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, res) {
-  let commune = dbCommunes.queryBycode(req.params.code)[0];
+  let commune = dbCommunes.queryByCode(req.params.code)[0];
   if (!commune) {
     res.sendStatus(404);
   } else {

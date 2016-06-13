@@ -96,19 +96,19 @@ describe('communes', function () {
     });
   });
 
-  describe('queryBycode()', function () {
+  describe('queryByCode()', function () {
     const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
     const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
     const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
 
     describe('Unknown code', function () {
       it('should return an empty array', function () {
-        expect(db.queryBycode('11111')).to.eql([]);
+        expect(db.queryByCode('11111')).to.eql([]);
       });
     });
     describe('Known code', function () {
       it('should return an array with 1 commune', function () {
-        expect(db.queryBycode('12345')).to.eql([commune1]);
+        expect(db.queryByCode('12345')).to.eql([commune1]);
       });
     });
   });
