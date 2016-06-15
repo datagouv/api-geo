@@ -1,6 +1,5 @@
 /* eslint-env mocha */
-const { init, loadCommunes, loadCodePostaux, serialize } = require('../lib/integration');
-const pipeline = require('../lib/integration/pipeline');
+const { init, loadGeometries, loadCommunes, loadCodePostaux, serialize, checkCommunes } = require('../lib/integration/communes');
 const expect = require('expect.js');
 
 
@@ -22,37 +21,61 @@ describe('#integration communes', () => {
         () => expect(ctx.getCommune).to.be.a(Function));
     });
 
-    describe('getCommune()', () => {
+    describe('createCommune()', () => {
       describe('New commune', () => {
         beforeEach(() => {
           expect(ctx.communes.size).to.be(0);
         });
-        it('should return a commune with given codeInsee', () => {
-          const commune = ctx.getCommune('12345');
+        it('should return a commune with given code', () => {
+          const commune = ctx.createCommune('12345');
           expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('12345');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('12345');
         });
         it('should store the commune', () => {
-          ctx.getCommune('23456');
+          ctx.createCommune('23456');
           expect(ctx.communes.size).to.be(1);
           expect(ctx.communes.has('23456')).to.be.ok();
           const commune = ctx.communes.get('23456');
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('23456');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('23456');
         });
       });
 
       describe('Existing commune', () => {
-        beforeEach(() => {
-          ctx.getCommune('11111');
+        beforeEach(() => ctx.communes.set('99999', {}));
+
+        it('should throw an exception', () => {
+          expect(() => ctx.createCommune('99999')).to.throwError();
+        });
+        it('should have no impact on storage', () => {
+          try {
+            ctx.createCommune('99999');
+          } catch (err) {
+            // Do nothing
+          }
+          expect(ctx.communes.has('99999')).to.be.ok();
           expect(ctx.communes.size).to.be(1);
         });
-        it('should return a commune with given codeInsee', () => {
+      });
+    });
+
+    describe('getCommune()', () => {
+      describe('Unknown commune', () => {
+        it('should throw an exception', () => {
+          expect(ctx.communes.size).to.be(0);
+          expect(() => ctx.getCommune('99999')).to.throwError();
+        });
+      });
+
+      describe('Known commune', () => {
+        beforeEach(() => {
+          ctx.communes.set('11111', 'tralala');
+          expect(ctx.communes.size).to.be(1);
+        });
+        it('should return the commune', () => {
           const commune = ctx.getCommune('11111');
-          expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('11111');
+          expect(commune).to.be('tralala');
         });
         it('should have no impact on storage', () => {
           ctx.getCommune('11111');
@@ -63,15 +86,16 @@ describe('#integration communes', () => {
     });
   });
 
-  describe('loadCommunes()', () => {
+  describe('loadGeometries()', () => {
     let ctx;
     let commune;
     beforeEach(() => {
       commune = { codesPostaux: new Set() };
       ctx = {
         debug: () => {},
-        getCommune: codeInsee => {
-          commune.codeInsee = codeInsee;
+        hasCommune: () => true,
+        getCommune: code => {
+          commune.code = code;
           return commune;
         },
       };
@@ -79,15 +103,40 @@ describe('#integration communes', () => {
 
     describe('Processing a file containing 1 commune', () => {
       it('should store 1 commune', done => {
-        loadCommunes({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
+        loadGeometries({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux', 'surface', 'centre', 'contour', 'nom');
-          expect(commune.codeInsee).to.be('11220');
-          expect(commune.nom).to.be('Marseillette');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'surface', 'centre', 'contour');
+          expect(commune.code).to.be('11220');
           expect(commune.surface).to.be(801);
           expect(commune.codesPostaux.size).to.be(0);
           expect(commune.centre.type).to.be('Point');
           expect(commune.contour.type).to.be('Polygon');
+          done();
+        });
+      });
+    });
+  });
+
+  describe('loadCommunes()', () => {
+    let ctx;
+    let commune;
+    beforeEach(() => {
+      commune = {};
+      ctx = {
+        debug: () => {},
+        hasCommune: () => false,
+        createCommune: code => {
+          commune.code = code;
+          return commune;
+        },
+      };
+    });
+
+    describe('Processing a file containing 1 commune', () => {
+      it('should store 1 commune', done => {
+        loadCommunes({ srcPath: __dirname + '/integration-data/communes.tsv' })(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(commune).to.eql({ code: '01001', codeDepartement: '01', codeRegion: '84',nom: 'Abergement-Clémenciat' });
           done();
         });
       });
@@ -101,15 +150,16 @@ describe('#integration communes', () => {
         const ctx = {
           communes: { has: () => true },
           debug: () => {},
-          getCommune: codeInsee => {
-            commune.codeInsee = codeInsee;
+          hasCommune: () => true,
+          getCommune: code => {
+            commune.code = code;
             return commune;
           },
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.only.have.keys('codeInsee', 'codesPostaux');
-          expect(commune.codeInsee).to.be('11220');
+          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune.code).to.be('11220');
           expect(Array.from(commune.codesPostaux)).to.eql(['11800']);
           done();
         });
@@ -139,9 +189,9 @@ describe('#integration communes', () => {
           const codes = [];
           const ctx = {
             debug: () => {},
-            communes: { has: () => false },
-            getCommune: codeInsee => {
-              codes.push(codeInsee);
+            hasCommune: () => false,
+            getCommune: code => {
+              codes.push(code);
               return { codesPostaux: new Set() };
             },
           };
@@ -158,7 +208,7 @@ describe('#integration communes', () => {
       it('entry should be ignored', done => {
         const ctx = {
           debug: () => {},
-          communes: { has: () => false },
+          hasCommune: () => false,
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/unknown-cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
@@ -184,7 +234,7 @@ describe('#integration communes', () => {
       it('should generate a JSON file with one commune inside', done => {
         const ctx = { debug: () => {}, communes: new Map([
           ['12345', {
-            codeInsee: '12345',
+            code: '12345',
             nom: 'Ville-sur-Loire',
             codesPostaux: new Set(['11111', '22222']),
           }],
@@ -194,7 +244,7 @@ describe('#integration communes', () => {
           const communes = require('../data/test-serialize-commune.json');
           expect(communes).to.have.length(1);
           expect(communes[0]).to.eql({
-            codeInsee: '12345',
+            code: '12345',
             nom: 'Ville-sur-Loire',
             codesPostaux: ['11111', '22222'],
           });
@@ -203,52 +253,84 @@ describe('#integration communes', () => {
       });
     });
   });
-});
 
-describe('#pipeline', () => {
-  describe('Empty pipeline', () => {
-    it('should just call the callback', done => {
-      pipeline([], done);
-    });
-  });
-  describe('One stage pipeline', () => {
-    it('context should be present', done => {
-      pipeline([(ctx, next) => {
-        expect(ctx).to.only.have.keys('debug');
-        next();
-      }], done);
-    });
-  });
-  describe('Two stage pipeline', () => {
-    it('should pass in each stage', done => {
-      let passedStages = 0;
-      pipeline([
-        (ctx, next) => {
-          passedStages++;
-          next();
-        },
-        (ctx, next) => {
-          passedStages++;
-          next();
-        },
-      ], err => {
-        expect(err).not.to.be.ok();
-        expect(passedStages).to.be(2);
-        done();
+  describe('checkCommunes()', () => {
+    describe('No arguments missing', () => {
+      it('should keep commune', done => {
+        const ctx = { debug: () => {}, communes: new Map([
+          ['12345', {
+            code: '12345',
+            nom: 'Ville-sur-Loire',
+            codeDepartement: '11',
+            contour: { type: 'Polygon', coordinates: [[Object]] },
+            codesPostaux: new Set(['11111', '22222']),
+          }],
+        ]) };
+        expect(ctx.communes.size).to.be(1);
+        checkCommunes()(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(ctx.communes.size).to.be(1);
+          done();
+        });
       });
     });
-    it('context should be the same object', done => {
-      let firstCtx;
-      pipeline([
-        (ctx, next) => {
-          firstCtx = ctx;
-          next();
-        },
-        (ctx, next) => {
-          expect(ctx).to.be(firstCtx);
-          next();
-        },
-      ], done);
+
+    describe('No contour', () => {
+      it('should delete commune', done => {
+        const ctx = { debug: () => {}, communes: new Map([
+          ['12345', {
+            code: '12345',
+            nom: 'Ville-sur-Loire',
+            codeDepartement: '11',
+            codesPostaux: new Set(['11111', '22222']),
+          }],
+        ]) };
+        expect(ctx.communes.size).to.be(1);
+        checkCommunes()(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(ctx.communes.size).to.be(0);
+          done();
+        });
+      });
+    });
+
+    describe('No codeDepartement', () => {
+      it('should delete commune', done => {
+        const ctx = { debug: () => {}, communes: new Map([
+          ['12345', {
+            code: '12345',
+            nom: 'Ville-sur-Loire',
+            contour: { type: 'Polygon', coordinates: [[Object]] },
+            codesPostaux: new Set(['11111', '22222']),
+          }],
+        ]) };
+        expect(ctx.communes.size).to.be(1);
+        checkCommunes()(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(ctx.communes.size).to.be(0);
+          done();
+        });
+      });
+    });
+
+    describe('No codesPostaux', () => {
+      it('should delete commune', done => {
+        const ctx = { debug: () => {}, communes: new Map([
+          ['12345', {
+            code: '12345',
+            nom: 'Ville-sur-Loire',
+            codeDepartement: '11',
+            contour: { type: 'Polygon', coordinates: [[Object]] },
+            codesPostaux: new Set([]),
+          }],
+        ]) };
+        expect(ctx.communes.size).to.be(1);
+        checkCommunes()(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(ctx.communes.size).to.be(0);
+          done();
+        });
+      });
     });
   });
 });

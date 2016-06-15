@@ -15,9 +15,9 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','codeInsee','codesPostaux','centre','surface', 'contour']
+      enum: ['nom','code','codesPostaux','centre','surface', 'contour']
     collectionFormat: csv
-    default: ['nom','codeInsee','codesPostaux','centre','surface']
+    default: ['nom','code','codesPostaux','centre','surface']
   departementFieldsParam:
     name: fields
     in: query
@@ -93,13 +93,13 @@ paths:
             $ref: '#/definitions/Error'
 
 
-  /communes/{codeInsee}:
+  /communes/{code}:
     get:
       summary: Récupérer les informations concernant une commune
       tags:
         - Communes
       parameters:
-        - name: codeInsee
+        - name: code
           in: path
           description: Code INSEE de la commune
           required: true
@@ -247,7 +247,7 @@ definitions:
   Commune:
     type: object
     properties:
-      codeInsee:
+      code:
         type: string
         description: Code INSEE de la commune
       nom:
