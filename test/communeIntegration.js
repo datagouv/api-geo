@@ -21,19 +21,19 @@ describe('#integration communes', () => {
         () => expect(ctx.getCommune).to.be.a(Function));
     });
 
-    describe('getCommune()', () => {
+    describe('createCommune()', () => {
       describe('New commune', () => {
         beforeEach(() => {
           expect(ctx.communes.size).to.be(0);
         });
         it('should return a commune with given code', () => {
-          const commune = ctx.getCommune('12345');
+          const commune = ctx.createCommune('12345');
           expect(commune).to.be.an(Object);
           expect(commune).to.only.have.keys('code', 'codesPostaux');
           expect(commune.code).to.be('12345');
         });
         it('should store the commune', () => {
-          ctx.getCommune('23456');
+          ctx.createCommune('23456');
           expect(ctx.communes.size).to.be(1);
           expect(ctx.communes.has('23456')).to.be.ok();
           const commune = ctx.communes.get('23456');
@@ -43,15 +43,39 @@ describe('#integration communes', () => {
       });
 
       describe('Existing commune', () => {
-        beforeEach(() => {
-          ctx.getCommune('11111');
+        beforeEach(() => ctx.communes.set('99999', {}));
+
+        it('should throw an exception', () => {
+          expect(() => ctx.createCommune('99999')).to.throwError();
+        });
+        it('should have no impact on storage', () => {
+          try {
+            ctx.createCommune('99999');
+          } catch (err) {
+            // Do nothing
+          }
+          expect(ctx.communes.has('99999')).to.be.ok();
           expect(ctx.communes.size).to.be(1);
         });
-        it('should return a commune with given code', () => {
+      });
+    });
+
+    describe('getCommune()', () => {
+      describe('Unknown commune', () => {
+        it('should throw an exception', () => {
+          expect(ctx.communes.size).to.be(0);
+          expect(() => ctx.getCommune('99999')).to.throwError();
+        });
+      });
+
+      describe('Known commune', () => {
+        beforeEach(() => {
+          ctx.communes.set('11111', 'tralala');
+          expect(ctx.communes.size).to.be(1);
+        });
+        it('should return the commune', () => {
           const commune = ctx.getCommune('11111');
-          expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('code', 'codesPostaux');
-          expect(commune.code).to.be('11111');
+          expect(commune).to.be('tralala');
         });
         it('should have no impact on storage', () => {
           ctx.getCommune('11111');
@@ -69,6 +93,7 @@ describe('#integration communes', () => {
       commune = { codesPostaux: new Set() };
       ctx = {
         debug: () => {},
+        hasCommune: () => true,
         getCommune: code => {
           commune.code = code;
           return commune;
@@ -80,9 +105,8 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadGeometries({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.only.have.keys('code', 'codesPostaux', 'surface', 'centre', 'contour', 'nom');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'surface', 'centre', 'contour');
           expect(commune.code).to.be('11220');
-          expect(commune.nom).to.be('Marseillette');
           expect(commune.surface).to.be(801);
           expect(commune.codesPostaux.size).to.be(0);
           expect(commune.centre.type).to.be('Point');
@@ -97,10 +121,11 @@ describe('#integration communes', () => {
     let ctx;
     let commune;
     beforeEach(() => {
-      commune = { };
+      commune = {};
       ctx = {
         debug: () => {},
-        getCommune: code => {
+        hasCommune: () => false,
+        createCommune: code => {
           commune.code = code;
           return commune;
         },
@@ -125,6 +150,7 @@ describe('#integration communes', () => {
         const ctx = {
           communes: { has: () => true },
           debug: () => {},
+          hasCommune: () => true,
           getCommune: code => {
             commune.code = code;
             return commune;
@@ -163,7 +189,7 @@ describe('#integration communes', () => {
           const codes = [];
           const ctx = {
             debug: () => {},
-            communes: { has: () => false },
+            hasCommune: () => false,
             getCommune: code => {
               codes.push(code);
               return { codesPostaux: new Set() };
@@ -182,7 +208,7 @@ describe('#integration communes', () => {
       it('entry should be ignored', done => {
         const ctx = {
           debug: () => {},
-          communes: { has: () => false },
+          hasCommune: () => false,
         };
         loadCodePostaux({ srcPath: __dirname + '/integration-data/unknown-cp.json' })(ctx, err => {
           expect(err).to.be(undefined);
