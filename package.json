@@ -21,7 +21,9 @@
     "rbush": "^1.4.3",
     "stream-array": "^1.1.2",
     "through2": "^2.0.1",
-    "turf-centroid": "^3.0.5"
+    "turf-centroid": "^3.0.5",
+    "turf-feature": "^1.0.0",
+    "turf-union": "^3.0.1"
   },
   "devDependencies": {
     "benchmark": "^2.1.0",
