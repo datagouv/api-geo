@@ -9,7 +9,7 @@
   <title>API Communes</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css"></link>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/default.min.css"></link>
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"></link>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"></link>
 </head>
 
 <body>
@@ -219,7 +219,7 @@
 
 </div>
 
-<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
@@ -233,7 +233,7 @@ function getLocation() {
 function initMap() {
     var options = {center : new L.LatLng(46.921982, 2.978952), zoom : 5 };
 
-    var osmUrl = 'http://tilecache.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+    var osmUrl = 'https://tilecache.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
                 osmAttribution = 'Map data &copy; 2012 OpenStreetMap contributors',
                 osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
 
