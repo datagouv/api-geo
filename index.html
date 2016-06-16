@@ -9,6 +9,7 @@
   <title>API Communes</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css"></link>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/default.min.css"></link>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"></link>
 </head>
 
 <body>
@@ -189,7 +190,93 @@
     <div class="one wide column"></div>
   </div>
 
+  <h1 class="ui horizontal divider"> Essayer moi </h1>
+<div class="ui aligned segment">
+<div class="ui two column middle aligned very relaxed stackable grid">
+  <div class="column">
+    <div class="six wide column" id="mapid" style="height: 360px;"></div>
+  </div>
+  <div class="ui vertical divider"><i class="code icon"></i> </div>
+  <div class="center aligned column">
+    <div id="commune" style="display:none;">
+      <h1 id="nom">Nom</h1>
+      <p id="codeInsee"><b>Code Insee: </b></p>
+      <p id="codesPostaux"><b>Codes postaux: </b></p>
+      <p id="surface"><b>Surface: </b></p>
+      <p id="gps"><b>Coordonnées: </b></p>
+    </div>
+    <div class="ui centered large inline loader"></div>
+    <div class="ui big green labeled icon button" onclick="getLocation()"><i class="location arrow icon"></i> Trouver ma commune </div>
+  </div>
+</div>
+</div>
+
+<div class="ui divider"></div>
+
+<div class="ui inverted vertical masthead center aligned segment">
+  <h2><i class="circular lab icon"></i> API Communes </h2>
+</div>
+
+</div>
+
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    return navigator.geolocation.getCurrentPosition(locateUser);
+  }
+}
+
+function initMap() {
+    var options = {center : new L.LatLng(46.921982, 2.978952), zoom : 5 };
+
+    var osmUrl = 'http://tilecache.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                osmAttribution = 'Map data &copy; 2012 OpenStreetMap contributors',
+                osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
+
+    var mapLayer = new L.TileLayer(osmUrl);
+    this.map = new L.Map('mapid', options).addLayer(mapLayer);
+}
+
+function locateUser(position) {
+  var r = 'lat=' + position.coords.latitude + '&lon=' + position.coords.longitude;
+  document.getElementsByClassName('loader')[0].classList.add('active');
+  document.getElementsByClassName('button')[0].style.display = "none";
+
+  fetch('https://geo.api.gouv.fr/communes?format=geojson&' + r)
+  .then(function(response) {
+    if (response.ok) {
+      return (response.json());
+    }
+  })
+  .then(function(json) {
+    var commune = json.features[0];
+    console.log(commune);
+    L.geoJson(commune).addTo(this.map);
+    this.map.setView([position.coords.latitude, position.coords.longitude], zoom=12);
+    document.getElementById("nom").innerHTML = commune.properties.nom;
+    document.getElementById("codeInsee").innerHTML += commune.properties.codeInsee;
+    document.getElementById("codesPostaux").innerHTML += commune.properties.codesPostaux;
+    document.getElementById("surface").innerHTML += commune.properties.surface;
+    document.getElementById("gps").innerHTML += '</br>longitude: ' + commune.geometry.coordinates[0] + '</br>latitude: ' + commune.geometry.coordinates[1];
+  })
+  .then(function() {
+    document.getElementsByClassName('loader')[0].classList.remove('active');
+    document.getElementById('commune').style.display = "block";
+  })
+  .catch(function(error) {
+    document.getElementsByClassName('loader')[0].classList.remove('active');
+    document.getElementsByClassName('button')[0].style.display = "block";
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+});
+}
+
+var map = null;
+initMap();
+
+</script>
 </body>
 </html>
