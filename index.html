@@ -39,7 +39,7 @@
         <div class="ui secondary segment">https://geo.api.gouv.fr/communes/?nom=rouen&format=geojson</div>
       </div>
       <div class="ui aligned segment">
-        <h4>Exemple de réponse</h4>
+        <h4>Exemple de réponses</h4>
         <div class="ui secondary segment">
           <pre><code class="bash">$> curl https://geo.api.gouv.fr/communes/?nom=dreux</code></pre>
           <pre><code class="json">[
@@ -69,6 +69,27 @@
         <p><b>surface</b>: Surface de la commune en mètre.</p>
         <p><b>_score</b>: Valeur de 0 à 1 indiquant la pertinence du résultat.</p>
       </div>
+      <h4>Exemple de réponse geojson</h4>
+      <div class="ui secondary segment">
+        <pre><code class="bash">$> curl https://geo.api.gouv.fr/communes/?nom=dreux&format=geojson</code></pre>
+        <pre><code class="json">{
+  "type":"FeatureCollection",
+  "features":[{
+    "type":"Feature",
+    "properties":{
+      "nom":"Dreux",
+      "codeInsee":"28134",
+      "codesPostaux":["28100"],
+      "surface":2424,
+      "_score":1
+    },
+    "geometry":{
+      "type":"Point",
+      "coordinates":[1.3591437681186405,48.74832295056131]
+    }
+  }]
+}</code></pre>
+    </div>
     </div>
     </div>
   <div class="one wide column"></div>
