@@ -151,6 +151,23 @@ describe('Test api', function() {
             .end(done);
         });
       });
+
+      describe('list communes', function() {
+        it('should reply the list of communes', done => {
+          request(server)
+              .get('/departements/11/communes')
+              .expect(res => {
+                expect(res.body.length).to.equal(436);
+              })
+              .end(done);
+        });
+        it('should reply with 404', done => {
+          request(server)
+              .get('/departements/666/communes')
+              .expect(404, done);
+        });
+      });
+
     });
   });
 
