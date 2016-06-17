@@ -81,6 +81,16 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
   }
 });
 
+app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
+  let communes = dbCommunes.queryByDep(req.params.code);
+  if (!communes) {
+    res.sendStatus(404);
+  } else {
+    res.send(communes.map(commune => formatCommune(req, commune)));
+  }
+});
+
+
 /* Régions */
 app.get('/regions', initRegionFields, function (req, res) {
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
