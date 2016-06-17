@@ -42,3 +42,5 @@ rules:
   object-curly-spacing:
     - error
     - always
+  no-warning-comments:
+    - error

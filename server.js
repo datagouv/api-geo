@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { initCommuneFields, initCommuneFormat, formatCommune } = require('./lib/communeHelpers');
-const { initDepartementFields, formatDepartement } = require('./lib/departementHelpers');
-const { initRegionFields, formatRegion } = require('./lib/regionHelpers');
+const { initCommuneFields, initCommuneFormat } = require('./lib/communeHelpers');
+const { initDepartementFields } = require('./lib/departementHelpers');
+const { initRegionFields } = require('./lib/regionHelpers');
+const { formatOne } = require('./lib/helpers');
 const dbCommunes = require('./lib/communes').getIndexedDb();
 const dbDepartements = require('./lib/departements').getIndexedDb();
 const dbRegions = require('./lib/regions').getIndexedDb();
@@ -43,10 +44,10 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   if (req.outputFormat === 'geojson') {
     res.send({
       type: 'FeatureCollection',
-      features: result.map(commune => formatCommune(req, commune)),
+      features: result.map(commune => formatOne(req, commune)),
     });
   } else {
-    res.send(result.map(commune => formatCommune(req, commune)));
+    res.send(result.map(commune => formatOne(req, commune)));
   }
 });
 
@@ -55,7 +56,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, 
   if (!commune) {
     res.sendStatus(404);
   } else {
-    res.send(formatCommune(req, commune));
+    res.send(formatOne(req, commune));
   }
 });
 
@@ -68,7 +69,7 @@ app.get('/departements', initDepartementFields, function (req, res) {
   res.send(
     dbDepartements
       .search(query)
-      .map(departement => formatDepartement(req, departement))
+      .map(departement => formatOne(req, departement))
   );
 });
 
@@ -77,7 +78,7 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
   if (!departement) {
     res.sendStatus(404);
   } else {
-    res.send(formatDepartement(req, departement));
+    res.send(formatOne(req, departement));
   }
 });
 
@@ -100,7 +101,7 @@ app.get('/regions', initRegionFields, function (req, res) {
   res.send(
     dbRegions
       .search(query)
-      .map(departement => formatRegion(req, departement))
+      .map(departement => formatOne(req, departement))
   );
 });
 
@@ -109,7 +110,7 @@ app.get('/regions/:code', initRegionFields, function (req, res) {
   if (!departement) {
     res.sendStatus(404);
   } else {
-    res.send(formatRegion(req, departement));
+    res.send(formatOne(req, departement));
   }
 });
 
