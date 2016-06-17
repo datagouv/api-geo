@@ -166,6 +166,15 @@ describe('Test api', function() {
               .get('/departements/666/communes')
               .expect(404, done);
         });
+        it('should return geojson data', done => {
+          request(server)
+              .get('/departements/75/communesformat=geojson')
+              .expect(res => {
+                const commune = res.body;
+                expect(commune.FeatureCollection).to.exist;
+              })
+              .end(done);
+        });
       });
 
     });

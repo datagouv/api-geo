@@ -88,7 +88,14 @@ app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, f
     res.sendStatus(404);
   } else {
     let communes = dbCommunes.queryByDep(req.params.code);
-    res.send(communes.map(commune => formatOne(req, commune)));
+    if (req.outputFormat === 'geojson') {
+      res.send({
+        type: 'FeatureCollection',
+        features: communes.map(commune => formatOne(req, commune)),
+      });
+    } else {
+      res.send(communes.map(commune => formatOne(req, commune)));
+    }
   }
 });
 
