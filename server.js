@@ -52,11 +52,11 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
 });
 
 app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, res) {
-  let commune = dbCommunes.queryByCode(req.params.code)[0];
-  if (!commune) {
+  const communes = dbCommunes.queryByCode(req.params.code);
+  if (communes.length === 0) {
     res.sendStatus(404);
   } else {
-    res.send(formatOne(req, commune));
+    res.send(formatOne(req, communes[0]));
   }
 });
 
@@ -74,19 +74,20 @@ app.get('/departements', initDepartementFields, function (req, res) {
 });
 
 app.get('/departements/:code', initDepartementFields, function (req, res) {
-  let departement = dbDepartements.queryByCode(req.params.code)[0];
-  if (!departement) {
+  const departements = dbDepartements.queryByCode(req.params.code);
+  if (departements.length === 0) {
     res.sendStatus(404);
   } else {
-    res.send(formatOne(req, departement));
+    res.send(formatOne(req, departements[0]));
   }
 });
 
 app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
-  let communes = dbCommunes.queryByDep(req.params.code);
-  if (!communes.length) {
+  const departements = dbDepartements.queryByCode(req.params.code);
+  if (departements.length === 0) {
     res.sendStatus(404);
   } else {
+    const communes = dbCommunes.queryByDep(req.params.code);
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
@@ -108,16 +109,16 @@ app.get('/regions', initRegionFields, function (req, res) {
   res.send(
     dbRegions
       .search(query)
-      .map(departement => formatOne(req, departement))
+      .map(region => formatOne(req, region))
   );
 });
 
 app.get('/regions/:code', initRegionFields, function (req, res) {
-  let departement = dbRegions.queryByCode(req.params.code)[0];
-  if (!departement) {
+  const regions = dbRegions.queryByCode(req.params.code);
+  if (regions.length === 0) {
     res.sendStatus(404);
   } else {
-    res.send(formatOne(req, departement));
+    res.send(formatOne(req, regions[0]));
   }
 });
 
