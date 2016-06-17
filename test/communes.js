@@ -72,6 +72,31 @@ describe('communes', function () {
       });
     });
 
+    describe('codeDepIndex', function () {
+      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '54321' };
+      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '66423' };
+      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
+
+      describe('Unknown code', function () {
+        it('should not match', function () {
+          expect(db.codeDepIndex.has('42')).not.to.be.ok();
+        });
+      });
+      describe('Known code', function () {
+        it('should match', function () {
+          expect(db.codeDepIndex.has('54321')).to.be.ok();
+        });
+        it('should return 1 entry', function () {
+          expect(db.codeDepIndex.get('66423')).to.eql([commune2]);
+        });
+      });
+      describe('index size', function () {
+        it('should be equals to number of different values (2)', function () {
+          expect(Array.from(db.codeDepIndex.keys())).to.have.length(2);
+        });
+      });
+    });
+
   });
 
   describe('queryByCP()', function () {
@@ -130,13 +155,30 @@ describe('communes', function () {
     });
   });
 
+  describe('queryByDep()', () => {
+    const commune1 = { nom: 'abc', code: '12345', codeDepartement: '01', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
+    const commune2 = { nom: 'def', code: '23456', codeDepartement: '02', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
+    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
+
+    describe('Unknown code', function () {
+      it('should return an empty array', function () {
+        expect(db.queryByDep('05')).to.eql([]);
+      });
+    });
+    describe('Known code', function () {
+      it('should return an array with matching communes', function () {
+        expect(db.queryByDep('02')).to.eql([commune2]);
+      });
+    });
+  });
+
   describe('search()', function () {
     const geom1 = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 0], [0, 0], [0, -10], [-10, -10]]] };
     const geom2 = { type: 'Polygon', coordinates: [[[-10, 0], [-10, 10], [0, 10], [0, 0], [-10, 0]]] };
     const geom3 = { type: 'Polygon', coordinates: [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] };
-    const commune1 = { nom: 'abc', code: '12345', codesPostaux: ['11111', '22222'], contour: geom1 };
-    const commune2 = { nom: 'efg', code: '23456', codesPostaux: ['11111'], contour: geom2 };
-    const commune3 = { nom: 'efg', code: '67890', codesPostaux: ['11111'], contour: geom3 };
+    const commune1 = { nom: 'abc', code: '12345', codeDepartement: '02', codesPostaux: ['11111', '22222'], contour: geom1 };
+    const commune2 = { nom: 'efg', code: '23456', codeDepartement: '02', codesPostaux: ['11111'], contour: geom2 };
+    const commune3 = { nom: 'efg', code: '67890', codeDepartement: '01', codesPostaux: ['11111'], contour: geom3 };
     const db = communes.getIndexedDb({ communes: [commune1, commune2, commune3].map(cloneDeep) });
 
     describe('Simple matching criteria', function () {
@@ -158,15 +200,15 @@ describe('communes', function () {
     describe('Intersecting criteria (2 communes)', function () {
       it('should return an array with 2 communes', function () {
         expect(db.search({ nom: 'efg', codePostal: '11111' })).to.eql([
-          { nom: 'efg', code: '23456', codesPostaux: ['11111'], contour: geom2, _score: 1 },
-          { nom: 'efg', code: '67890', codesPostaux: ['11111'], contour: geom3, _score: 1 },
+          { nom: 'efg', code: '23456', codeDepartement: '02', codesPostaux: ['11111'], contour: geom2, _score: 1 },
+          { nom: 'efg', code: '67890', codeDepartement: '01', codesPostaux: ['11111'], contour: geom3, _score: 1 },
         ]);
       });
     });
     describe('All criteria', function () {
       it('should return an array with 1 commune', function () {
-        expect(db.search({ nom: 'efg', code: '67890', codePostal: '11111', lon: 5, lat: 5 })).to.eql([
-          { nom: 'efg', code: '67890', codesPostaux: ['11111'], contour: geom3, _score: 1 },
+        expect(db.search({ nom: 'efg', code: '67890', codeDepartement: '01', codePostal: '11111', lon: 5, lat: 5 })).to.eql([
+          { nom: 'efg', code: '67890', codeDepartement: '01', codesPostaux: ['11111'], contour: geom3, _score: 1 },
         ]);
       });
     });

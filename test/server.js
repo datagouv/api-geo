@@ -76,19 +76,20 @@ describe('Test api', function() {
             expect(commune.code).to.equal('55001');
             expect(commune.codesPostaux).to.eql(['55130']);
             expect(commune.surface).to.equal(1367);
-            expect(commune.centre).to.exist;
+            expect(commune).to.have.key('centre');
           })
           .end(done);
       });
     });
 
     describe('with format', function() {
-      it('should return geojson data', done => {
+      it('should return a FeatureCollection (geojson)', done => {
         request(server)
             .get('/communes/?code=94067&format=geojson')
             .expect(res => {
-              const commune = res.body;
-              expect(commune.FeatureCollection).to.exist;
+              const communes = res.body;
+              expect(communes).to.have.key('type');
+              expect(communes.type).to.be('FeatureCollection');
             })
             .end(done);
       });
@@ -151,6 +152,33 @@ describe('Test api', function() {
             .end(done);
         });
       });
+
+      describe('list communes', function() {
+        it('should reply the list of communes', done => {
+          request(server)
+              .get('/departements/11/communes')
+              .expect(res => {
+                expect(res.body.length).to.equal(436);
+              })
+              .end(done);
+        });
+        it('should reply with 404', done => {
+          request(server)
+              .get('/departements/666/communes')
+              .expect(404, done);
+        });
+        it('should return a FeatureCollection (geojson)', done => {
+          request(server)
+              .get('/departements/75/communes?format=geojson')
+              .expect(res => {
+                const communes = res.body;
+                expect(communes).to.have.key('type');
+                expect(communes.type).to.be('FeatureCollection');
+              })
+              .end(done);
+        });
+      });
+
     });
   });
 

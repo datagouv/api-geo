@@ -15,9 +15,9 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code','codesPostaux','centre','surface', 'contour']
+      enum: ['nom','code','codesPostaux','centre','surface', 'contour', 'codeDepartement', 'codeRegion']
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','centre','surface']
+    default: ['nom','code','codesPostaux','centre','surface', 'codeDepartement', 'codeRegion']
   departementFieldsParam:
     name: fields
     in: query
@@ -76,6 +76,14 @@ paths:
         - name: nom
           in: query
           description: Nom de la commune
+          type: string
+        - name: code
+          in: query
+          description: Code de la commune
+          type: string
+        - name: codeDepartement
+          in: query
+          description: Code du département associé
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
@@ -169,6 +177,33 @@ paths:
           description: Informations concernant un département
           schema:
             $ref: '#/definitions/Departement'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Département introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
+  /departements/{code}/communes:
+    get:
+      summary: Renvoi les communes d'un département
+      tags:
+        - Département
+        - Commune
+      parameters:
+        - name: code
+          in: path
+          description: Code du département
+          required: true
+          type: string
+        - $ref: '#/parameters/communeFieldsParam'
+      responses:
+        200:
+          description: Liste des communes du département
+          schema:
+            $ref: '#/definitions/Commune'
         400:
           description: Erreur. Requête mal formée
           schema:
