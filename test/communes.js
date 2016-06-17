@@ -73,9 +73,9 @@ describe('communes', function () {
     });
 
     describe('codeDepIndex', function () {
-      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-      const db = communes.getIndexedDb({ communes: [commune1, commune2, commune3].map(cloneDeep) });
+      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '54321' };
+      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '66423' };
+      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
 
       describe('Unknown code', function () {
         it('should not match', function () {
@@ -84,10 +84,10 @@ describe('communes', function () {
       });
       describe('Known code', function () {
         it('should match', function () {
-          expect(db.codeDepIndex.has('11')).to.be.ok();
+          expect(db.codeDepIndex.has('54321')).to.be.ok();
         });
         it('should return 1 entry', function () {
-          expect(db.codeDepIndex.get('22')).to.eql([commune3]);
+          expect(db.codeDepIndex.get('66423')).to.eql([commune2]);
         });
       });
       describe('index size', function () {
