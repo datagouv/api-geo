@@ -18,7 +18,7 @@ app.use(morgan('dev'));
 app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
 
-  const query = pick(req.query, 'code', 'codePostal', 'nom');
+  const query = pick(req.query, 'code', 'codePostal', 'nom', 'codeDepartement');
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);

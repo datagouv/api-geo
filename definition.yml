@@ -81,6 +81,10 @@ paths:
           in: query
           description: Code de la commune
           type: string
+        - name: codeDepartement
+          in: query
+          description: Code du département associé
+          type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/communeGeometryParam'
