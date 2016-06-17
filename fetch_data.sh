@@ -9,4 +9,6 @@ wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_france2016.tsv
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_arrond2016.tsv
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_depts2016.tsv
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_reg2016.tsv
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_population_metropole.csv
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_population_dom.csv
 echo "Completed"
