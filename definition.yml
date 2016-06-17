@@ -15,9 +15,9 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code','codesPostaux','centre','surface', 'contour']
+      enum: ['nom','code','codesPostaux','centre','surface', 'contour', 'codeDepartement', 'codeRegion']
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','centre','surface']
+    default: ['nom','code','codesPostaux','centre','surface', 'codeDepartement', 'codeRegion']
   departementFieldsParam:
     name: fields
     in: query
@@ -76,6 +76,10 @@ paths:
         - name: nom
           in: query
           description: Nom de la commune
+          type: string
+        - name: code
+          in: query
+          description: Code de la commune
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
