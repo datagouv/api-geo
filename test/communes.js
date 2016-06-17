@@ -155,6 +155,23 @@ describe('communes', function () {
     });
   });
 
+  describe('queryByDep()', () => {
+    const commune1 = { nom: 'abc', code: '12345', codeDepartement: '01', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
+    const commune2 = { nom: 'def', code: '23456', codeDepartement: '02', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
+    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
+
+    describe('Unknown code', function () {
+      it('should return an empty array', function () {
+        expect(db.queryByDep('05')).to.eql([]);
+      });
+    });
+    describe('Known code', function () {
+      it('should return an array with matching communes', function () {
+        expect(db.queryByDep('02')).to.eql([commune2]);
+      });
+    });
+  });
+
   describe('search()', function () {
     const geom1 = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 0], [0, 0], [0, -10], [-10, -10]]] };
     const geom2 = { type: 'Polygon', coordinates: [[[-10, 0], [-10, 10], [0, 10], [0, 0], [-10, 0]]] };
