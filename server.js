@@ -83,11 +83,10 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
 });
 
 app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
-  let departement = dbDepartements.queryByCode(req.params.code)[0];
-  if (!departement) {
+  let communes = dbCommunes.queryByDep(req.params.code);
+  if (!communes.length) {
     res.sendStatus(404);
   } else {
-    let communes = dbCommunes.queryByDep(req.params.code);
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
