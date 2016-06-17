@@ -29,7 +29,7 @@ describe('#integration communes', () => {
         it('should return a commune with given code', () => {
           const commune = ctx.createCommune('12345');
           expect(commune).to.be.an(Object);
-          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'communesMembres');
           expect(commune.code).to.be('12345');
         });
         it('should store the commune', () => {
@@ -37,7 +37,7 @@ describe('#integration communes', () => {
           expect(ctx.communes.size).to.be(1);
           expect(ctx.communes.has('23456')).to.be.ok();
           const commune = ctx.communes.get('23456');
-          expect(commune).to.only.have.keys('code', 'codesPostaux');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'communesMembres');
           expect(commune.code).to.be('23456');
         });
       });
@@ -125,7 +125,7 @@ describe('#integration communes', () => {
       ctx = {
         debug: () => {},
         hasCommune: () => false,
-        createCommune: code => {
+        getOrCreateCommune: code => {
           commune.code = code;
           return commune;
         },
@@ -151,7 +151,7 @@ describe('#integration communes', () => {
           communes: { has: () => true },
           debug: () => {},
           hasCommune: () => true,
-          getCommune: code => {
+          getCommuneActuelle: code => {
             commune.code = code;
             return commune;
           },
@@ -190,7 +190,7 @@ describe('#integration communes', () => {
           const ctx = {
             debug: () => {},
             hasCommune: () => false,
-            getCommune: code => {
+            getCommuneActuelle: code => {
               codes.push(code);
               return { codesPostaux: new Set() };
             },
