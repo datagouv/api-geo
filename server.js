@@ -83,10 +83,11 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
 });
 
 app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
-  let communes = dbCommunes.queryByDep(req.params.code);
-  if (!communes) {
+  let departement = dbDepartements.queryByCode(req.params.code)[0];
+  if (!departement) {
     res.sendStatus(404);
   } else {
+    let communes = dbCommunes.queryByDep(req.params.code);
     res.send(communes.map(commune => formatOne(req, commune)));
   }
 });
