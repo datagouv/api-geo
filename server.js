@@ -87,7 +87,7 @@ app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, f
   if (!communes) {
     res.sendStatus(404);
   } else {
-    res.send(communes.map(commune => formatCommune(req, commune)));
+    res.send(communes.map(commune => formatOne(req, commune)));
   }
 });
 
