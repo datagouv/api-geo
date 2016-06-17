@@ -180,7 +180,7 @@ paths:
 
   /departements/{code}/communes:
     get:
-      summary: Renvoi les communes du d'un département
+      summary: Renvoi les communes d'un département
       tags:
         - Département
         - Commune
@@ -190,12 +190,12 @@ paths:
           description: Code du département
           required: true
           type: string
-        - $ref: '#/parameters/departementFieldsParam'
+        - $ref: '#/parameters/communeFieldsParam'
       responses:
         200:
           description: Liste des communes du département
           schema:
-            $ref: '#/definitions/Departement'
+            $ref: '#/definitions/Commune'
         400:
           description: Erreur. Requête mal formée
           schema:
