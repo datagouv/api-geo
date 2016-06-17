@@ -168,7 +168,7 @@ describe('Test api', function() {
         });
         it('should return geojson data', done => {
           request(server)
-              .get('/departements/75/communesformat=geojson')
+              .get('/departements/75/communes?format=geojson')
               .expect(res => {
                 const commune = res.body;
                 expect(commune.FeatureCollection).to.exist;
