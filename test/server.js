@@ -83,12 +83,13 @@ describe('Test api', function() {
     });
 
     describe('with format', function() {
-      it('should return geojson data', done => {
+      it('should return a FeatureCollection (geojson)', done => {
         request(server)
             .get('/communes/?code=94067&format=geojson')
             .expect(res => {
-              const commune = res.body;
-              expect(commune).to.have.key('type');
+              const communes = res.body;
+              expect(communes).to.have.key('type');
+              expect(communes.type).to.be('FeatureCollection');
             })
             .end(done);
       });
@@ -166,12 +167,13 @@ describe('Test api', function() {
               .get('/departements/666/communes')
               .expect(404, done);
         });
-        it('should return geojson data', done => {
+        it('should return a FeatureCollection (geojson)', done => {
           request(server)
               .get('/departements/75/communes?format=geojson')
               .expect(res => {
-                const commune = res.body;
-                expect(commune).to.have.key('type');
+                const communes = res.body;
+                expect(communes).to.have.key('type');
+                expect(communes.type).to.be('FeatureCollection');
               })
               .end(done);
         });
