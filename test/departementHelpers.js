@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const expect = require('expect.js');
-const { initDepartementFields, formatDepartement } = require('../lib/departementHelpers');
+const { initDepartementFields } = require('../lib/departementHelpers');
 
 describe('departementHelpers', function () {
 
@@ -39,23 +39,6 @@ describe('departementHelpers', function () {
         done
       );
     });
-  });
-
-  describe('formatDepartement()', function () {
-    it('should support `json` formatting', function () {
-      expect(formatDepartement(
-        { outputFormat: 'json', fields: new Set() },
-        { a: 1, b: 2, c: 3, d: 4 }
-      )).to.eql({});
-    });
-
-    it('should filter specified fields for `json`', function () {
-      expect(formatDepartement(
-        { outputFormat: 'json', fields: new Set(['a', 'c']) },
-        { a: 1, b: 2, c: 3, d: 4 }
-      )).to.eql({ a: 1, c: 3 });
-    });
-
   });
 
 });
