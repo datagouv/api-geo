@@ -124,7 +124,7 @@ describe('helpers', function () {
         });
 
         ['json', 'geojson'].forEach(function (format) {
-          it(format + ' should accept ' + format + ' format', function (done) {
+          it('should accept ' + format + ' format', function (done) {
             const req = { query: { format }, fields: new Set() };
             instance(req, undefined, function (err) {
               expect(err).to.be(undefined);
