@@ -178,6 +178,33 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /departements/{code}/communes:
+    get:
+      summary: Renvoi les communes du d'un département
+      tags:
+        - Département
+        - Commune
+      parameters:
+        - name: code
+          in: path
+          description: Code du département
+          required: true
+          type: string
+        - $ref: '#/parameters/departementFieldsParam'
+      responses:
+        200:
+          description: Liste des communes du département
+          schema:
+            $ref: '#/definitions/Departement'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Département introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
   /regions:
       get:
         summary: Recherche des régions
