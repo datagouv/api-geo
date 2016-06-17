@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const expect = require('expect.js');
-const { initRegionFields, formatRegion } = require('../lib/regionHelpers');
+const { initRegionFields } = require('../lib/regionHelpers');
 
 describe('regionHelpers', function () {
 
@@ -39,23 +39,6 @@ describe('regionHelpers', function () {
         done
       );
     });
-  });
-
-  describe('formatRegion()', function () {
-    it('should support `json` formatting', function () {
-      expect(formatRegion(
-        { outputFormat: 'json', fields: new Set() },
-        { a: 1, b: 2, c: 3, d: 4 }
-      )).to.eql({});
-    });
-
-    it('should filter specified fields for `json`', function () {
-      expect(formatRegion(
-        { outputFormat: 'json', fields: new Set(['a', 'c']) },
-        { a: 1, b: 2, c: 3, d: 4 }
-      )).to.eql({ a: 1, c: 3 });
-    });
-
   });
 
 });
