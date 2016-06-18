@@ -101,6 +101,85 @@ describe('#integration communes', () => {
         });
       });
     });
+
+    describe('hasCommune()', () => {
+      describe('Unknown commune', () => {
+        it('should return false', () => {
+          expect(ctx.communes.size).to.be(0);
+          expect(ctx.hasCommune('99999')).to.be(false);
+        });
+      });
+
+      describe('Known commune', () => {
+        beforeEach(() => {
+          ctx.communes.set('11111', 'tralala');
+          expect(ctx.communes.size).to.be(1);
+        });
+        it('should return true', () => {
+          expect(ctx.hasCommune('11111')).to.be(true);
+        });
+      });
+    });
+
+    describe('getOrCreateCommune()', () => {
+      describe('New commune', () => {
+        beforeEach(() => {
+          expect(ctx.communes.size).to.be(0);
+        });
+        it('should return a commune with given code', () => {
+          const commune = ctx.getOrCreateCommune('12345');
+          expect(commune).to.be.an(Object);
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'communesMembres');
+          expect(commune.code).to.be('12345');
+        });
+        it('should store the commune', () => {
+          ctx.getOrCreateCommune('23456');
+          expect(ctx.communes.size).to.be(1);
+          expect(ctx.communes.has('23456')).to.be.ok();
+          const commune = ctx.communes.get('23456');
+          expect(commune).to.only.have.keys('code', 'codesPostaux', 'communesMembres');
+          expect(commune.code).to.be('23456');
+        });
+      });
+
+      describe('Existing commune', () => {
+        beforeEach(() => ctx.communes.set('99999', 'tralala'));
+
+        it('should return the commune', () => {
+          expect(ctx.getOrCreateCommune('99999')).to.be('tralala');
+        });
+        it('should have no impact on storage', () => {
+          ctx.getOrCreateCommune('99999');
+          expect(ctx.communes.has('99999')).to.be.ok();
+          expect(ctx.communes.size).to.be(1);
+        });
+      });
+    });
+
+    describe('getCommuneActuelle()', () => {
+      describe('Commune actuelle', () => {
+        it('doit retourner la commune demandée', () => {
+          ctx.communes.set('11111', { code: '11111' });
+          expect(ctx.getCommuneActuelle('11111').code).to.be('11111');
+        });
+      });
+      describe('Ancienne commune sans commune de rattachement', () => {
+        it('should throw an error', () => {
+          ctx.communes.set('22222', { code: '22222', ancienne: true });
+          expect(() => ctx.getCommuneActuelle('22222')).to.throwError();
+        });
+      });
+      describe('Ancienne commune avec commune de rattachement', () => {
+        it('doit retourner la commune de rattachement', () => {
+          const communeMembre = { code: '22222' };
+          const communeActuelle = { code: '11111', communesMembres: new Set([communeMembre]) };
+          communeMembre.communeRattachement = communeActuelle;
+          ctx.communes.set('11111', communeActuelle);
+          ctx.communes.set('22222', communeMembre);
+          expect(ctx.getCommuneActuelle('22222').code).to.be('11111');
+        });
+      });
+    });
   });
 
   describe('loadGeometries()', () => {
