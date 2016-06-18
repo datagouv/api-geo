@@ -18,7 +18,7 @@ describe('communeHelpers', function () {
     it('empty request should return default fields', function (done) {
       runTestCase(
         {},
-        ['nom', 'code', 'codesPostaux', 'centre', 'surface', 'codeDepartement', 'codeRegion'],
+        ['nom', 'code', 'codesPostaux', 'centre', 'surface', 'codeDepartement', 'codeRegion', 'population'],
         done
       );
     });

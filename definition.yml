@@ -15,9 +15,9 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code','codesPostaux','centre','surface', 'contour', 'codeDepartement', 'codeRegion']
+      enum: ['nom','code','codesPostaux','centre','surface','contour','codeDepartement','codeRegion', 'population']
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','centre','surface', 'codeDepartement', 'codeRegion']
+    default: ['nom','code','codesPostaux','centre','surface','codeDepartement','codeRegion','population']
   departementFieldsParam:
     name: fields
     in: query
@@ -293,6 +293,15 @@ definitions:
         description: Liste des codes postaux associés à la commune
         items:
           type: string
+      codeDepartement:
+        type: string
+        description: Code du département associé à la commune
+      codeRegion:
+        type: string
+        description: Code de la région associée à la commune
+      population:
+        type: integer
+        description: Population municipale
       surface:
         type: number
         format: float
