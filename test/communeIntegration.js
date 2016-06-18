@@ -1,9 +1,26 @@
 /* eslint-env mocha */
-const { init, loadGeometries, loadCommunes, loadCodePostaux, serialize, checkCommunes } = require('../lib/integration/communes');
+const { isIgnoredCommune, init, loadGeometries, loadCommunes, loadCodePostaux, serialize, checkCommunes } = require('../lib/integration/communes');
 const expect = require('expect.js');
 
 
 describe('#integration communes', () => {
+
+  describe('isIgnoredCommune()', () => {
+    const codes = {
+      '98001': true, // Polynésie
+      '99001': true, // Monaco
+      '97501': true, // Saint-Pierre-et-Miquelon
+      '97801': true, // Saint-Martin
+      '97701': true, // Saint-Barthelemy
+      '12345': false, // Normal
+    };
+    for (let code in codes) {
+      const expectedValue = codes[code];
+      it('should return ' + expectedValue + ' for ' + code, () => {
+        expect(isIgnoredCommune(code)).to.be(expectedValue);
+      });
+    }
+  });
 
   describe('init()', () => {
     let ctx;
