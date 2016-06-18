@@ -77,6 +77,9 @@ paths:
           in: query
           description: Nom de la commune
           type: string
+        - name: boost
+          in: query
+          description: Mode de boost de la recherche par nom
         - name: code
           in: query
           description: Code de la commune
