@@ -17,7 +17,7 @@ parameters:
       type: string
       enum: ['nom','code','codesPostaux','centre','surface','contour','codeDepartement','codeRegion', 'population']
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','centre','surface','codeDepartement','codeRegion','population']
+    default: ['nom','code','codesPostaux','codeDepartement','codeRegion','population']
   departementFieldsParam:
     name: fields
     in: query
@@ -80,6 +80,7 @@ paths:
         - name: boost
           in: query
           description: Mode de boost de la recherche par nom
+          type: string
         - name: code
           in: query
           description: Code de la commune
@@ -136,7 +137,7 @@ paths:
       get:
         summary: Recherche des départements
         tags:
-          - Département
+          - Départements
         parameters:
           - name: code
             in: query
@@ -167,7 +168,7 @@ paths:
     get:
       summary: Récupérer les informations concernant un département
       tags:
-        - Département
+        - Départements
       parameters:
         - name: code
           in: path
@@ -193,8 +194,8 @@ paths:
     get:
       summary: Renvoi les communes d'un département
       tags:
-        - Département
-        - Commune
+        - Départements
+        - Communes
       parameters:
         - name: code
           in: path
@@ -247,7 +248,7 @@ paths:
     get:
       summary: Récupérer les informations concernant une région
       tags:
-        - Région
+        - Régions
       parameters:
         - name: code
           in: path
