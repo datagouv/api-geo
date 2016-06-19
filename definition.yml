@@ -89,6 +89,10 @@ paths:
           in: query
           description: Code du département associé
           type: string
+        - name: codeRegion
+          in: query
+          description: Code de la région associée
+          type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/communeGeometryParam'
