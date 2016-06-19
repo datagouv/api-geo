@@ -17,7 +17,7 @@ parameters:
       type: string
       enum: ['nom','code','codesPostaux','centre','surface','contour','codeDepartement','codeRegion', 'population']
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','centre','surface','codeDepartement','codeRegion','population']
+    default: ['nom','code','codesPostaux','codeDepartement','codeRegion','population']
   departementFieldsParam:
     name: fields
     in: query
