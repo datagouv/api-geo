@@ -75,8 +75,7 @@ describe('Test api', function() {
             expect(commune.nom).to.equal('Abainville');
             expect(commune.code).to.equal('55001');
             expect(commune.codesPostaux).to.eql(['55130']);
-            expect(commune.surface).to.equal(1367);
-            expect(commune).to.have.key('centre');
+            expect(commune).to.have.keys(['population', 'codeDepartement', 'codeRegion']);
           })
           .end(done);
       });
