@@ -128,14 +128,7 @@ app.get('/regions/:code/departements',  initDepartementFields, function (req, re
     res.sendStatus(404);
   } else {
     const departements = dbDepartements.queryByCodeRegion(req.params.code);
-    if (req.outputFormat === 'geojson') {
-      res.send({
-        type: 'FeatureCollection',
-        features: departements.map(commune => formatOne(req, commune)),
-      });
-    } else {
-      res.send(departements.map(commune => formatOne(req, commune)));
-    }
+    res.send(departements.map(commune => formatOne(req, commune)));
   }
 });
 
