@@ -274,6 +274,33 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /regions/{code}/departements:
+    get:
+      summary: Renvoi les départements d'une région
+      tags:
+        - Départements
+        - Régions
+      parameters:
+        - name: code
+          in: path
+          description: Code de la région
+          required: true
+          type: string
+        - $ref: '#/parameters/regionFieldsParam'
+      responses:
+        200:
+          description: Liste des départements de la région
+          schema:
+            $ref: '#/definitions/Departement'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Département introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Error:
     type: object
