@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: API Référentiels géographiques
-  version: '0.1.0'
+  version: '1.0.0-beta'
 host: geo.api.gouv.fr
 schemes:
   - https
