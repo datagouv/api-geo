@@ -224,5 +224,32 @@ describe('Test api', function() {
             .expect(200, done);
       });
     });
+
+    describe('list departements', function() {
+      it('should reply the list of departements', done => {
+        request(server)
+            .get('/departements/84/departements')
+            .expect(res => {
+              expect(res.body.length).to.equal(7);
+            })
+            .end(done);
+      });
+      it('should reply with 404', done => {
+        request(server)
+            .get('/departements/666/departements')
+            .expect(404, done);
+      });
+      it('should return a FeatureCollection (geojson)', done => {
+        request(server)
+            .get('/departements/84/departements?format=geojson')
+            .expect(res => {
+              const departements = res.body;
+              expect(departements).to.have.key('type');
+              expect(departements.type).to.be('FeatureCollection');
+            })
+            .end(done);
+      });
+    });
+    
   });
 });
