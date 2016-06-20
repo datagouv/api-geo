@@ -14,6 +14,16 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 
+// Inject databases references
+app.use((req, res, next) => {
+  req.db = {
+    communes: dbCommunes,
+    departements: dbDepartements,
+    regions: dbRegions,
+  };
+  next();
+});
+
 /* Communes */
 app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
