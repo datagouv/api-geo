@@ -97,6 +97,31 @@ describe('communes', function () {
       });
     });
 
+    describe('codeRegIndex', function () {
+      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeRegion: 'A' };
+      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeRegion: 'B' };
+      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
+
+      describe('Unknown code', function () {
+        it('should not match', function () {
+          expect(db.codeRegIndex.has('42')).not.to.be.ok();
+        });
+      });
+      describe('Known code', function () {
+        it('should match', function () {
+          expect(db.codeRegIndex.has('B')).to.be.ok();
+        });
+        it('should return 1 entry', function () {
+          expect(db.codeRegIndex.get('B')).to.eql([commune2]);
+        });
+      });
+      describe('index size', function () {
+        it('should be equals to number of different values (2)', function () {
+          expect(Array.from(db.codeRegIndex.keys())).to.have.length(2);
+        });
+      });
+    });
+
   });
 
   describe('queryByCP()', function () {
