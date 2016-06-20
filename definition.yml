@@ -15,9 +15,26 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code','codesPostaux','centre','surface','contour','codeDepartement','codeRegion', 'population']
+      enum:
+        - nom
+        - code
+        - codesPostaux
+        - centre
+        - surface
+        - contour
+        - codeDepartement
+        - departement
+        - codeRegion
+        - region
+        - population
     collectionFormat: csv
-    default: ['nom','code','codesPostaux','codeDepartement','codeRegion','population']
+    default:
+      - nom
+      - code
+      - codesPostaux
+      - codeDepartement
+      - codeRegion
+      - population
   departementFieldsParam:
     name: fields
     in: query
@@ -25,9 +42,16 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code','codeRegion']
+      enum:
+        - nom
+        - code
+        - codeRegion
+        - region
     collectionFormat: csv
-    default: ['nom','code','codeRegion']
+    default:
+      - nom
+      - code
+      - codeRegion
   regionFieldsParam:
     name: fields
     in: query
@@ -35,9 +59,13 @@ parameters:
     type: array
     items:
       type: string
-      enum: ['nom','code']
+      enum:
+        - nom
+        - code
     collectionFormat: csv
-    default: ['nom','code']
+    default:
+      - nom
+      - code
   formatParam:
     name: format
     in: query
@@ -207,6 +235,8 @@ paths:
           required: true
           type: string
         - $ref: '#/parameters/communeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Liste des communes du département
@@ -334,6 +364,14 @@ definitions:
       codeRegion:
         type: string
         description: Code de la région associée à la commune
+      departement:
+        description: Département associé à la commune
+        schema:
+          $ref: '#/definitions/Departement'
+      region:
+        description: Région associée à la commune
+        schema:
+          $ref: '#/definitions/Region'
       population:
         type: integer
         description: Population municipale
@@ -357,10 +395,14 @@ definitions:
         type: string
         description: Nom du département
       codeRegion:
-        type: array
+        type: string
         description: Code de la région
-        items:
-          type: string
+      region:
+        $ref: '#/definitions/Region'
+        description: Région associée au département
+        type: object
+        properties:
+
   Region:
     type: object
     properties:
