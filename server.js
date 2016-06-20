@@ -122,6 +122,23 @@ app.get('/regions/:code', initRegionFields, function (req, res) {
   }
 });
 
+app.get('/regions/:code/departements',  initDepartementFields, function (req, res) {
+  const regions = dbRegions.queryByCode(req.params.code);
+  if (regions.length === 0) {
+    res.sendStatus(404);
+  } else {
+    const departements = dbDepartements.queryByCodeRegion(req.params.code);
+    if (req.outputFormat === 'geojson') {
+      res.send({
+        type: 'FeatureCollection',
+        features: departements.map(commune => formatOne(req, commune)),
+      });
+    } else {
+      res.send(departements.map(commune => formatOne(req, commune)));
+    }
+  }
+});
+
 /* Definition */
 app.get('/definition.yml', function (req, res) {
   res.sendFile(__dirname + '/definition.yml');
