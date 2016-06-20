@@ -365,13 +365,9 @@ definitions:
         type: string
         description: Code de la région associée à la commune
       departement:
-        description: Département associé à la commune
-        schema:
-          $ref: '#/definitions/Departement'
+        $ref: '#/definitions/Departement'
       region:
-        description: Région associée à la commune
-        schema:
-          $ref: '#/definitions/Region'
+        $ref: '#/definitions/Region'
       population:
         type: integer
         description: Population municipale
@@ -399,10 +395,6 @@ definitions:
         description: Code de la région
       region:
         $ref: '#/definitions/Region'
-        description: Région associée au département
-        type: object
-        properties:
-
   Region:
     type: object
     properties:
