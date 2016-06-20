@@ -223,6 +223,28 @@ describe('helpers', function () {
       )).to.eql({ type: 'Feature', properties: { a: 1, c: 3 }, geometry: 4 });
     });
 
+    it('should inject departement item', function () {
+      expect(formatOne(
+        {
+          db: { departements: { queryByCode: code => [{ code, nom: 'foo' }] } },
+          query: {},
+          fields: new Set(['a', 'departement']),
+        },
+        { a: 1, b: 2, codeDepartement: 12 }
+      )).to.eql({ a: 1, departement: { code: 12, nom: 'foo' } });
+    });
+
+    it('should inject region item', function () {
+      expect(formatOne(
+        {
+          db: { regions: { queryByCode: code => [{ code, nom: 'foo' }] } },
+          query: {},
+          fields: new Set(['a', 'region']),
+        },
+        { a: 1, b: 2, codeRegion: 44 }
+      )).to.eql({ a: 1, region: { code: 44, nom: 'foo' } });
+    });
+
   });
 
 });
