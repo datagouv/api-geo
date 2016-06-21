@@ -42,6 +42,7 @@ docker-compose up
 
 ## Données sources
 
+* [Code Officiel Géographique de l'INSEE](http://www.insee.fr/fr/methodes/nomenclatures/cog/telechargement.asp)
 * [Découpage administratif communal français issu d'OpenStreetMap](https://www.data.gouv.fr/fr/datasets/decoupage-administratif-communal-francais-issu-d-openstreetmap/) (licence ODbL)
 * [Base officielle des codes postaux](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/) (licence ODbL)
 
