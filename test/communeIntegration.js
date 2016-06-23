@@ -332,7 +332,7 @@ describe('#integration communes', () => {
           ['12345', {
             code: '12345',
             nom: 'Ville-sur-Loire',
-            codesPostaux: new Set(['11111', '22222']),
+            codesPostaux: new Set(['22222', '11111']),
           }],
         ]) };
         serialize({ destPath: __dirname + '/../data/test-serialize-commune.json' })(ctx, err => {
@@ -342,7 +342,7 @@ describe('#integration communes', () => {
           expect(communes[0]).to.eql({
             code: '12345',
             nom: 'Ville-sur-Loire',
-            codesPostaux: ['11111', '22222'],
+            codesPostaux: ['11111', '22222'], // Exact order
           });
           done();
         });
