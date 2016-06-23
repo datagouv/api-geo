@@ -9,6 +9,10 @@ const dbCommunes = require('./lib/communes').getIndexedDb();
 const dbDepartements = require('./lib/departements').getIndexedDb();
 const dbRegions = require('./lib/regions').getIndexedDb();
 const { pick } = require('lodash');
+const yaml = require('js-yaml');
+const fs = require('fs');
+
+const openAPIDefinition = yaml.safeLoad(fs.readFileSync(__dirname + '/definition.yml', 'utf8'));
 
 const app = express();
 app.use(cors());
@@ -145,6 +149,10 @@ app.get('/regions/:code/departements',  initDepartementFields, function (req, re
 /* Definition */
 app.get('/definition.yml', function (req, res) {
   res.sendFile(__dirname + '/definition.yml');
+});
+
+app.get('/definition.json', function (req, res) {
+  res.send(openAPIDefinition);
 });
 
 const port = process.env.PORT || 5000;
