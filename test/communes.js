@@ -3,8 +3,6 @@ const expect = require('expect.js');
 const communes = require('../lib/communes');
 const { cloneDeep } = require('lodash');
 
-// const fakeGeom = { type: 'Dumb', coordinates: [] };
-
 describe('communes', function () {
 
   describe('getIndexedDb()', function () {
