@@ -62,6 +62,10 @@ describe('communes', function () {
           '23456',
           '67890',
         ]);
+        db.search({ nom: 'efg', codePostal: '11111' }).forEach(commune => {
+          expect(commune).to.have.key('_score');
+          expect(commune._score >= 0).to.be.ok();
+        });
       });
     });
     describe('All criteria', function () {

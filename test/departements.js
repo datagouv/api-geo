@@ -63,6 +63,10 @@ describe('departements', function () {
         expect(db.search({ nom: 'three', code: '33', codeRegion: '11' })).to.eql([
           { nom: 'three', code: '33', codeRegion: '11', _score: 1 },
         ]);
+        db.search({ nom: 'three', code: '33', codeRegion: '11' }).forEach(dep => {
+          expect(dep).to.have.key('_score');
+          expect(dep._score >= 0).to.be.ok();
+        });
       });
     });
   });

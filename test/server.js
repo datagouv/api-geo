@@ -221,6 +221,10 @@ describe('Test api', function() {
       it('should work for Normandie', done => {
         request(server)
             .get('/regions/?nom=normandie')
+            .expect(res => {
+              expect(res.body).to.have.length(1);
+              expect(res.body[0]).to.have.key('_score');
+            })
             .expect(200, done);
       });
     });

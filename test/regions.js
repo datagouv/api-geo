@@ -57,6 +57,10 @@ describe('regions', function () {
         expect(db.search({ nom: 'three', code: '33' })).to.eql([
           { nom: 'three', code: '33', _score: 1 },
         ]);
+        db.search({ nom: 'three', code: '33' }).forEach(reg => {
+          expect(reg).to.have.key('_score');
+          expect(reg._score >= 0).to.be.ok();
+        });
       });
     });
   });
