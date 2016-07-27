@@ -168,7 +168,7 @@ describe('searchableCollection', () => {
           ind._tree = { insert: data => insertCalls.push(data) };
           ind.indexForPolygonRings([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]], { foo: 'bar' });
           expect(insertCalls).to.have.length(1);
-          expect(insertCalls[0][5]).to.eql({ foo: 'bar' });
+          expect(insertCalls[0].props).to.eql({ foo: 'bar' });
         });
       });
 
