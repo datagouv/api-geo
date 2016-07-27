@@ -3,8 +3,6 @@ const expect = require('expect.js');
 const communes = require('../lib/communes');
 const { cloneDeep } = require('lodash');
 
-const fakeGeom = { type: 'Dumb', coordinates: [] };
-
 describe('communes', function () {
 
   describe('getIndexedDb()', function () {
@@ -13,203 +11,22 @@ describe('communes', function () {
         expect(() => communes.getIndexedDb({ communesDbPath: '_' })).to.throwError();
       });
     });
-
-    describe('cpIndex', function () {
-      const db = communes.getIndexedDb({ communes: [
-        { nom: 'abc', code: '12345', codesPostaux: ['00000', '11111'], centre: fakeGeom, contour: fakeGeom },
-        { nom: 'def', code: '23456', codesPostaux: ['11111'], centre: fakeGeom, contour: fakeGeom },
-      ].map(cloneDeep) });
-      describe('Unknown codePostal', function () {
-        it('should not match', function () {
-          expect(db.cpIndex.has('22222')).not.to.be.ok();
-        });
-      });
-      describe('codePostal in 1 commune', function () {
-        it('should match', function () {
-          expect(db.cpIndex.has('00000')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.cpIndex.get('00000')).to.have.length(1);
-        });
-      });
-      describe('codePostal in 2 communes', function () {
-        it('should match', function () {
-          expect(db.cpIndex.has('11111')).to.be.ok();
-        });
-        it('should return 2 entries', function () {
-          expect(db.cpIndex.get('11111')).to.have.length(2);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.cpIndex.keys())).to.have.length(2);
-        });
-      });
-    });
-
-    describe('inseeIndex', function () {
-      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-      describe('Unknown code', function () {
-        it('should not match', function () {
-          expect(db.inseeIndex.has('66666')).not.to.be.ok();
-        });
-      });
-      describe('Known code', function () {
-        it('should match', function () {
-          expect(db.inseeIndex.has('12345')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.inseeIndex.get('12345')).to.eql(commune1);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.inseeIndex.keys())).to.have.length(2);
-        });
-      });
-    });
-
-    describe('codeDepIndex', function () {
-      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '54321' };
-      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeDepartement: '66423' };
-      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-      describe('Unknown code', function () {
-        it('should not match', function () {
-          expect(db.codeDepIndex.has('42')).not.to.be.ok();
-        });
-      });
-      describe('Known code', function () {
-        it('should match', function () {
-          expect(db.codeDepIndex.has('54321')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.codeDepIndex.get('66423')).to.eql([commune2]);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.codeDepIndex.keys())).to.have.length(2);
-        });
-      });
-    });
-
-    describe('codeRegIndex', function () {
-      const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeRegion: 'A' };
-      const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom, codeRegion: 'B' };
-      const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-      describe('Unknown code', function () {
-        it('should not match', function () {
-          expect(db.codeRegIndex.has('42')).not.to.be.ok();
-        });
-      });
-      describe('Known code', function () {
-        it('should match', function () {
-          expect(db.codeRegIndex.has('B')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.codeRegIndex.get('B')).to.eql([commune2]);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.codeRegIndex.keys())).to.have.length(2);
-        });
-      });
-    });
-
   });
 
-  describe('queryByCP()', function () {
-    const commune1 = { nom: 'abc', code: '12345', codesPostaux: ['00000', '11111'], centre: fakeGeom, contour: fakeGeom };
-    const commune2 = { nom: 'def', code: '23456', codesPostaux: ['11111'], centre: fakeGeom, contour: fakeGeom };
-    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-    describe('Unknown codePostal', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByCP('22222')).to.eql([]);
-      });
-    });
-    describe('codePostal present in 1 commune', function () {
-      it('should return an array with 1 commune', function () {
-        expect(db.queryByCP('00000')).to.eql([commune1]);
-      });
-    });
-    describe('codePostal present in 2 communes', function () {
-      it('should return an array with 2 communes', function () {
-        expect(db.queryByCP('11111')).to.eql([commune1, commune2]);
-      });
-    });
-  });
-
-  describe('queryByCode()', function () {
-    const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const commune2 = { nom: 'def', code: '23456', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-    describe('Unknown code', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByCode('11111')).to.eql([]);
-      });
-    });
-    describe('Known code', function () {
-      it('should return an array with 1 commune', function () {
-        expect(db.queryByCode('12345')).to.eql([commune1]);
-      });
-    });
-  });
-
-  describe('queryByLonLat()', function () {
-    const geom = { type: 'Polygon', coordinates: [[[-10, -10], [-10, 10], [10, 10], [10, -10], [-10, -10]]] };
-    const commune1 = { nom: 'abc', code: '12345', codesPostaux: [], contour: geom };
-    const db = communes.getIndexedDb({ communes: [commune1].map(cloneDeep) });
-
-    describe('Point in no man\'s land', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByLonLat([-20, -20])).to.eql([]);
-      });
-    });
-    describe('Point inside the commune contour', function () {
-      it('should return an array with 1 commune', function () {
-        expect(db.queryByLonLat([0, 0])).to.eql([commune1]);
-      });
-    });
-  });
-
-  describe('queryByDep()', () => {
-    const commune1 = { nom: 'abc', code: '12345', codeDepartement: '01', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const commune2 = { nom: 'def', code: '23456', codeDepartement: '02', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-    describe('Unknown code', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByDep('05')).to.eql([]);
-      });
-    });
-    describe('Known code', function () {
-      it('should return an array with matching communes', function () {
-        expect(db.queryByDep('02')).to.eql([commune2]);
-      });
-    });
-  });
-
-  describe('queryByReg()', () => {
-    const commune1 = { nom: 'abc', code: '12345', codeRegion: '01', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const commune2 = { nom: 'def', code: '23456', codeRegion: '02', codesPostaux: [], centre: fakeGeom, contour: fakeGeom };
-    const db = communes.getIndexedDb({ communes: [commune1, commune2].map(cloneDeep) });
-
-    describe('Unknown code', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByReg('05')).to.eql([]);
-      });
-    });
-    describe('Known code', function () {
-      it('should return an array with matching communes', function () {
-        expect(db.queryByReg('02')).to.eql([commune2]);
+  describe('indexes', function () {
+    describe('indexes list', function () {
+      const db = communes.getIndexedDb({ communes: [] });
+      [
+        'nom',
+        'code',
+        'codesPostaux',
+        'codeDepartement',
+        'codeRegion',
+        'contour',
+      ].forEach(index => {
+        it(`should contain '${index}' index`, () => {
+          expect(db._indexes).to.have.key(index);
+        });
       });
     });
   });
@@ -245,12 +62,32 @@ describe('communes', function () {
           '23456',
           '67890',
         ]);
+        db.search({ nom: 'efg', codePostal: '11111' }).forEach(commune => {
+          expect(commune).to.have.key('_score');
+          expect(commune._score >= 0).to.be.ok();
+        });
       });
     });
     describe('All criteria', function () {
       it('should return an array with 1 commune', function () {
-        const query = { nom: 'efg', code: '67890', codeDepartement: '01', codeRegion: 'B', codePostal: '11111', lon: 5, lat: 5 };
+        const query = { nom: 'efg', code: '67890', codeDepartement: '01', codeRegion: 'B', codePostal: '11111', pointInContour: [5, 5] };
         expect(db.search(query).map(c => c.code)).to.eql(['67890']);
+      });
+    });
+  });
+
+  describe('Boost for population (integration)', () => {
+    const db = communes.getIndexedDb();
+    describe('Searching for `nant` without boost', () => {
+      it('should not return Nantes in first position', () => {
+        const result = db.search({ nom: 'nant' });
+        expect(result[0].nom).not.to.be('Nantes');
+      });
+    });
+    describe('Searching for `nant` with population boost', () => {
+      it('should return Nantes in first position', () => {
+        const result = db.search({ nom: 'nant', boost: 'population' });
+        expect(result[0].nom).to.be('Nantes');
       });
     });
   });

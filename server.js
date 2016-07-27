@@ -39,8 +39,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
       && lon >= -180
       && lon <= 180
     ) {
-      query.lat = lat;
-      query.lon = lon;
+      query.pointInContour = [lon, lat];
     }
   }
   if (query.nom) req.fields.add('_score');
@@ -62,7 +61,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
 });
 
 app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, res) {
-  const communes = dbCommunes.queryByCode(req.params.code);
+  const communes = dbCommunes.search({ code: req.params.code });
   if (communes.length === 0) {
     res.sendStatus(404);
   } else {
@@ -84,7 +83,7 @@ app.get('/departements', initDepartementFields, function (req, res) {
 });
 
 app.get('/departements/:code', initDepartementFields, function (req, res) {
-  const departements = dbDepartements.queryByCode(req.params.code);
+  const departements = dbDepartements.search({ code: req.params.code });
   if (departements.length === 0) {
     res.sendStatus(404);
   } else {
@@ -93,11 +92,11 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
 });
 
 app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
-  const departements = dbDepartements.queryByCode(req.params.code);
+  const departements = dbDepartements.search({ code: req.params.code });
   if (departements.length === 0) {
     res.sendStatus(404);
   } else {
-    const communes = dbCommunes.queryByDep(req.params.code);
+    const communes = dbCommunes.search({ codeDepartement: req.params.code });
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
@@ -112,7 +111,7 @@ app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, f
 
 /* Régions */
 app.get('/regions', initRegionFields, function (req, res) {
-  const query = pick(req.query, 'code', 'nom', 'codeRegion');
+  const query = pick(req.query, 'code', 'nom');
 
   if (query.nom) req.fields.add('_score');
 
@@ -124,7 +123,7 @@ app.get('/regions', initRegionFields, function (req, res) {
 });
 
 app.get('/regions/:code', initRegionFields, function (req, res) {
-  const regions = dbRegions.queryByCode(req.params.code);
+  const regions = dbRegions.search({ code: req.params.code });
   if (regions.length === 0) {
     res.sendStatus(404);
   } else {
@@ -133,11 +132,11 @@ app.get('/regions/:code', initRegionFields, function (req, res) {
 });
 
 app.get('/regions/:code/departements',  initDepartementFields, function (req, res) {
-  const regions = dbRegions.queryByCode(req.params.code);
+  const regions = dbRegions.search({ code: req.params.code });
   if (regions.length === 0) {
     res.sendStatus(404);
   } else {
-    const departements = dbDepartements.queryByCodeRegion(req.params.code);
+    const departements = dbDepartements.search({ codeRegion: req.params.code });
     res.send(departements.map(commune => formatOne(req, commune)));
   }
 });

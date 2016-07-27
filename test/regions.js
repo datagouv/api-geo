@@ -20,39 +20,18 @@ describe('regions', function () {
         expect(() => regions.getIndexedDb({ regionsDbPath: '_' })).to.throwError();
       });
     });
-
-    describe('inseeIndex', function () {
-      describe('Unknown code', function () {
-        it('should not match', function () {
-          expect(db.inseeIndex.has('66')).not.to.be.ok();
-        });
-      });
-      describe('Known code', function () {
-        it('should match', function () {
-          expect(db.inseeIndex.has('11')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.inseeIndex.get('11')).to.eql(region1);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (3)', function () {
-          expect(Array.from(db.inseeIndex.keys())).to.have.length(3);
-        });
-      });
-    });
-
   });
 
-  describe('queryByCode()', function () {
-    describe('Unknown code', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByCode('00')).to.eql([]);
-      });
-    });
-    describe('Known code', function () {
-      it('should return an array with 1 region', function () {
-        expect(db.queryByCode('11')).to.eql([region1]);
+  describe('indexes', function () {
+    describe('indexes list', function () {
+      const db = regions.getIndexedDb({ regions: [] });
+      [
+        'nom',
+        'code',
+      ].forEach(index => {
+        it(`should contain '${index}' index`, () => {
+          expect(db._indexes).to.have.key(index);
+        });
       });
     });
   });
@@ -78,6 +57,10 @@ describe('regions', function () {
         expect(db.search({ nom: 'three', code: '33' })).to.eql([
           { nom: 'three', code: '33', _score: 1 },
         ]);
+        db.search({ nom: 'three', code: '33' }).forEach(reg => {
+          expect(reg).to.have.key('_score');
+          expect(reg._score >= 0).to.be.ok();
+        });
       });
     });
   });

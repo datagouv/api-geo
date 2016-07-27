@@ -20,86 +20,19 @@ describe('departements', function () {
         expect(() => departements.getIndexedDb({ departementsDbPath: '_' })).to.throwError();
       });
     });
-
-    describe('regionIndex', function () {
-      describe('Unknown codeRegion', function () {
-        it('should not match', function () {
-          expect(db.regionIndex.has('22')).not.to.be.ok();
-        });
-      });
-      describe('region with 1 departement', function () {
-        it('should match', function () {
-          expect(db.regionIndex.has('00')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.regionIndex.get('00')).to.have.length(1);
-        });
-      });
-      describe('region with 2 departements', function () {
-        it('should match', function () {
-          expect(db.regionIndex.has('11')).to.be.ok();
-        });
-        it('should return 2 entries', function () {
-          expect(db.regionIndex.get('11')).to.have.length(2);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (2)', function () {
-          expect(Array.from(db.regionIndex.keys())).to.have.length(2);
-        });
-      });
-    });
-
-    describe('inseeIndex', function () {
-      describe('Unknown code', function () {
-        it('should not match', function () {
-          expect(db.inseeIndex.has('66')).not.to.be.ok();
-        });
-      });
-      describe('Known code', function () {
-        it('should match', function () {
-          expect(db.inseeIndex.has('11')).to.be.ok();
-        });
-        it('should return 1 entry', function () {
-          expect(db.inseeIndex.get('11')).to.eql(departement1);
-        });
-      });
-      describe('index size', function () {
-        it('should be equals to number of different values (3)', function () {
-          expect(Array.from(db.inseeIndex.keys())).to.have.length(3);
-        });
-      });
-    });
-
   });
 
-  describe('queryByCodeRegion()', function () {
-    describe('Unknown codeRegion', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByCodeRegion('22')).to.eql([]);
-      });
-    });
-    describe('codeRegion present in 1 departement', function () {
-      it('should return an array with 1 departement', function () {
-        expect(db.queryByCodeRegion('00')).to.eql([departement1]);
-      });
-    });
-    describe('codeRegion present in 2 departements', function () {
-      it('should return an array with 2 departements', function () {
-        expect(db.queryByCodeRegion('11')).to.eql([departement2, departement3]);
-      });
-    });
-  });
-
-  describe('queryByCode()', function () {
-    describe('Unknown code', function () {
-      it('should return an empty array', function () {
-        expect(db.queryByCode('00')).to.eql([]);
-      });
-    });
-    describe('Known code', function () {
-      it('should return an array with 1 departement', function () {
-        expect(db.queryByCode('11')).to.eql([departement1]);
+  describe('indexes', function () {
+    describe('indexes list', function () {
+      const db = departements.getIndexedDb({ departements: [] });
+      [
+        'nom',
+        'code',
+        'codeRegion',
+      ].forEach(index => {
+        it(`should contain '${index}' index`, () => {
+          expect(db._indexes).to.have.key(index);
+        });
       });
     });
   });
@@ -130,6 +63,10 @@ describe('departements', function () {
         expect(db.search({ nom: 'three', code: '33', codeRegion: '11' })).to.eql([
           { nom: 'three', code: '33', codeRegion: '11', _score: 1 },
         ]);
+        db.search({ nom: 'three', code: '33', codeRegion: '11' }).forEach(dep => {
+          expect(dep).to.have.key('_score');
+          expect(dep._score >= 0).to.be.ok();
+        });
       });
     });
   });

@@ -9,13 +9,13 @@ const suite = new Benchmark.Suite;
 
 suite
   .add('spatial search (point)', function() {
-    db.queryByLonLat([6.175882816314696, 49.11830706404367]);
+    db.search({ pointInContour: [6.175882816314696, 49.11830706404367] });
   })
   .add('text search', function() {
-    db.queryByName('metz');
+    db.search({ nom: 'metz' });
   })
   .add('CP search', function() {
-    db.queryByCP('54490');
+    db.search({ codePostal: '54490' });
   })
   .on('cycle', function(event) {
     debug(String(event.target));
