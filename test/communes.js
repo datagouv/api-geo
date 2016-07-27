@@ -76,4 +76,20 @@ describe('communes', function () {
     });
   });
 
+  describe('Boost for population (integration)', () => {
+    const db = communes.getIndexedDb();
+    describe('Searching for `nant` without boost', () => {
+      it('should not return Nantes in first position', () => {
+        const result = db.search({ nom: 'nant' });
+        expect(result[0].nom).not.to.be('Nantes');
+      });
+    });
+    describe('Searching for `nant` without boost', () => {
+      it('should return Nantes in first position', () => {
+        const result = db.search({ nom: 'nant', boost: 'population' });
+        expect(result[0].nom).to.be('Nantes');
+      });
+    });
+  });
+
 });
