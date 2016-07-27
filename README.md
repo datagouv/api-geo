@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/sgmap/api-communes.svg?branch=master)](https://travis-ci.org/sgmap/api-communes)
 [![Coverage Status](https://coveralls.io/repos/github/sgmap/api-communes/badge.svg?branch=master)](https://coveralls.io/github/sgmap/api-communes?branch=master)
+[![Dependency Status](https://david-dm.org/sgmap/api-communes.svg)](https://david-dm.org/sgmap/api-communes)
 
 ## Informations et documentation
 
