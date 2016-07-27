@@ -84,7 +84,7 @@ describe('communes', function () {
         expect(result[0].nom).not.to.be('Nantes');
       });
     });
-    describe('Searching for `nant` without boost', () => {
+    describe('Searching for `nant` with population boost', () => {
       it('should return Nantes in first position', () => {
         const result = db.search({ nom: 'nant', boost: 'population' });
         expect(result[0].nom).to.be('Nantes');
