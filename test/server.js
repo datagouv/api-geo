@@ -93,6 +93,31 @@ describe('Test api', function() {
             .end(done);
       });
     });
+
+    describe('with all fields', function() {
+      it('should return a commune with all fields in it', done => {
+        const fields = [
+          'code',
+          'nom',
+          'codesPostaux',
+          'population',
+          'codeDepartement',
+          'codeRegion',
+          'departement',
+          'region',
+          'centre',
+          'contour',
+          'surface',
+        ];
+        request(server)
+            .get('/communes/54099?fields=' + fields.join(','))
+            .expect(res => {
+              const commune = res.body;
+              expect(commune).to.only.have.keys(fields);
+            })
+            .end(done);
+      });
+    });
   });
 
   /* Départements */
@@ -178,6 +203,24 @@ describe('Test api', function() {
         });
       });
 
+    });
+
+    describe('with all fields', function() {
+      it('should return a departement with all fields in it', done => {
+        const fields = [
+          'code',
+          'nom',
+          'codeRegion',
+          'region',
+        ];
+        request(server)
+            .get('/departements/54?fields=' + fields.join(','))
+            .expect(res => {
+              const commune = res.body;
+              expect(commune).to.only.have.keys(fields);
+            })
+            .end(done);
+      });
     });
   });
 
