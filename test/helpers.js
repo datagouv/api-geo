@@ -226,7 +226,7 @@ describe('helpers', function () {
     it('should inject departement item', function () {
       expect(formatOne(
         {
-          db: { departements: { queryByCode: code => [{ code, nom: 'foo' }] } },
+          db: { departements: { search: criteria => [{ code: criteria.code, nom: 'foo' }] } },
           query: {},
           fields: new Set(['a', 'departement']),
         },
@@ -237,7 +237,7 @@ describe('helpers', function () {
     it('should inject region item', function () {
       expect(formatOne(
         {
-          db: { regions: { queryByCode: code => [{ code, nom: 'foo' }] } },
+          db: { regions: { search: criteria => [{ code: criteria.code, nom: 'foo' }] } },
           query: {},
           fields: new Set(['a', 'region']),
         },
