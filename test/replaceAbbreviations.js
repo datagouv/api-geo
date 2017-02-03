@@ -61,23 +61,4 @@ describe('replaceAbbreviations()', function () {
     });
   });
 
-  /* eslint quotes: ["off"] */
-  describe('Paterne surrounded by a double quotes', () => {
-    it('sould remove double quotes quote but not the apostrophe', () => {
-      const str = '"St-Auban-sur-l\'Ouvèze"';
-      const out = 'saint auban sur l\'ouvèze';
-
-      expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
-    });
-  });
-
-  describe('Paterne surrounded by a single quotes', () => {
-    it('sould remove single quotes quote but not the apostrophe', () => {
-      const str = "'St-Auban-sur-l\'Ouvèze'";
-      const out = 'saint auban sur l\'ouvèze';
-
-      expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
-    });
-  });
-
 });
