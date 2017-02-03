@@ -2,7 +2,7 @@
 const expect = require('expect.js');
 const replaceAbbreviations = require('../lib/searchableCollection/replaceAbbreviations');
 
-describe.only('replaceAbbreviations()', function () {
+describe('replaceAbbreviations()', function () {
   const abbreviations = {
     'st': 'saint',
     'ste': 'sainte',
@@ -14,15 +14,15 @@ describe.only('replaceAbbreviations()', function () {
   });
 
   describe('Words separated by spaces', function () {
-    it('should replace patern', function () {
-      const str = '"st louis"';
+    it('should replace Pattern', function () {
+      const str = 'st louis';
       const out = 'saint louis';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
     });
 
-    it('should replace patern', function () {
-      const str = '"marcilly la cgne"';
+    it('should replace Pattern', function () {
+      const str = 'marcilly la cgne';
       const out = 'marcilly la campagne';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
@@ -30,15 +30,15 @@ describe.only('replaceAbbreviations()', function () {
   });
 
   describe('Words separated by dashes', function () {
-    it('should replace patern', function () {
-      const str = '"st-louis"';
+    it('should replace Pattern', function () {
+      const str = 'st-louis';
       const out = 'saint louis';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
     });
 
-    it('should replace patern', function () {
-      const str = '"marcilly-la-cgne"';
+    it('should replace Pattern', function () {
+      const str = 'marcilly-la-cgne';
       const out = 'marcilly la campagne';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
@@ -46,26 +46,35 @@ describe.only('replaceAbbreviations()', function () {
   });
 
   describe('search contained only one word', () => {
-    it('should not replace patern', () => {
-      const str = '"st"';
+    it('should not replace Pattern', () => {
+      const str = 'st';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(str);
     });
   });
 
-  describe('Patern is contained in a word', () => {
-    it('should not replace patern', () => {
-      const str = '"le stinx"';
-      const out = 'le stinx';
+  describe('Pattern is contained in a word', () => {
+    it('should not replace Pattern', () => {
+      const str = 'le stinx';
+
+      expect(replaceAbbreviations(str, abbreviations)).to.equal(str);
+    });
+  });
+
+  /* eslint quotes: ["off"] */
+  describe('Paterne surrounded by a double quotes', () => {
+    it('sould remove double quotes quote but not the apostrophe', () => {
+      const str = '"St-Auban-sur-l\'Ouvèze"';
+      const out = 'saint auban sur l\'ouvèze';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
     });
   });
 
-  describe('Accents management', () => {
-    it('sould not replace the accent with a space', () => {
-      const str = '"St-Auban-sur-l\'Ouvèze"';
-      const out = 'saint auban sur l\'ouveze';
+  describe('Paterne surrounded by a single quotes', () => {
+    it('sould remove single quotes quote but not the apostrophe', () => {
+      const str = "'St-Auban-sur-l\'Ouvèze'";
+      const out = 'saint auban sur l\'ouvèze';
 
       expect(replaceAbbreviations(str, abbreviations)).to.equal(out);
     });
