@@ -19,7 +19,7 @@ describe('countryHelpers', function () {
     it('empty request should return default fields', function (done) {
       runTestCase(
         {},
-        ['nom', 'code', 'iso2', 'iso3', 'territories'],
+        ['nom', 'code', 'iso2', 'iso3', 'num', 'territories'],
         done
       );
     });

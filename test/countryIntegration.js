@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const { init, serialize, loadCountries } = require('../lib/integration/countries');
+const { init, serialize, loadCountries, loadTerritories } = require('../lib/integration/countries');
 const expect = require('expect.js');
 
 describe('#integration countries', () => {
@@ -16,10 +16,6 @@ describe('#integration countries', () => {
         expect(ctx.countries).to.be.a(Map);
         expect(ctx.countries.size).to.be(0);
       });
-      it('should set ctx.getCountry function',
-        () => expect(ctx.getCountry).to.be.a(Function));
-      it('should set ctx.getTerritories function',
-        () => expect(ctx.getTerritories).to.be.a(Function));
     });
 
     describe('getCountry()', () => {
@@ -30,7 +26,8 @@ describe('#integration countries', () => {
         it('should return a country with given code', () => {
           const country = ctx.getCountry('42');
           expect(country).to.be.an(Object);
-          expect(country).to.only.have.keys('code');
+          expect(country).to.have.keys('code');
+          expect(country).to.have.keys('territories');
           expect(country.code).to.be('42');
         });
         it('should store the country', () => {
@@ -38,7 +35,8 @@ describe('#integration countries', () => {
           expect(ctx.countries.size).to.be(1);
           expect(ctx.countries.has('21')).to.be.ok();
           const country = ctx.countries.get('21');
-          expect(country).to.only.have.keys('code');
+          expect(country).to.have.keys('code');
+          expect(country).to.have.keys('territories');
           expect(country.code).to.be('21');
         });
       });
@@ -51,36 +49,14 @@ describe('#integration countries', () => {
         it('should return a country with given code', () => {
           const country = ctx.getCountry('11');
           expect(country).to.be.an(Object);
-          expect(country).to.only.have.keys('code');
+          expect(country).to.have.keys('code');
+          expect(country).to.have.keys('territories');
           expect(country.code).to.be('11');
         });
         it('should have no impact on storage', () => {
           ctx.getCountry('11');
           expect(ctx.countries.has('11')).to.be.ok();
           expect(ctx.countries.size).to.be(1);
-        });
-      });
-    });
-
-    describe('getTerritories()', () => {
-      describe('Country has no territory', () => {
-        it('should assign an empty array to country.territories', () => {
-          const country = ctx.getCountry('42');
-          const srcPath = __dirname + '/integration-data/countries.tsv';
-          ctx.getTerritories(country, srcPath, () => expect(country.territories).to.eql([]));
-        });
-      });
-
-      describe('Country has several territories', () => {
-        it('should assign the 3 territories that have the same code as the country.', () => {
-          const country = ctx.getCountry('123456');
-          const srcPath = __dirname + '/integration-data/countries-territories.tsv';
-          ctx.getTerritories(country, srcPath, () => true);
-          expect(country.territories).to.eql([
-            { nom: 'TEST1' },
-            { nom: 'TEST2' },
-            { nom: 'TEST3' },
-          ]);
         });
       });
     });
@@ -97,7 +73,7 @@ describe('#integration countries', () => {
           country.code = code;
           return country;
         },
-        getTerritories: (country, srcPath, callBack) => {
+        loadTerritories: (country, srcPath, callBack) => {
           country.territories = [];
           callBack() ;
         },
@@ -113,8 +89,58 @@ describe('#integration countries', () => {
             nom: 'TEST',
             iso2: 'TS',
             iso3: 'TST',
-            territories: [],
+            num: '250',
           });
+          done();
+        });
+      });
+    });
+  });
+
+  describe('loadTerritories()', () => {
+    describe('Processing a file containing a relation with known COG code', () => {
+      it('should associate territories to the country', done => {
+        const country = { code: '123456', territories: new Set() };
+        const ctx = {
+          countries: { has: () => true },
+          debug: () => {},
+          getCountry: () => country,
+        };
+
+        loadTerritories({ srcPath: __dirname + '/integration-data/countries-territories.tsv' })(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(Array.from(country.territories)).to.eql(
+            [
+              {
+                'iso2': 'T1',
+                'iso3': 'T1',
+                'nom': 'TEST1',
+                'num': '251',
+              },
+              {
+                'iso2': 'T2',
+                'iso3': 'T2',
+                'nom': 'TEST2',
+                'num': '252',
+              },
+            ]);
+          done();
+        });
+      });
+    });
+
+    describe('Country has no territories', () => {
+      it('should not associate any territory', done => {
+        const country = { code: '654321', territories: new Set() };
+        const ctx = {
+          countries: { has: () => true },
+          debug: () => {},
+          getCountry: (code) => code === country.code ? country : { territories: new Set() },
+        };
+
+        loadTerritories({ srcPath: __dirname + '/integration-data/countries-territories.tsv' })(ctx, err => {
+          expect(err).to.be(undefined);
+          expect(Array.from(country.territories)).to.eql([]);
           done();
         });
       });
@@ -140,6 +166,7 @@ describe('#integration countries', () => {
           ['42', {
             code: '42',
             nom: 'Test',
+            territories: new Set(),
           }],
         ]) };
         serialize({ destPath: __dirname + '/' + path })(ctx, err => {
@@ -149,6 +176,7 @@ describe('#integration countries', () => {
           expect(countries[0]).to.eql({
             code: '42',
             nom: 'Test',
+            territories: [],
           });
           done();
         });
