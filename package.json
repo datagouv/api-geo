@@ -4,7 +4,7 @@
   "description": "API for French administrative units",
   "repository": {
     "type": "git",
-    "url": "git://github.com/sgmap/api-communes.git"
+    "url": "git://github.com/etalab/api-communes.git"
   },
   "dependencies": {
     "JSONStream": "^1.1.1",
