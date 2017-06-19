@@ -10,7 +10,6 @@ describe('#integration communes', () => {
       '98001': true, // Polynésie
       '99001': true, // Monaco
       '97501': true, // Saint-Pierre-et-Miquelon
-      '97801': true, // Saint-Martin
       '97701': true, // Saint-Barthelemy
       '12345': false, // Normal
     };
@@ -372,7 +371,7 @@ describe('#integration communes', () => {
     });
 
     describe('No contour', () => {
-      it('should delete commune', done => {
+      it('should store commune', done => {
         const ctx = { debug: () => {}, communes: new Map([
           ['12345', {
             code: '12345',
@@ -384,14 +383,14 @@ describe('#integration communes', () => {
         expect(ctx.communes.size).to.be(1);
         checkCommunes()(ctx, err => {
           expect(err).to.be(undefined);
-          expect(ctx.communes.size).to.be(0);
+          expect(ctx.communes.size).to.be(1);
           done();
         });
       });
     });
 
     describe('No codeDepartement', () => {
-      it('should delete commune', done => {
+      it('should store commune', done => {
         const ctx = { debug: () => {}, communes: new Map([
           ['12345', {
             code: '12345',
@@ -403,7 +402,7 @@ describe('#integration communes', () => {
         expect(ctx.communes.size).to.be(1);
         checkCommunes()(ctx, err => {
           expect(err).to.be(undefined);
-          expect(ctx.communes.size).to.be(0);
+          expect(ctx.communes.size).to.be(1);
           done();
         });
       });
