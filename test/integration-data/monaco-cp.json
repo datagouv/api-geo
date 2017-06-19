@@ -1,1 +1,3 @@
-[{"Code_commune_INSEE":"99138","Nom_commune":"MONACO","Code_postal":"98000","Libelle_acheminement":"MONACO","Ligne_5":""}]
+[
+  { "fields": {"code_commune_insee":"99138","nom_de_la_commune":"MONACO","code_postal":"98000"} }
+]
