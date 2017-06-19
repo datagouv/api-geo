@@ -1,5 +1,5 @@
 [
-  {"Code_commune_INSEE":"XXXXX","Nom_commune":"MARSEILLE 01","Code_postal":"12345"},
-  {"Code_commune_INSEE":"XXXXX","Nom_commune":"PARIS 01","Code_postal":"23456"},
-  {"Code_commune_INSEE":"XXXXX","Nom_commune":"LYON 01","Code_postal":"34567"}
+  { "fields": {"code_commune_insee":"XXXXX","nom_de_la_commune":"MARSEILLE 01","code_postal":"12345"} },
+  { "fields": {"code_commune_insee":"XXXXX","nom_de_la_commune":"PARIS 01","code_postal":"23456"} },
+  { "fields": {"code_commune_insee":"XXXXX","nom_de_la_commune":"LYON 01","code_postal":"34567"} }
 ]
