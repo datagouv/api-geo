@@ -231,7 +231,7 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadCommunes({ srcPath: __dirname + '/integration-data/communes.tsv' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.eql({ code: '01001', codeDepartement: '01', codeRegion: '84',nom: 'Abergement-Clémenciat' });
+          expect(commune).to.eql({ code: '01001', codeDepartement: '01', codeRegion: '84',nom: 'L\'Abergement-Clémenciat' });
           done();
         });
       });
@@ -241,7 +241,7 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadCommunes({ srcPath: __dirname + '/integration-data/communes-drom.tsv' })(ctx, err => {
           expect(err).to.be(undefined);
-          expect(commune).to.eql({ code: '97101', codeDepartement: '971', codeRegion: '01',nom: 'Abergement-Clémenciat' });
+          expect(commune).to.eql({ code: '97101', codeDepartement: '971', codeRegion: '01',nom: 'L\'Abergement-Clémenciat' });
           done();
         });
       });
