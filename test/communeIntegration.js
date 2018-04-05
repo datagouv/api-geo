@@ -198,7 +198,7 @@ describe('#integration communes', () => {
 
     describe('Processing a file containing 1 commune', () => {
       it('should store 1 commune', done => {
-        loadGeometries({ srcPath: __dirname + '/integration-data/communes.json' })(ctx, err => {
+        loadGeometries({ srcPath: __dirname + '/integration-data/communes.geojson.gz' })(ctx, err => {
           expect(err).to.be(undefined);
           expect(commune).to.only.have.keys('code', 'codesPostaux', 'surface', 'centre', 'contour');
           expect(commune.code).to.be('11220');
