@@ -4,11 +4,10 @@ echo "Create data directory"
 mkdir -p data
 echo "Retrieve datasets"
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/laposte_hexasmal_2017.json
-wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/communes-dp25.json
-wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_france2017.tsv
-wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_arrond2017.tsv
-wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_depts2017.tsv
-wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_cog_reg2017.tsv
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/communes-dp25-20180101.geojson.gz
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/France2018.txt
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/depts2018.txt
+wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/reg2018.txt
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_population_metropole.csv
 wget -N -P data/ $GEOAPI_DATA_BASE_URL/communes/insee_population_dom.csv
 echo "Completed"
