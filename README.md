@@ -1,7 +1,7 @@
 # API Communes
 
 [![Build Status](https://travis-ci.org/etalab/api-communes.svg?branch=master)](https://travis-ci.org/etalab/api-communes)
-[![Coverage Status](https://coveralls.io/repos/github/etalab/api-communes/badge.svg?branch=master)](https://coveralls.io/github/sgmap/api-communes?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/etalab/api-communes/badge.svg?branch=master)](https://coveralls.io/github/etalab/api-communes?branch=master)
 [![Dependency Status](https://david-dm.org/etalab/api-communes.svg)](https://david-dm.org/etalab/api-communes)
 
 ## Informations et documentation
