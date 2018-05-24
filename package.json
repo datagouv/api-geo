@@ -1,10 +1,13 @@
 {
-  "name": "api-communes",
+  "name": "@etalab/api-communes",
   "version": "1.0.0-beta",
   "description": "API for French administrative units",
   "repository": {
     "type": "git",
     "url": "git://github.com/etalab/api-communes.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@turf/centroid": "^3.0.5",
@@ -42,6 +45,9 @@
     "fetch-data": "./fetch_data.sh",
     "integrate-data": "DEBUG=integration node integration",
     "prepare-data": "npm run fetch-data && npm run integrate-data"
+  },
+  "engines": {
+    "node": ">= 8"
   },
   "author": "Jérôme Desboeufs <jerome.desboeufs@beta.gouv.fr>",
   "contributors": [

@@ -1,16 +1,16 @@
 # API Communes
 
 [![Build Status](https://travis-ci.org/etalab/api-communes.svg?branch=master)](https://travis-ci.org/etalab/api-communes)
-[![Coverage Status](https://coveralls.io/repos/github/sgmap/api-communes/badge.svg?branch=master)](https://coveralls.io/github/sgmap/api-communes?branch=master)
-[![Dependency Status](https://david-dm.org/sgmap/api-communes.svg)](https://david-dm.org/sgmap/api-communes)
+[![Coverage Status](https://coveralls.io/repos/github/etalab/api-communes/badge.svg?branch=master)](https://coveralls.io/github/sgmap/api-communes?branch=master)
+[![Dependency Status](https://david-dm.org/etalab/api-communes.svg)](https://david-dm.org/etalab/api-communes)
 
 ## Informations et documentation
 
-[Consulter la fiche sur api.gouv.fr](https://api.gouv.fr/api/geoapi.html)
+[Consulter la fiche sur api.gouv.fr](https://api.gouv.fr/api/api-geo.html)
 
 ## Pré-requis
 
-* [Node.js](https://nodejs.org/en/) >= 6.x
+* [Node.js](https://nodejs.org/en/) >= 8.x
 * wget
 * bash
 
