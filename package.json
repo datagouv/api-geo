@@ -1,6 +1,6 @@
 {
   "name": "@etalab/api-communes",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "description": "API for French administrative units",
   "repository": {
     "type": "git",
