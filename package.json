@@ -30,21 +30,33 @@
   },
   "devDependencies": {
     "benchmark": "^2.1.0",
-    "eslint": "^3.1.1",
     "expect.js": "^0.3.1",
     "istanbul": "^0.4.3",
     "mocha": "^3.0",
-    "supertest": "^1.2.0"
+    "supertest": "^1.2.0",
+    "xo": "^0.21.1"
   },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
-    "lint": "eslint *.js lib test",
+    "lint": "xo",
     "start": "node --max_old_space_size=2048 server",
     "test-unit": "istanbul cover _mocha -- test/**",
     "test": "npm run lint && npm run test-unit",
     "fetch-data": "./fetch_data.sh",
     "integrate-data": "DEBUG=integration node integration",
     "prepare-data": "npm run fetch-data && npm run integrate-data"
+  },
+  "xo": {
+    "semicolon": false,
+    "space": 2,
+    "rules": {
+      "curly": "off",
+      "no-path-concat": "off",
+      "unicorn/filename-case": "off",
+      "import/order": "off",
+      "no-return-assign": "off",
+      "unicorn/no-abusive-eslint-disable": "off"
+    }
   },
   "engines": {
     "node": ">= 8"
