@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const { initCommuneFields, initCommuneFormat } = require('./lib/communeHelpers');
 const { initDepartementFields } = require('./lib/departementHelpers');
 const { initRegionFields } = require('./lib/regionHelpers');
-const { formatOne } = require('./lib/helpers');
+const { formatOne, initLimit } = require('./lib/helpers');
 const dbCommunes = require('./lib/communes').getIndexedDb();
 const dbDepartements = require('./lib/departements').getIndexedDb();
 const dbRegions = require('./lib/regions').getIndexedDb();
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 /* Communes */
-app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
+app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, function (req, res) {
   let result;
 
   const query = pick(req.query, 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost');
@@ -48,7 +48,7 @@ app.get('/communes', initCommuneFields, initCommuneFormat, function (req, res) {
     return res.sendStatus(400);
   }
 
-  result = dbCommunes.search(query);
+  result = req.applyLimit(dbCommunes.search(query));
 
   if (req.outputFormat === 'geojson') {
     res.send({
@@ -70,14 +70,13 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, function (req, 
 });
 
 /* Départements */
-app.get('/departements', initDepartementFields, function (req, res) {
+app.get('/departements', initLimit(), initDepartementFields, function (req, res) {
   const query = pick(req.query, 'code', 'nom', 'codeRegion');
 
   if (query.nom) req.fields.add('_score');
 
   res.send(
-    dbDepartements
-      .search(query)
+    req.applyLimit(dbDepartements.search(query))
       .map(departement => formatOne(req, departement))
   );
 });
@@ -91,12 +90,12 @@ app.get('/departements/:code', initDepartementFields, function (req, res) {
   }
 });
 
-app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, function (req, res) {
+app.get('/departements/:code/communes', initLimit(), initCommuneFields, initCommuneFormat, function (req, res) {
   const departements = dbDepartements.search({ code: req.params.code });
   if (departements.length === 0) {
     res.sendStatus(404);
   } else {
-    const communes = dbCommunes.search({ codeDepartement: req.params.code });
+    const communes = req.applyLimit(dbCommunes.search({ codeDepartement: req.params.code }));
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
@@ -110,14 +109,13 @@ app.get('/departements/:code/communes',  initCommuneFields, initCommuneFormat, f
 
 
 /* Régions */
-app.get('/regions', initRegionFields, function (req, res) {
+app.get('/regions', initLimit(), initRegionFields, function (req, res) {
   const query = pick(req.query, 'code', 'nom');
 
   if (query.nom) req.fields.add('_score');
 
   res.send(
-    dbRegions
-      .search(query)
+    req.applyLimit(dbRegions.search(query))
       .map(region => formatOne(req, region))
   );
 });
@@ -131,12 +129,12 @@ app.get('/regions/:code', initRegionFields, function (req, res) {
   }
 });
 
-app.get('/regions/:code/departements',  initDepartementFields, function (req, res) {
+app.get('/regions/:code/departements', initLimit(), initDepartementFields, function (req, res) {
   const regions = dbRegions.search({ code: req.params.code });
   if (regions.length === 0) {
     res.sendStatus(404);
   } else {
-    const departements = dbDepartements.search({ codeRegion: req.params.code });
+    const departements = req.applyLimit(dbDepartements.search({ codeRegion: req.params.code }));
     res.send(departements.map(commune => formatOne(req, commune)));
   }
 });

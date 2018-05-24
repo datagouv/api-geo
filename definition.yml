@@ -80,6 +80,13 @@ parameters:
     type: string
     enum: ['centre', 'contour']
     default: centre
+  limitParam:
+    name: limit
+    in: query
+    description: Nombre d'éléments à retourner
+    type: integer
+    format: int32
+    default: 0
 paths:
   /communes:
     get:
