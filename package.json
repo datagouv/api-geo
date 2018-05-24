@@ -60,9 +60,9 @@
   "engines": {
     "node": ">= 8"
   },
-  "author": "Jérôme Desboeufs <jerome.desboeufs@beta.gouv.fr>",
   "contributors": [
-    "Théophile Merlière <theophile.merliere@beta.gouv.fr>"
+    "Jérôme Desboeufs <jerome.desboeufs@data.gouv.fr>",
+    "Théophile Merlière <theophile.merliere@data.gouv.fr>"
   ],
   "license": "MIT"
 }
