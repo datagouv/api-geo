@@ -4,10 +4,12 @@ const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat} = require('./lib/communeHelpers')
 const {initDepartementFields} = require('./lib/departementHelpers')
 const {initRegionFields} = require('./lib/regionHelpers')
+const {initCountryFields} = require('./lib/countryHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
 const dbRegions = require('./lib/regions').getIndexedDb()
+const dbCountries = require('./lib/countries').getIndexedDb()
 const {pick} = require('lodash')
 
 const app = express()
@@ -19,7 +21,8 @@ app.use((req, res, next) => {
   req.db = {
     communes: dbCommunes,
     departements: dbDepartements,
-    regions: dbRegions
+    regions: dbRegions,
+    countries: dbCountries
   }
   next()
 })
@@ -133,6 +136,28 @@ app.get('/regions/:code/departements', initLimit(), initDepartementFields, (req,
   } else {
     const departements = req.applyLimit(dbDepartements.search({codeRegion: req.params.code}))
     res.send(departements.map(commune => formatOne(req, commune)))
+  }
+})
+
+/* Pays */
+app.get('/pays', initLimit(), initCountryFields, (req, res) => {
+  const query = pick(req.query, 'code', 'nom')
+
+  if (query.nom) req.fields.add('_score')
+
+  res.send(
+    dbCountries
+      .search(query)
+      .map(country => formatOne(req, country))
+  )
+})
+
+app.get('/pays/:code', initCountryFields, (req, res) => {
+  const countries = dbCountries.search({code: req.params.code})
+  if (countries.length === 0) {
+    res.sendStatus(404)
+  } else {
+    res.send(formatOne(req, countries[0]))
   }
 })
 
