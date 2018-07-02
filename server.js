@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     communes: dbCommunes,
     departements: dbDepartements,
     regions: dbRegions,
-    countries: dbCountries,
+    countries: dbCountries
   }
   next()
 })
@@ -141,25 +141,25 @@ app.get('/regions/:code/departements', initLimit(), initDepartementFields, (req,
 
 /* Pays */
 app.get('/pays', initLimit(), initCountryFields, (req, res) => {
-  const query = pick(req.query, 'code', 'nom');
+  const query = pick(req.query, 'code', 'nom')
 
-  if (query.nom) req.fields.add('_score');
+  if (query.nom) req.fields.add('_score')
 
   res.send(
     dbCountries
       .search(query)
       .map(country => formatOne(req, country))
-  );
-});
+  )
+})
 
 app.get('/pays/:code', initCountryFields, (req, res) => {
-  const countries = dbCountries.search({ code: req.params.code });
+  const countries = dbCountries.search({code: req.params.code})
   if (countries.length === 0) {
-    res.sendStatus(404);
+    res.sendStatus(404)
   } else {
-    res.send(formatOne(req, countries[0]));
+    res.send(formatOne(req, countries[0]))
   }
-});
+})
 
 /* Definition */
 app.get('/definition.yml', (req, res) => {
