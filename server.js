@@ -42,10 +42,6 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
   }
   if (query.nom) req.fields.add('_score')
 
-  if (Object.keys(query).length === 0) {
-    return res.sendStatus(400)
-  }
-
   const result = req.applyLimit(dbCommunes.search(query))
 
   if (req.outputFormat === 'geojson') {
