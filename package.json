@@ -21,7 +21,7 @@
     "express": "^4.16.4",
     "iconv-lite": "^0.4.24",
     "lodash": "^4.17.11",
-    "lunr": "^0.7.1",
+    "lunr": "1.0.0",
     "morgan": "^1.9.1",
     "rbush": "^2.0.1",
     "stream-array": "^1.1.2",
