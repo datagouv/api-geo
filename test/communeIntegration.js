@@ -230,7 +230,7 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadCommunes({srcPath: __dirname + '/integration-data/communes.tsv'})(ctx, err => {
           expect(err).to.be(undefined)
-          expect(commune).to.eql({code: '01001', codeDepartement: '01', codeRegion: '84', nom: 'L\'Abergement-Clémenciat'})
+          expect(commune).to.eql({code: '01001', codeDepartement: '01', codeRegion: '84', nom: 'L\'Abergement-Clémenciat', type: 'commune-actuelle'})
           done()
         })
       })
@@ -240,7 +240,7 @@ describe('#integration communes', () => {
       it('should store 1 commune', done => {
         loadCommunes({srcPath: __dirname + '/integration-data/communes-drom.tsv'})(ctx, err => {
           expect(err).to.be(undefined)
-          expect(commune).to.eql({code: '97101', codeDepartement: '971', codeRegion: '01', nom: 'L\'Abergement-Clémenciat'})
+          expect(commune).to.eql({code: '97101', codeDepartement: '971', codeRegion: '01', nom: 'L\'Abergement-Clémenciat', type: 'commune-actuelle'})
           done()
         })
       })
@@ -418,7 +418,7 @@ describe('#integration communes', () => {
     })
 
     describe('No codesPostaux', () => {
-      it('should delete commune', done => {
+      it('should store commune', done => {
         const ctx = {debug: () => {}, communes: new Map([
           ['12345', {
             code: '12345',
@@ -431,7 +431,7 @@ describe('#integration communes', () => {
         expect(ctx.communes.size).to.be(1)
         checkCommunes()(ctx, err => {
           expect(err).to.be(undefined)
-          expect(ctx.communes.size).to.be(0)
+          expect(ctx.communes.size).to.be(1)
           done()
         })
       })
