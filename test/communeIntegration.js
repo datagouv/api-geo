@@ -65,9 +65,10 @@ describe('#integration communes', () => {
         it('should have no impact on storage', () => {
           try {
             ctx.createCommune('99999')
-          } catch (err) {
+          } catch (error) {
             // Do nothing
           }
+
           expect(ctx.communes.has('99999')).to.be.ok()
           expect(ctx.communes.size).to.be(1)
         })

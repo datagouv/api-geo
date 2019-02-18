@@ -40,7 +40,10 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
       query.pointInContour = [lon, lat]
     }
   }
-  if (query.nom) req.fields.add('_score')
+
+  if (query.nom) {
+    req.fields.add('_score')
+  }
 
   if (Object.keys(query).length === 0) {
     return res.sendStatus(400)
@@ -75,7 +78,9 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeRegion')
 
-  if (query.nom) req.fields.add('_score')
+  if (query.nom) {
+    req.fields.add('_score')
+  }
 
   res.send(
     req.applyLimit(dbDepartements.search(query))
@@ -113,7 +118,9 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
 app.get('/regions', initLimit(), initRegionFields, (req, res) => {
   const query = pick(req.query, 'code', 'nom')
 
-  if (query.nom) req.fields.add('_score')
+  if (query.nom) {
+    req.fields.add('_score')
+  }
 
   res.send(
     req.applyLimit(dbRegions.search(query))

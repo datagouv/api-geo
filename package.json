@@ -33,7 +33,7 @@
     "istanbul": "^0.4.3",
     "mocha": "^3.0",
     "supertest": "^1.2.0",
-    "xo": "^0.21.1"
+    "xo": "^0.24.0"
   },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
@@ -49,12 +49,12 @@
     "semicolon": false,
     "space": 2,
     "rules": {
-      "curly": "off",
       "no-path-concat": "off",
       "unicorn/filename-case": "off",
       "import/order": "off",
       "no-return-assign": "off",
-      "unicorn/no-abusive-eslint-disable": "off"
+      "unicorn/no-abusive-eslint-disable": "off",
+      "ava/no-import-test-files": "off"
     }
   },
   "engines": {
