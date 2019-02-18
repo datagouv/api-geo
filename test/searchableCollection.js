@@ -357,7 +357,7 @@ describe('normalizeString()', () => {
   describe('Accent string', () => {
     it('should return a string without accent.', () => {
       const result = normalizeString('ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäæçèéêëìíîïðòóôöùûüýÿ')
-      expect(result).to.equal('aaaaaaaeceeeeiiiinooooouuuuyaaaaaaeceeeeiiiioooouuuyy')
+      expect(result).to.equal('aaaaaaaeceeeeiiiinooooouuuuyaaaaaaeceeeeiiiidoooouuuyy')
     })
   })
 })
