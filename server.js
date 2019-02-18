@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
-const {initCommuneFields, initCommuneFormat} = require('./lib/communeHelpers')
+const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
 const {initDepartementFields} = require('./lib/departementHelpers')
 const {initRegionFields} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -46,7 +46,11 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
     return res.sendStatus(400)
   }
 
-  const result = req.applyLimit(dbCommunes.search(query))
+  if (query.type) {
+    query.type = query.type.split(',')
+  }
+
+  const result = req.applyLimit(dbCommunes.search({...communesDefaultQuery, ...query}))
 
   if (req.outputFormat === 'geojson') {
     res.send({
@@ -93,7 +97,7 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
   if (departements.length === 0) {
     res.sendStatus(404)
   } else {
-    const communes = req.applyLimit(dbCommunes.search({codeDepartement: req.params.code}))
+    const communes = req.applyLimit(dbCommunes.search({...communesDefaultQuery, codeDepartement: req.params.code}))
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
