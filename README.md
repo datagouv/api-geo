@@ -1,8 +1,4 @@
-# API Communes
-
-[![Build Status](https://travis-ci.org/etalab/api-communes.svg?branch=master)](https://travis-ci.org/etalab/api-communes)
-[![Coverage Status](https://coveralls.io/repos/github/etalab/api-communes/badge.svg?branch=master)](https://coveralls.io/github/etalab/api-communes?branch=master)
-[![Dependency Status](https://david-dm.org/etalab/api-communes.svg)](https://david-dm.org/etalab/api-communes)
+# API Géo
 
 ## Informations et documentation
 
@@ -10,29 +6,28 @@
 
 ## Pré-requis
 
-* [Node.js](https://nodejs.org/en/) >= 8.x
+* [Node.js](https://nodejs.org/en/) >= 10
+* yarn (optionnel, peut être remplacé par npm)
 * wget
 * bash
 
 ## Installation
 
-_Note : Le téléchargement initial des données (~200 Mo) peut prendre un certain temps._
-
 ```bash
-npm install # (--production)
-npm run prepare-data
+yarn # (--prod)
+yarn build
 ```
 
 ## Démarrage de l'API
 
 ```bash
-npm start
+yarn start
 ```
 
 ## Lancer les tests
 
 ```bash
-npm test
+yarn test
 ```
 
 ## Docker
@@ -41,13 +36,6 @@ npm test
 docker-compose up
 ```
 
-## Données sources
+# Licence
 
-* [Code Officiel Géographique de l'INSEE](http://www.insee.fr/fr/methodes/nomenclatures/cog/telechargement.asp)
-* [Découpage administratif communal français issu d'OpenStreetMap](https://www.data.gouv.fr/fr/datasets/decoupage-administratif-communal-francais-issu-d-openstreetmap/) (licence ODbL)
-* [Base officielle des codes postaux](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/) (licence ODbL)
-
-## TODO
-
-* Supprimer la dépendance à `bash` et `wget`
-* Plus de tests
+MIT

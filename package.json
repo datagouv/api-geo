@@ -1,10 +1,10 @@
 {
-  "name": "@etalab/api-communes",
+  "name": "@etalab/api-geo",
   "version": "1.0.0",
-  "description": "API for French administrative units",
+  "description": "Interroger les référentiels géographiques plus facilement",
   "repository": {
     "type": "git",
-    "url": "git://github.com/etalab/api-communes.git"
+    "url": "git://github.com/etalab/api-geo.git"
   },
   "publishConfig": {
     "access": "public"
