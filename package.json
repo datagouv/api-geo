@@ -10,24 +10,17 @@
     "access": "public"
   },
   "dependencies": {
-    "@turf/centroid": "^6.0.2",
-    "@turf/helpers": "^6.1.4",
-    "@turf/union": "^6.0.3",
-    "JSONStream": "^1.3.5",
-    "async": "^2.6.2",
     "cors": "^2.8.5",
-    "csv-parse": "^4.3.3",
-    "debug": "^4.1.1",
     "express": "^4.16.4",
-    "iconv-lite": "^0.4.24",
     "lodash": "^4.17.11",
     "lunr": "1.0.0",
     "morgan": "^1.9.1",
-    "rbush": "^2.0.1",
-    "stream-array": "^1.1.2",
-    "through2": "^3.0.0"
+    "rbush": "^2.0.1"
   },
   "devDependencies": {
+    "@etalab/decoupage-administratif": "^0.3.0",
+    "@turf/area": "^6.0.1",
+    "@turf/centroid": "^6.0.2",
     "benchmark": "^2.1.0",
     "expect.js": "^0.3.1",
     "mocha": "^5.2.0",
@@ -41,9 +34,9 @@
     "start": "node --max_old_space_size=2048 server",
     "test-unit": "nyc mocha --exit",
     "test": "npm run lint && npm run test-unit",
-    "fetch-data": "./fetch_data.sh",
-    "integrate-data": "DEBUG=integration node integration",
-    "prepare-data": "npm run fetch-data && npm run integrate-data"
+    "download-sources": "./fetch_data.sh",
+    "build-only": "node --max_old_space_size=4096 build",
+    "build": "yarn download-sources && yarn build-only"
   },
   "xo": {
     "semicolon": false,

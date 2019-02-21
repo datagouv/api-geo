@@ -6,13 +6,14 @@ WORKDIR /usr/src/api-communes
 
 # Install app dependencies
 COPY package.json /usr/src/api-communes
-RUN npm install -—production
+COPY yarn.lock /usr/src/api-communes
+RUN yarn --prod
 
 # Copy sources
 COPY . /usr/src/api-communes
 
 # Prepare data
-RUN npm run prepare-data
+RUN yarn build
 
 EXPOSE 5000
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]
