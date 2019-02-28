@@ -179,7 +179,7 @@ describe('Test api', () => {
           request(server)
             .get('/departements/11/communes')
             .expect(res => {
-              expect(res.body.length).to.equal(436)
+              expect(res.body.length).to.equal(433)
             })
             .end(done)
         })
