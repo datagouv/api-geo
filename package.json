@@ -22,6 +22,7 @@
     "@turf/area": "^6.0.1",
     "@turf/centroid": "^6.0.2",
     "benchmark": "^2.1.0",
+    "debug": "^4.1.1",
     "expect.js": "^0.3.1",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
