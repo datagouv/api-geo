@@ -3,7 +3,7 @@ const {keyBy} = require('lodash')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
 const area = require('@turf/area').default
 const centroid = require('@turf/centroid').default
-const {readGeoJSONFeatures, writeData} = require('./util')
+const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', 'communes-5m.geojson.gz')
 
@@ -31,7 +31,7 @@ async function buildCommunes() {
       if (commune.code in communesFeaturesIndex) {
         const contour = communesFeaturesIndex[commune.code].geometry
         communeData.contour = contour
-        communeData.surface = area(contour) / 10000
+        communeData.surface = fixPrecision(area(contour) / 10000, 2)
         communeData.centre = centroid(contour).geometry
       }
 
