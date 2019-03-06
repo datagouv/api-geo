@@ -47,6 +47,7 @@ async function buildCommunes() {
     code: '97801',
     type: 'commune-actuelle',
     nom: 'Saint-Martin',
+    codesPostaux: ['97150'],
     // Population légale 2013 (INSEE)
     population: 35594,
     // OSM
