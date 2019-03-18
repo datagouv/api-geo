@@ -147,6 +147,19 @@ app.get('/regions/:code/departements', initLimit(), initDepartementFields, (req,
   }
 })
 
+/* Raw data */
+app.get('/raw/communes.json', (req, res) => {
+  res.download('data/communes.json')
+})
+
+app.get('/raw/departements.json', (req, res) => {
+  res.download('data/departements.json')
+})
+
+app.get('/raw/regions.json', (req, res) => {
+  res.download('data/regions.json')
+})
+
 /* Definition */
 app.get('/definition.yml', (req, res) => {
   res.sendFile(__dirname + '/definition.yml')
