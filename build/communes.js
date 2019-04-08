@@ -42,18 +42,6 @@ async function buildCommunes() {
       return communeData
     })
 
-  // Ajout manuel en attendant une évolution de @etalab/decoupage-administratif
-  communesData.push({
-    code: '97801',
-    type: 'commune-actuelle',
-    nom: 'Saint-Martin',
-    codesPostaux: ['97150'],
-    // Population légale 2013 (INSEE)
-    population: 35594,
-    // OSM
-    centre: {type: 'Point', coordinates: [-63.08582, 18.06685]}
-  })
-
   await writeData('communes', communesData)
 }
 
