@@ -45,7 +45,7 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
     req.fields.add('_score')
   }
 
-  if (Object.keys(query).length === 0) {
+  if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
     return res.sendStatus(400)
   }
 
