@@ -124,12 +124,13 @@ workflows:
             - install
           filters: *default_filters
 
-      - test:
+      - build:
           requires:
             - install
           filters: *default_filters
 
-      - build:
+      - test:
           requires:
             - install
+            - build
           filters: *default_filters
