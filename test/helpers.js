@@ -155,12 +155,29 @@ describe('helpers', () => {
           })
         })
 
-        it('should pass geometries and defaultGeometry in req (geojson)', done => {
+        it('should set default geometry in req when not set in query (geojson)', done => {
           const req = {query: {format: 'geojson'}, fields: new Set(['x', 'a', 'b'])}
           instance(req, undefined, err => {
             expect(err).to.be(undefined)
-            expect(req.geometries).to.eql(['a', 'b'])
-            expect(req.defaultGeometry).to.be('a')
+            expect(req.geometry).to.be('a')
+            done()
+          })
+        })
+
+        it('should set geometry in req when set in query (geojson)', done => {
+          const req = {query: {format: 'geojson', geometry: 'b'}, fields: new Set(['x', 'a', 'b'])}
+          instance(req, undefined, err => {
+            expect(err).to.be(undefined)
+            expect(req.geometry).to.be('b')
+            done()
+          })
+        })
+
+        it('should set default geometry in req when geometry in query is unknown (geojson)', done => {
+          const req = {query: {format: 'geojson', geometry: 'c'}, fields: new Set(['x', 'a', 'b'])}
+          instance(req, undefined, err => {
+            expect(err).to.be(undefined)
+            expect(req.geometry).to.be('a')
             done()
           })
         })
@@ -176,30 +193,16 @@ describe('helpers', () => {
       )).to.eql({})
     })
 
-    it('should support geojson formatting with default geometry', () => {
+    it('should support geojson formatting', () => {
       expect(formatOne(
         {
           query: {},
           outputFormat: 'geojson',
-          geometries: ['x', 'y'],
-          defaultGeometry: 'x',
+          geometry: 'x',
           fields: new Set()
         },
         {a: 1, b: 2, c: 3, x: 4, y: 6}
       )).to.eql({type: 'Feature', properties: {}, geometry: 4})
-    })
-
-    it('should support `geojson` formatting with `contour` as alternative geometry', () => {
-      expect(formatOne(
-        {
-          query: {geometry: 'y'},
-          outputFormat: 'geojson',
-          geometries: ['x', 'y'],
-          defaultGeometry: 'x',
-          fields: new Set()
-        },
-        {a: 1, b: 2, c: 3, x: 4, y: 6}
-      )).to.eql({type: 'Feature', properties: {}, geometry: 6})
     })
 
     it('should filter specified fields (json)', () => {
@@ -214,8 +217,7 @@ describe('helpers', () => {
         {
           query: {},
           outputFormat: 'geojson',
-          geometries: ['x', 'y'],
-          defaultGeometry: 'x',
+          geometry: 'x',
           fields: new Set(['a', 'c'])
         },
         {a: 1, b: 2, c: 3, x: 4, y: 6}

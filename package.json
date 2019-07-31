@@ -22,6 +22,7 @@
     "@turf/area": "^6.0.1",
     "@turf/centroid": "^6.0.2",
     "benchmark": "^2.1.0",
+    "codecov": "^3.5.0",
     "debug": "^4.1.1",
     "expect.js": "^0.3.1",
     "mocha": "^5.2.0",
@@ -33,8 +34,7 @@
     "bench": "DEBUG=store,bench node bench",
     "lint": "xo",
     "start": "node --max_old_space_size=2048 server",
-    "test-unit": "NODE_OPTIONS=--max_old_space_size=2048 nyc mocha --exit",
-    "test": "yarn lint && yarn test-unit",
+    "test": "NODE_OPTIONS=--max_old_space_size=2048 nyc mocha --exit --timeout 5000",
     "download-sources": "./download-sources.sh",
     "build-only": "node --max_old_space_size=4096 build",
     "build": "yarn download-sources && yarn build-only"

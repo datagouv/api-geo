@@ -28,10 +28,26 @@ describe('Test api', () => {
 
   /* Communes */
   describe('Communes', () => {
-    describe('with no input', () => {
-      it('should reply with 400', done => {
+    describe('with no query (json)', () => {
+      it('should reply with 200', done => {
         request(server)
           .get('/communes')
+          .expect(200, done)
+      })
+    })
+
+    describe('with no query (geojson)', () => {
+      it('should reply with 400', done => {
+        request(server)
+          .get('/communes?format=geojson')
+          .expect(400, done)
+      })
+    })
+
+    describe('with no query (json, asking contour)', () => {
+      it('should reply with 400', done => {
+        request(server)
+          .get('/communes?fields=contour')
           .expect(400, done)
       })
     })
