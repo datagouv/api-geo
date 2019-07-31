@@ -9,11 +9,6 @@ defaults:
     docker:
       - image: circleci/node:10-stretch
 
-  golang_container: &golang_container
-    working_directory: *workspace_root
-    docker:
-      - image: circleci/golang:1-stretch
-
   filters: &default_filters
     tags:
       only: '/v[0-9]+(\.[0-9]+)*/'
@@ -105,6 +100,11 @@ jobs:
       - run:
           name: Build output bundles
           command: yarn build
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - data/
 
 workflows:
   version: 2
