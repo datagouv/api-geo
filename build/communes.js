@@ -5,7 +5,9 @@ const area = require('@turf/area').default
 const centroid = require('@turf/centroid').default
 const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
-const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', 'communes-5m.geojson.gz')
+const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
+
+const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-${resolution}.geojson.gz`)
 
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
 
