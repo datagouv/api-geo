@@ -1,0 +1,135 @@
+version: 2
+
+defaults:
+  workspace_root: &workspace_root
+    ~/apigeo
+
+  nodejs_container: &nodejs_container
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/node:10-stretch
+
+  golang_container: &golang_container
+    working_directory: *workspace_root
+    docker:
+      - image: circleci/golang:1-stretch
+
+  filters: &default_filters
+    tags:
+      only: '/v[0-9]+(\.[0-9]+)*/'
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+  restore_node_modules: &restore_node_modules
+    restore_cache:
+      name: Restore node_modules cache
+      keys:
+        - v1-apigeo-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        - v1-apigeo-node-master-{{ checksum "yarn.lock" }}
+        - v1-apigeo-node-master-
+
+jobs:
+  checkout:
+    <<: *nodejs_container
+    steps:
+      - checkout
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - ./
+
+  install:
+    <<: *nodejs_container
+    steps:
+      - *attach_workspace
+      - *restore_node_modules
+
+      - restore_cache:
+          name: Restore yarn cache
+          keys:
+            - v1-apigeo-yarn-{{ checksum "yarn.lock" }}
+            - v1-apigeo-yarn-
+
+      - run:
+          name: Install dependencies
+          command: yarn --frozen-lockfile
+
+      - save_cache:
+          name: Save yarn cache
+          key: v1-apigeo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn/
+
+      - save_cache:
+          name: Save node_modules cache
+          key: v1-apigeo-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+
+  lint:
+    <<: *nodejs_container
+    steps:
+      - *attach_workspace
+      - *restore_node_modules
+
+      - run:
+          name: Lint JavaScript
+          command: yarn lint
+
+  test:
+    <<: *nodejs_container
+    steps:
+      - *attach_workspace
+      - *restore_node_modules
+
+      - run:
+          name: Run tests
+          command: yarn test
+
+      - store_test_results:
+          path: reports/tests/
+
+      - run:
+          name: Upload code coverage to codecov
+          command: yarn codecov
+
+  build:
+    <<: *nodejs_container
+    steps:
+      - *attach_workspace
+      - *restore_node_modules
+
+      - run:
+          name: Build output bundles
+          command: yarn build
+
+workflows:
+  version: 2
+
+  push:
+    jobs:
+      - checkout:
+          filters: *default_filters
+
+      - install:
+          requires:
+            - checkout
+          filters: *default_filters
+
+      - lint:
+          requires:
+            - install
+          filters: *default_filters
+
+      - test:
+          requires:
+            - install
+          filters: *default_filters
+
+      - build:
+          requires:
+            - install
+          filters: *default_filters
