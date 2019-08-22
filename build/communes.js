@@ -3,6 +3,7 @@ const {keyBy} = require('lodash')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
 const area = require('@turf/area').default
 const centroid = require('@turf/centroid').default
+const truncate = require('@turf/truncate').default
 const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
@@ -34,7 +35,7 @@ async function buildCommunes() {
         const contour = communesFeaturesIndex[commune.code].geometry
         communeData.contour = contour
         communeData.surface = fixPrecision(area(contour) / 10000, 2)
-        communeData.centre = centroid(contour).geometry
+        communeData.centre = truncate(centroid(contour), {precision: 4}).geometry
       }
 
       if (MORTES_POUR_LA_FRANCE.includes(commune.code)) {
