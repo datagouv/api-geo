@@ -11,7 +11,7 @@ const dbRegions = require('./lib/regions').getIndexedDb()
 const {pick} = require('lodash')
 
 const app = express()
-app.use(cors())
+app.use(cors({origin: true}))
 app.use(morgan('dev'))
 
 // Inject databases references
