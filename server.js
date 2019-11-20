@@ -12,7 +12,10 @@ const {pick} = require('lodash')
 
 const app = express()
 app.use(cors({origin: true}))
-app.use(morgan('dev'))
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'))
+}
 
 // Inject databases references
 app.use((req, res, next) => {
