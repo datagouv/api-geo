@@ -381,7 +381,7 @@ definitions:
       surface:
         type: number
         format: float
-        description: Surface de la commune, en mètres-carrés
+        description: Surface de la commune, en hectares
       centre:
         type: object
         description: Centre de la commune (Point GeoJSON)
