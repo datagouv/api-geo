@@ -18,7 +18,7 @@
     "rbush": "^2.0.1"
   },
   "devDependencies": {
-    "@etalab/decoupage-administratif": "^0.9.0-3",
+    "@etalab/decoupage-administratif": "^0.9.0-4",
     "@turf/area": "^6.0.1",
     "@turf/point-on-feature": "^6.0.2",
     "@turf/truncate": "^6.0.1",
