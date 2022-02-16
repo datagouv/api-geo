@@ -90,12 +90,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@etalab/decoupage-administratif@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@etalab/decoupage-administratif/-/decoupage-administratif-1.0.0.tgz#77b4438608b29669cf985955bf57423e464f152c"
-  integrity sha512-3v3Wv7aIZXYroalfA8uayZYvLJjoNBXy9C8zSJr0s7MWgk9nZzMVQ2AKzB3+06snM5CVQHcJIwBQ5vZVqCKzEA==
-  dependencies:
-    lodash "^4.17.15"
+"@etalab/decoupage-administratif@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@etalab/decoupage-administratif/-/decoupage-administratif-1.0.2.tgz#1639f90c8d29878a1f67fdc22c13cefadb635910"
+  integrity sha512-EObvBYwS3jzJCtr3pwCF437RjY1jptQ8cGx+tV32SFq06zPk1S86++aaXk5NlOT1LLJy8P5Uqyx5LjmW3iygGw==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -2299,11 +2297,6 @@ lodash@^4.17.11:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
-
-lodash@^4.17.15:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^2.0.0:
   version "2.2.0"
