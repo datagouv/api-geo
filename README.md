@@ -36,6 +36,13 @@ yarn test
 docker-compose up
 ```
 
+## Utilisations
+
+- Utilisée dans les produits Etalab
+  - https://cadastre.data.gouv.fr/map
+  - https://app.dvf.etalab.gouv.fr
+  - https://publier.etalab.studio
+
 # Licence
 
 MIT
