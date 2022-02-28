@@ -39,7 +39,7 @@ docker-compose up
 ## Utilisations de l'API géo
 
 L'API géo est notamment utilisée par [Etalab](https://www.etalab.gouv.fr/) et [beta.gouv.fr](https://beta.gouv.fr/). Les usages cités ici ne sont pas exhaustifs. 
-Si vous utiliser l'API géo n'hésitez pas à le mentionner ici. 
+Si vous utiliser l'API Géo, n'hésitez pas à le mentionner ici.
 
 
 - Utilisée dans les produits Etalab
