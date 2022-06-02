@@ -30,6 +30,9 @@ async function buildCommunes() {
         codesPostaux: commune.codesPostaux || [],
         population: commune.population
       }
+      if ('collectiviteOutremer' in commune) {
+        communeData['collectiviteOutremer'] = commune['collectiviteOutremer']
+      }
 
       if (commune.code in communesFeaturesIndex) {
         const contour = communesFeaturesIndex[commune.code].geometry
