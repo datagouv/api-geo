@@ -17,7 +17,7 @@ describe('communeHelpers', () => {
     it('empty request should return default fields', done => {
       runTestCase(
         {},
-        ['nom', 'code', 'codesPostaux', 'codeDepartement', 'codeRegion', 'population'],
+        ['nom', 'code', 'codeDepartement', 'codeRegion', 'codesPostaux', 'population', 'collectiviteOutremer'],
         done
       )
     })

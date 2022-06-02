@@ -15,6 +15,7 @@ const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '551
 async function buildCommunes() {
   const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
   const communesFeaturesIndex = keyBy(communesFeatures, f => f.properties.code)
+  const keyCom = 'collectiviteOutremer'
 
   const communesData = communes
     .filter(commune => {
@@ -29,6 +30,9 @@ async function buildCommunes() {
         codeRegion: commune.region,
         codesPostaux: commune.codesPostaux || [],
         population: commune.population
+      }
+      if (keyCom in commune) {
+        communeData[keyCom] = commune[keyCom]
       }
 
       if (commune.code in communesFeaturesIndex) {
