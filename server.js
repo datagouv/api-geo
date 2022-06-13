@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -56,6 +56,10 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
     query.type = query.type.split(',')
   }
 
+  if (query.zone) {
+    query.zone = query.zone.split(',')
+  }
+
   const result = req.applyLimit(dbCommunes.search({...communesDefaultQuery, ...query}))
 
   if (req.outputFormat === 'geojson') {
@@ -79,7 +83,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 
 /* Départements */
 app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
-  const query = pick(req.query, 'code', 'nom', 'codeRegion')
+  const query = pick(req.query, 'code', 'nom', 'codeRegion', 'zone')
 
   if (query.nom) {
     req.fields.add('_score')
@@ -119,7 +123,7 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
 
 /* Régions */
 app.get('/regions', initLimit(), initRegionFields, (req, res) => {
-  const query = pick(req.query, 'code', 'nom')
+  const query = pick(req.query, 'code', 'nom', 'zone')
 
   if (query.nom) {
     req.fields.add('_score')
