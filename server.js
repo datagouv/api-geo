@@ -2,8 +2,8 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
-const {initDepartementFields} = require('./lib/departementHelpers')
-const {initRegionFields} = require('./lib/regionHelpers')
+const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
+const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
@@ -89,8 +89,12 @@ app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
     req.fields.add('_score')
   }
 
+  if (query.zone) {
+    query.zone = query.zone.split(',')
+  }
+
   res.send(
-    req.applyLimit(dbDepartements.search(query))
+    req.applyLimit(dbDepartements.search({...departementsDefaultQuery, ...query}))
       .map(departement => formatOne(req, departement))
   )
 })
@@ -129,8 +133,12 @@ app.get('/regions', initLimit(), initRegionFields, (req, res) => {
     req.fields.add('_score')
   }
 
+  if (query.zone) {
+    query.zone = query.zone.split(',')
+  }
+
   res.send(
-    req.applyLimit(dbRegions.search(query))
+    req.applyLimit(dbRegions.search({...regionsDefaultQuery, ...query}))
       .map(region => formatOne(req, region))
   )
 })
