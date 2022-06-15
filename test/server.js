@@ -121,7 +121,8 @@ describe('Test api', () => {
           'region',
           'centre',
           'contour',
-          'surface'
+          'surface',
+          'zone'
         ]
         request(server)
           .get('/communes/54099?fields=' + fields.join(','))
