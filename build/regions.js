@@ -6,7 +6,8 @@ async function buildRegions() {
     .map(region => {
       return {
         code: region.code,
-        nom: region.nom
+        nom: region.nom,
+        zone: region.zone
       }
     })
 

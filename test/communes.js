@@ -68,9 +68,9 @@ describe('communes', () => {
       })
     })
     describe('All criteria', () => {
-      it('should return an array with 1 commune', () => {
-        const query = {nom: 'efg', code: '67890', codeDepartement: '01', codeRegion: 'B', codePostal: '11111', pointInContour: [5, 5]}
-        expect(db.search(query).map(c => c.code)).to.eql(['67890'])
+      it('should return an array with no commune', () => {
+        const query = {nom: 'efg', code: '67890', codeDepartement: '01', codeRegion: 'B', codePostal: '11111', pointInContour: [5, 5], type: ['commune-actuelle']}
+        expect(db.search(query).map(c => c.code)).to.eql([])
       })
     })
   })
