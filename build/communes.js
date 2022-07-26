@@ -49,6 +49,7 @@ async function buildCommunes() {
           communeData.mairie = truncate(communesFeaturesMairieIndex[commune.code], {precision: 4}).geometry
         } else {
           console.log('Pas de mairie associée à', commune.code)
+	  communeData.mairie = communeData.centre
         }
       }
 
