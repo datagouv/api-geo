@@ -32,22 +32,4 @@ ogrmerge.py -overwrite_ds\
             -lco RFC7946=YES \
             -lco WRITE_NAME=NO
 
-gzip -c -d data/communes-5m.geojson.gz | jq -c -r '.features[] | select(.properties.departement | IN("975","977","978","984","986","987","988","989"))' \
-     | ndjson-map -r turf=@turf/turf \
-     'code = d.properties.code, d = turf.bbox(d, {properties: d.properties}), d = {"bbox": d, "code": code}, d'
-
-# for row in $(echo "${sample}" | jq -r '.[] | @base64'); do
-#     _jq() {
-#      echo ${row} | base64 --decode | jq -r ${1}
-#     }
-#    wget -O $(_jq '.[0]') $(_jq '.[1]');
-# done;
-
-echo '[out:json][timeout:25];(node["amenity"="townhall"](-28.960088688007,-160.048828125,-6.6646075621726,-129.1552734375);way["amenity"="townhall"](-28.960088688007,-160.048828125,-6.6646075621726,-129.1552734375);relation["amenity"="townhall"](-28.960088688007,-160.048828125,-6.6646075621726,-129.1552734375););out;>;out skel qt;' | query-overpass
-# gzip -c -d data/communes-5m.geojson.gz | jq -c -r '.features[] | select(.properties.departement | IN("975","977","978","984","986","987","988","989"))' | wc -l
-
-# gzip -c -d data/communes-5m.geojson.gz | jq -c -r '.features[]' \
-#     | ndjson-map -r turf=@turf/turf 'd = turf.bbox(d, {properties: d.properties}), d' \
-#     | ndjson-reduce 'p.features.push(d), p' '{type: "FeatureCollection", features: []}'
-
 cd ..
