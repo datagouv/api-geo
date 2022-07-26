@@ -42,14 +42,14 @@ async function buildCommunes() {
         communeData.contour = contour
         communeData.surface = fixPrecision(area(contour) / 10000, 2)
         communeData.centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
-	const bboxCommune = bbox(communesFeaturesIndex[commune.code])
+        const bboxCommune = bbox(communesFeaturesIndex[commune.code])
         const bboxPolygonCommune = bboxPolygon(bboxCommune)
-	communeData.bbox = bboxPolygonCommune.geometry
+        communeData.bbox = bboxPolygonCommune.geometry
         if (commune.code in communesFeaturesMairieIndex) {
           communeData.mairie = truncate(communesFeaturesMairieIndex[commune.code], {precision: 4}).geometry
         } else {
           console.log('Pas de mairie associée à', commune.code)
-	  communeData.mairie = communeData.centre
+          communeData.mairie = communeData.centre
         }
       }
 
