@@ -22,6 +22,8 @@ parameters:
         - centre
         - surface
         - contour
+        - mairie
+        - bbox
         - codeDepartement
         - departement
         - codeRegion
@@ -78,7 +80,7 @@ parameters:
     in: query
     description: Géométrie à utiliser pour la sortie géographique
     type: string
-    enum: ['centre', 'contour']
+    enum: ['centre', 'contour', 'mairie', 'bbox']
     default: centre
   limitParam:
     name: limit
@@ -388,6 +390,12 @@ definitions:
       contour:
         type: object
         description: Contour de la commune (Polygon GeoJSON)
+      mairie:
+        type: object
+        description: Mairie principale de la commune (Point GeoJSON)
+      bbox:
+        type: object
+        description: Rectangle englobant de la commune (Polygon GeoJSON)
   Departement:
     type: object
     properties:
