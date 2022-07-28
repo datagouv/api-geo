@@ -22,6 +22,8 @@
   "devDependencies": {
     "@etalab/decoupage-administratif": "^2.1.0",
     "@turf/area": "^6.0.1",
+    "@turf/bbox": "^6.5.0",
+    "@turf/bbox-polygon": "^6.5.0",
     "@turf/point-on-feature": "^6.0.2",
     "@turf/truncate": "^6.0.1",
     "benchmark": "^2.1.0",
