@@ -3,10 +3,10 @@ const {keyBy} = require('lodash')
 const epcis = require('@etalab/decoupage-administratif/data/epci.json')
 const departements = require('@etalab/decoupage-administratif/data/departements.json')
 const area = require('@turf/area').default
-const pointOnFeature = require('@turf/point-on-feature').default
-const truncate = require('@turf/truncate').default
 const bbox = require('@turf/bbox').default
 const bboxPolygon = require('@turf/bbox-polygon').default
+const pointOnFeature = require('@turf/point-on-feature').default
+const truncate = require('@turf/truncate').default
 const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'

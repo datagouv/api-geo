@@ -20,6 +20,7 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   for (const membre of curr.membres) {
     acc[membre.code] = curr.code
   }
+
   return acc
 }, {})
 
