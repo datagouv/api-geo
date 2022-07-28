@@ -2,10 +2,12 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
+const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
+const dbEpci = require('./lib/epci').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
 const dbRegions = require('./lib/regions').getIndexedDb()
 const {pick} = require('lodash')
@@ -21,6 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res, next) => {
   req.db = {
     communes: dbCommunes,
+    dbEpci,
     departements: dbDepartements,
     regions: dbRegions
   }
@@ -78,6 +81,15 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
     res.sendStatus(404)
   } else {
     res.send(formatOne(req, communes[0]))
+  }
+})
+
+app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
+  const epci = dbEpci.search({code: req.params.code})
+  if (epci.length === 0) {
+    res.sendStatus(404)
+  } else {
+    res.send(formatOne(req, epci[0]))
   }
 })
 
