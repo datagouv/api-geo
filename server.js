@@ -93,6 +93,47 @@ app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
   }
 })
 
+/* Communes */
+app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
+  const query = pick(req.query, 'code', 'nom', 'codeEpci' ,'codeDepartement', 'codeRegion', 'boost', 'zone')
+  if (req.query.lat && req.query.lon) {
+    const lat = parseFloat(req.query.lat)
+    const lon = parseFloat(req.query.lon)
+    if (Number.isFinite(lat) &&
+      lat >= -90 &&
+      lat <= 90 &&
+      Number.isFinite(lon) &&
+      lon >= -180 &&
+      lon <= 180
+    ) {
+      query.pointInContour = [lon, lat]
+    }
+  }
+
+  if (query.nom) {
+    req.fields.add('_score')
+  }
+
+  if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
+    return res.sendStatus(400)
+  }
+
+  if (query.zone) {
+    query.zone = query.zone.split(',')
+  }
+
+  const result = req.applyLimit(dbEpci.search({ ...epciDefaultQuery, ...query }))
+
+  if (req.outputFormat === 'geojson') {
+    res.send({
+      type: 'FeatureCollection',
+      features: result.map(commune => formatOne(req, commune))
+    })
+  } else {
+    res.send(result.map(commune => formatOne(req, commune)))
+  }
+})
+
 /* Départements */
 app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeRegion', 'zone')
