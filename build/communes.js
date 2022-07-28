@@ -11,7 +11,7 @@ const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
 const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-${resolution}.geojson.gz`)
-const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieu_commune_arrondissement_municipal.geojson')
+const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieux-communes-arrondissements-municipaux.geojson.gz')
 
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
 

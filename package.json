@@ -39,9 +39,8 @@
     "start": "node --max_old_space_size=2048 server",
     "test": "NODE_OPTIONS=--max_old_space_size=2048 nyc mocha --exit --timeout 5000",
     "download-sources": "./download-sources.sh",
-    "generate-mairie": "./generate-mairie.sh",
     "build-only": "node --max_old_space_size=4096 build",
-    "build": "yarn download-sources && yarn generate-mairie && yarn build-only"
+    "build": "yarn download-sources && yarn build-only"
   },
   "xo": {
     "semicolon": false,
