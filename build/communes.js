@@ -1,6 +1,7 @@
 const {join} = require('path')
 const {keyBy} = require('lodash')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
+const epci = require('@etalab/decoupage-administratif/data/epci.json')
 const area = require('@turf/area').default
 const pointOnFeature = require('@turf/point-on-feature').default
 const truncate = require('@turf/truncate').default
@@ -14,6 +15,13 @@ const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-${resolut
 const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieux-communes-arrondissements-municipaux.geojson.gz')
 
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
+
+const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
+  for (const membre of curr.membres) {
+    acc[membre.code] = curr.code
+  }
+  return acc
+}, {})
 
 async function buildCommunes() {
   const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
@@ -35,6 +43,10 @@ async function buildCommunes() {
         codesPostaux: commune.codesPostaux || [],
         population: commune.population,
         zone: commune.zone
+      }
+
+      if (commune.code in COMMUNES_EPCI_MATCHING) {
+        communeData.codeEpci = COMMUNES_EPCI_MATCHING[commune.code]
       }
 
       if (commune.code in communesFeaturesIndex) {
