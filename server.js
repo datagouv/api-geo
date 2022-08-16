@@ -86,7 +86,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 
 /* EPCI */
 app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
-  const query = pick(req.query, 'code', 'nom', 'codeEpci' ,'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -113,7 +113,7 @@ app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
     query.zone = query.zone.split(',')
   }
 
-  const result = req.applyLimit(dbEpci.search({ ...epciDefaultQuery, ...query }))
+  const result = req.applyLimit(dbEpci.search({...epciDefaultQuery, ...query}))
 
   if (req.outputFormat === 'geojson') {
     res.send({
