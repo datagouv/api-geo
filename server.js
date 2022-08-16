@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -84,16 +84,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
   }
 })
 
-app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
-  const epci = dbEpci.search({code: req.params.code})
-  if (epci.length === 0) {
-    res.sendStatus(404)
-  } else {
-    res.send(formatOne(req, epci[0]))
-  }
-})
-
-/* Communes */
+/* EPCI */
 app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeEpci' ,'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
@@ -131,6 +122,32 @@ app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
     })
   } else {
     res.send(result.map(commune => formatOne(req, commune)))
+  }
+})
+
+app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
+  const epci = dbEpci.search({code: req.params.code})
+  if (epci.length === 0) {
+    res.sendStatus(404)
+  } else {
+    res.send(formatOne(req, epci[0]))
+  }
+})
+
+app.get('/epci/:code/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
+  const epcis = dbEpci.search({code: req.params.code})
+  if (epcis.length === 0) {
+    res.sendStatus(404)
+  } else {
+    const communes = req.applyLimit(dbCommunes.search({...communesDefaultQuery, codeEpci: req.params.code}))
+    if (req.outputFormat === 'geojson') {
+      res.send({
+        type: 'FeatureCollection',
+        features: communes.map(commune => formatOne(req, commune))
+      })
+    } else {
+      res.send(communes.map(commune => formatOne(req, commune)))
+    }
   }
 })
 
