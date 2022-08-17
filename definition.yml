@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: API Géo
-  version: '1.0'
+  version: '1.1'
 host: geo.api.gouv.fr
 schemes:
   - https
@@ -24,6 +24,8 @@ parameters:
         - contour
         - mairie
         - bbox
+        - codeEpci
+        - epci
         - codeDepartement
         - departement
         - codeRegion
@@ -34,9 +36,36 @@ parameters:
       - nom
       - code
       - codesPostaux
+      - codeEpci
       - codeDepartement
       - codeRegion
       - population
+  epciFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum:
+        - nom
+        - code
+        - population
+        - financement
+        - type
+        - codesRegions
+        - codesDepartements
+        - zone
+        - centre
+        - surface
+        - contour
+        - bbox
+    collectionFormat: csv
+    default:
+      - nom
+      - code
+      - codesRegions
+      - codesDepartements
   departementFieldsParam:
     name: fields
     in: query
@@ -75,7 +104,7 @@ parameters:
     type: string
     enum: ['json', 'geojson']
     default: json
-  communeGeometryParam:
+  adminGeometryParam:
     name: geometry
     in: query
     description: Géométrie à utiliser pour la sortie géographique
@@ -122,6 +151,10 @@ paths:
           in: query
           description: Code de la commune
           type: string
+        - name: codeEpci
+          in: query
+          description: Code de l'EPCI associé
+          type: string
         - name: codeDepartement
           in: query
           description: Code du département associé
@@ -132,7 +165,7 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/communeGeometryParam'
+        - $ref: '#/parameters/adminGeometryParam'
       responses:
         200:
           description: Liste de communes
@@ -159,7 +192,7 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/communeGeometryParam'
+        - $ref: '#/parameters/adminGeometryParam'
       responses:
         200:
           description: Informations concernant une commune
@@ -171,6 +204,102 @@ paths:
             $ref: '#/definitions/Error'
         404:
           description: Commune introuvable
+          schema:
+            $ref: '#/definitions/Error'
+  /epci:
+    get:
+      summary: Recherche des EPCI
+      tags:
+        - Communes
+        - EPCI
+      parameters:
+        - name: nom
+          in: query
+          description: Nom de l'EPCI
+          type: string
+        - name: boost
+          in: query
+          description: Mode de boost de la recherche par nom
+          type: string
+        - name: codeEpci
+          in: query
+          description: Code de l'EPCI associé
+          type: string
+        - name: codeDepartement
+          in: query
+          description: Code du département associé
+          type: string
+        - name: codeRegion
+          in: query
+          description: Code de la région associée
+          type: string
+        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/adminGeometryParam'
+      responses:
+        200:
+          description: Liste des EPCI
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+  /epci/{code}:
+    get:
+      summary: Récupérer les informations concernant un EPCI
+      tags:
+        - EPCI
+      parameters:
+        - name: code
+          in: path
+          description: Code INSEE de la commune
+          required: true
+          type: string
+        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/adminGeometryParam'
+      responses:
+        '200':
+          description: Informations concernant une commune
+          schema:
+            $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: EPCI introuvable
+          schema:
+            $ref: '#/definitions/Error'
+  /epci/{code}/communes:
+    get:
+      summary: Renvoi les communes d'un EPCI
+      tags:
+        - EPCI
+        - Communes
+      parameters:
+        - name: code
+          in: path
+          description: Code de l'EPCI
+          required: true
+          type: string
+        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/adminGeometryParam'
+      responses:
+        200:
+          description: Liste des communes de l'EPCI
+          schema:
+            $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: EPCI introuvable
           schema:
             $ref: '#/definitions/Error'
 
@@ -245,7 +374,7 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/communeGeometryParam'
+        - $ref: '#/parameters/adminGeometryParam'
       responses:
         200:
           description: Liste des communes du département
