@@ -87,19 +87,6 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 /* EPCI */
 app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
-  if (req.query.lat && req.query.lon) {
-    const lat = parseFloat(req.query.lat)
-    const lon = parseFloat(req.query.lon)
-    if (Number.isFinite(lat) &&
-      lat >= -90 &&
-      lat <= 90 &&
-      Number.isFinite(lon) &&
-      lon >= -180 &&
-      lon <= 180
-    ) {
-      query.pointInContour = [lon, lat]
-    }
-  }
 
   if (query.nom) {
     req.fields.add('_score')
