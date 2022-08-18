@@ -104,12 +104,19 @@ parameters:
     type: string
     enum: ['json', 'geojson']
     default: json
-  adminGeometryParam:
+  communeGeometryParam:
     name: geometry
     in: query
     description: Géométrie à utiliser pour la sortie géographique
     type: string
     enum: ['centre', 'contour', 'mairie', 'bbox']
+    default: centre
+  epciGeometryParam:
+    name: geometry
+    in: query
+    description: Géométrie à utiliser pour la sortie géographique
+    type: string
+    enum: ['centre', 'contour', 'bbox']
     default: centre
   limitParam:
     name: limit
@@ -165,7 +172,7 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Liste de communes
@@ -192,7 +199,7 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Informations concernant une commune
@@ -235,14 +242,14 @@ paths:
           type: string
         - $ref: '#/parameters/epciFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/epciGeometryParam'
       responses:
         200:
           description: Liste des EPCI
           schema:
             type: array
             items:
-              $ref: '#/definitions/Commune'
+              $ref: '#/definitions/Epci'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -260,12 +267,12 @@ paths:
           type: string
         - $ref: '#/parameters/epciFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/epciGeometryParam'
       responses:
         '200':
           description: Informations concernant une commune
           schema:
-            $ref: '#/definitions/Commune'
+            $ref: '#/definitions/Epci'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -286,14 +293,16 @@ paths:
           description: Code de l'EPCI
           required: true
           type: string
-        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Liste des communes de l'EPCI
           schema:
-            $ref: '#/definitions/Commune'
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -374,12 +383,14 @@ paths:
           type: string
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/adminGeometryParam'
+        - $ref: '#/parameters/communeGeometryParam'
       responses:
         200:
           description: Liste des communes du département
           schema:
-            $ref: '#/definitions/Commune'
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -432,7 +443,7 @@ paths:
         200:
           description: Informations concernant la région
           schema:
-            $ref: '#/definitions/Departement'
+            $ref: '#/definitions/Region'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -459,7 +470,9 @@ paths:
         200:
           description: Liste des départements de la région
           schema:
-            $ref: '#/definitions/Departement'
+            type: array
+            items:
+              $ref: '#/definitions/Departement'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -496,12 +509,17 @@ definitions:
         description: Liste des codes postaux associés à la commune
         items:
           type: string
+      codeEpci:
+        type: string
+        description: Code de l'EPCI associé à la commune
       codeDepartement:
         type: string
         description: Code du département associé à la commune
       codeRegion:
         type: string
         description: Code de la région associée à la commune
+      epci:
+        $ref: '#/definitions/Epci'
       departement:
         $ref: '#/definitions/Departement'
       region:
@@ -522,6 +540,47 @@ definitions:
       mairie:
         type: object
         description: Mairie principale de la commune (Point GeoJSON). Pour les COM et les communes mortes pour la France, on retourne le centre.
+      bbox:
+        type: object
+        description: Rectangle englobant la commune (Polygon GeoJSON)
+  Epci:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code SIREN de l'EPCI
+      nom:
+        type: string
+        description: Nom de l'EPCI
+      type:
+        type: string
+        description: Type de l'EPCI, soit communauté d'agglomération (CA), soit communauté de communes (CC), soit communauté urbaine (CU), soit métropole de Lyon (MET69), soit métropole (METRO)
+      financement:
+        type: string
+        description: Financement de l'EPCI, soit fiscalité additionnelle (FA), soit en fiscalité professionnelle unique (FPU)
+      codesDepartements:
+        type: array
+        description: Liste des départements de l'EPCI
+        items:
+          type: string
+      codesRegions:
+        type: array
+        description: Liste des régions de l'EPCI
+        items:
+          type: string
+      population:
+        type: integer
+        description: Population municipale
+      surface:
+        type: number
+        format: float
+        description: Surface de l'EPCI, en hectares
+      centre:
+        type: object
+        description: Centre de l'EPCI (Point GeoJSON)
+      contour:
+        type: object
+        description: Contour de l'EPCI (Polygon GeoJSON)
       bbox:
         type: object
         description: Rectangle englobant la commune (Polygon GeoJSON)
