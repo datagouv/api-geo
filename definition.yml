@@ -395,7 +395,7 @@ definitions:
         description: Mairie principale de la commune (Point GeoJSON)
       bbox:
         type: object
-        description: Rectangle englobant de la commune (Polygon GeoJSON)
+        description: Rectangle englobant la commune (Polygon GeoJSON)
   Departement:
     type: object
     properties:
