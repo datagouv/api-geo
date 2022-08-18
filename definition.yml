@@ -392,7 +392,7 @@ definitions:
         description: Contour de la commune (Polygon GeoJSON)
       mairie:
         type: object
-        description: Mairie principale de la commune (Point GeoJSON)
+        description: Mairie principale de la commune (Point GeoJSON). Pour les COM et les communes mortes pour la France, on retourne le centre.
       bbox:
         type: object
         description: Rectangle englobant la commune (Polygon GeoJSON)
