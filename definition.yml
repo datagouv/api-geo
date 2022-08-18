@@ -31,6 +31,7 @@ parameters:
         - codeRegion
         - region
         - population
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -55,11 +56,11 @@ parameters:
         - type
         - codesRegions
         - codesDepartements
-        - zone
         - centre
         - surface
         - contour
         - bbox
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -78,6 +79,7 @@ parameters:
         - code
         - codeRegion
         - region
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -93,6 +95,7 @@ parameters:
       enum:
         - nom
         - code
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -111,6 +114,16 @@ parameters:
     type: string
     enum: ['centre', 'contour', 'mairie', 'bbox']
     default: centre
+  zoneParam:
+    name: zone
+    in: query
+    description: Zone permettant de filtrer à la métropole, aux DROM et aux COM. Défaut à metro,drom sauf pour les communes à metro,drom,com pour conserver le comportement historique.
+    required: false
+    type: array
+    collectionFormat: csv
+    items:
+      type: string
+      enum: ['metro', 'drom', 'com']
   epciGeometryParam:
     name: geometry
     in: query
@@ -170,6 +183,7 @@ paths:
           in: query
           description: Code de la région associée
           type: string
+        - $ref: '#/parameters/zoneParam'
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/communeGeometryParam'
@@ -240,6 +254,7 @@ paths:
           in: query
           description: Code de la région associée
           type: string
+        - $ref: '#/parameters/zoneParam'
         - $ref: '#/parameters/epciFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/epciGeometryParam'
@@ -330,6 +345,7 @@ paths:
             in: query
             description: Nom du département
             type: string
+          - $ref: '#/parameters/zoneParam'
           - $ref: '#/parameters/departementFieldsParam'
         responses:
           200:
@@ -414,6 +430,7 @@ paths:
             in: query
             description: Nom de la région
             type: string
+          - $ref: '#/parameters/zoneParam'
           - $ref: '#/parameters/regionFieldsParam'
         responses:
           200:
