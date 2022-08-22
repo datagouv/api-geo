@@ -227,7 +227,7 @@ paths:
           description: Commune introuvable
           schema:
             $ref: '#/definitions/Error'
-  /epci:
+  /epcis:
     get:
       summary: Recherche des EPCI
       tags:
@@ -269,7 +269,7 @@ paths:
           description: Erreur. Requête mal formée
           schema:
             $ref: '#/definitions/Error'
-  /epci/{code}:
+  /epcis/{code}:
     get:
       summary: Récupérer les informations concernant un EPCI
       tags:
@@ -296,7 +296,7 @@ paths:
           description: EPCI introuvable
           schema:
             $ref: '#/definitions/Error'
-  /epci/{code}/communes:
+  /epcis/{code}/communes:
     get:
       summary: Renvoi les communes d'un EPCI
       tags:

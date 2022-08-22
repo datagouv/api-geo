@@ -7,7 +7,7 @@ const {initDepartementFields, departementsDefaultQuery} = require('./lib/departe
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
-const dbEpci = require('./lib/epci').getIndexedDb()
+const dbEpci = require('./lib/epcis').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
 const dbRegions = require('./lib/regions').getIndexedDb()
 const {pick} = require('lodash')
@@ -85,7 +85,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 })
 
 /* EPCI */
-app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
+app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
 
   if (query.nom) {
@@ -112,7 +112,7 @@ app.get('/epci', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   }
 })
 
-app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
+app.get('/epcis/:code', initEpciFields, initEpciFormat, (req, res) => {
   const epci = dbEpci.search({code: req.params.code})
   if (epci.length === 0) {
     res.sendStatus(404)
@@ -121,7 +121,7 @@ app.get('/epci/:code', initEpciFields, initEpciFormat, (req, res) => {
   }
 })
 
-app.get('/epci/:code/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
+app.get('/epcis/:code/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
   const epcis = dbEpci.search({code: req.params.code})
   if (epcis.length === 0) {
     res.sendStatus(404)
