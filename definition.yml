@@ -276,7 +276,7 @@ paths:
       parameters:
         - name: code
           in: path
-          description: Code INSEE de la commune
+          description: Code INSEE de l'EPCI
           required: true
           type: string
         - $ref: '#/parameters/epciFieldsParam'
