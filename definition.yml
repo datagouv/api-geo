@@ -231,7 +231,6 @@ paths:
     get:
       summary: Recherche des EPCI
       tags:
-        - Communes
         - EPCI
       parameters:
         - name: nom
