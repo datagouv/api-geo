@@ -13,6 +13,44 @@ const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
 const EPCI_FEATURES_PATH = join(__dirname, '..', 'data', `epci-${resolution}.geojson.gz`)
 
+function getDepartementsFromMembresEPCI(membres) {
+  const departementsDuplicated = membres.map(membre => {
+    // Si on commence par 97 le code département à déduire du code commune est de longueur 3
+    // sinon c'est 2
+    if (membre.code.startsWith('97')) {
+      return membre.code.substring(0, 3)
+    } else {
+      return membre.code.substring(0, 2)
+    }
+  })
+  // On enlève les doublons avec Set puis on trie pour avoir les codes départements dans l'ordre
+  return [...new Set(departementsDuplicated)].sort()
+}
+
+function getRegionsFromDepartements(codesDepartements, departementsIndex) {
+  const regionsDuplicated = codesDepartements.map(dep => departementsIndex[dep].region)
+  // On enlève les doublons avec Set puis on trie pour avoir les codes régions dans l'ordre
+  return [...new Set(regionsDuplicated)].sort()
+}
+
+function getInfosFromFeatures(codeEpci, epciFeaturesIndex) {
+  if (codeEpci in epciFeaturesIndex) {
+    const contour = epciFeaturesIndex[codeEpci].geometry
+    const surface = fixPrecision(area(contour) / 10000, 2)
+    const centre = truncate(pointOnFeature(contour), { precision: 4 }).geometry
+    const bboxEpci = bbox(epciFeaturesIndex[codeEpci])
+    const bboxPolygonEpci = bboxPolygon(bboxEpci)
+    return {
+      contour,
+      surface,
+      centre,
+      bbox: bboxPolygonEpci.geometry
+    }
+  } else {
+    return {}
+  }
+}
+
 async function buildEpcis() {
   const epciFeatures = await readGeoJSONFeatures(EPCI_FEATURES_PATH)
   const epciFeaturesIndex = keyBy(epciFeatures, f => f.properties.code)
@@ -20,27 +58,19 @@ async function buildEpcis() {
 
   const epcisData = epcis
     .map(epci => {
-      const codesDepartements = [...new Set(epci.membres.map(membre => membre.code.startsWith('97') ? membre.code.slice(0, 3) : membre.code.slice(0, 2)))].sort()
-      const codesRegions = [...new Set(codesDepartements.map(dep => departementsIndex[dep].region))].sort()
+      const codesDepartements = getDepartementsFromMembresEPCI(epci.membres)
+      const codesRegions = getRegionsFromDepartements(codesDepartements, departementsIndex)
+      const {code, type, nom} = epci
       const epciData = {
-        code: epci.code,
-        type: epci.type,
+        code,
+        type,
         financement: epci.modeFinancement,
-        nom: epci.nom,
+        nom,
         codesDepartements,
         codesRegions,
         population: epci.populationMunicipale,
-        zone: codesDepartements[0].length === 2 ? 'metro' : 'drom'
-      }
-
-      if (epci.code in epciFeaturesIndex) {
-        const contour = epciFeaturesIndex[epci.code].geometry
-        epciData.contour = contour
-        epciData.surface = fixPrecision(area(contour) / 10000, 2)
-        epciData.centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
-        const bboxEpci = bbox(epciFeaturesIndex[epci.code])
-        const bboxPolygonEpci = bboxPolygon(bboxEpci)
-        epciData.bbox = bboxPolygonEpci.geometry
+        zone: codesDepartements.some(dep => dep.length === 3) ? 'drom' : 'metro',
+        ...getInfosFromFeatures(epci.code, epciFeaturesIndex)
       }
 
       return epciData
