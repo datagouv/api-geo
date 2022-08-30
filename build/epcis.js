@@ -19,9 +19,9 @@ function getDepartementsFromMembresEPCI(membres) {
     // sinon c'est 2
     if (membre.code.startsWith('97')) {
       return membre.code.substring(0, 3)
-    } else {
-      return membre.code.substring(0, 2)
     }
+
+    return membre.code.substring(0, 2)
   })
   // On enlève les doublons avec Set puis on trie pour avoir les codes départements dans l'ordre
   return [...new Set(departementsDuplicated)].sort()
@@ -37,7 +37,7 @@ function getInfosFromFeatures(codeEpci, epciFeaturesIndex) {
   if (codeEpci in epciFeaturesIndex) {
     const contour = epciFeaturesIndex[codeEpci].geometry
     const surface = fixPrecision(area(contour) / 10000, 2)
-    const centre = truncate(pointOnFeature(contour), { precision: 4 }).geometry
+    const centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
     const bboxEpci = bbox(epciFeaturesIndex[codeEpci])
     const bboxPolygonEpci = bboxPolygon(bboxEpci)
     return {
@@ -46,9 +46,9 @@ function getInfosFromFeatures(codeEpci, epciFeaturesIndex) {
       centre,
       bbox: bboxPolygonEpci.geometry
     }
-  } else {
-    return {}
   }
+
+  return {}
 }
 
 async function buildEpcis() {
