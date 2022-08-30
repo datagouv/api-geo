@@ -17,9 +17,9 @@ const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieux-co
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
 
 const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
-  for (const membre of curr.membres) {
+  curr.membres.forEach(membre=> {
     acc[membre.code] = curr.code
-  }
+  })
 
   return acc
 }, {})
