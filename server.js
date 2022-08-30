@@ -2,10 +2,12 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
+const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
+const dbEpci = require('./lib/epcis').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
 const dbRegions = require('./lib/regions').getIndexedDb()
 const {pick} = require('lodash')
@@ -21,6 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res, next) => {
   req.db = {
     communes: dbCommunes,
+    dbEpci,
     departements: dbDepartements,
     regions: dbRegions
   }
@@ -29,7 +32,7 @@ app.use((req, res, next) => {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -78,6 +81,60 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
     res.sendStatus(404)
   } else {
     res.send(formatOne(req, communes[0]))
+  }
+})
+
+/* EPCI */
+app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
+  const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+
+  if (query.nom) {
+    req.fields.add('_score')
+  }
+
+  if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
+    return res.sendStatus(400)
+  }
+
+  if (query.zone) {
+    query.zone = query.zone.split(',')
+  }
+
+  const result = req.applyLimit(dbEpci.search({...epciDefaultQuery, ...query}))
+
+  if (req.outputFormat === 'geojson') {
+    res.send({
+      type: 'FeatureCollection',
+      features: result.map(commune => formatOne(req, commune))
+    })
+  } else {
+    res.send(result.map(commune => formatOne(req, commune)))
+  }
+})
+
+app.get('/epcis/:code', initEpciFields, initEpciFormat, (req, res) => {
+  const epci = dbEpci.search({code: req.params.code})
+  if (epci.length === 0) {
+    res.sendStatus(404)
+  } else {
+    res.send(formatOne(req, epci[0]))
+  }
+})
+
+app.get('/epcis/:code/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
+  const epcis = dbEpci.search({code: req.params.code})
+  if (epcis.length === 0) {
+    res.sendStatus(404)
+  } else {
+    const communes = req.applyLimit(dbCommunes.search({...communesDefaultQuery, codeEpci: req.params.code}))
+    if (req.outputFormat === 'geojson') {
+      res.send({
+        type: 'FeatureCollection',
+        features: communes.map(commune => formatOne(req, commune))
+      })
+    } else {
+      res.send(communes.map(commune => formatOne(req, commune)))
+    }
   }
 })
 

@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: API Géo
-  version: '1.0'
+  version: '1.1'
 host: geo.api.gouv.fr
 schemes:
   - https
@@ -24,19 +24,49 @@ parameters:
         - contour
         - mairie
         - bbox
+        - codeEpci
+        - epci
         - codeDepartement
         - departement
         - codeRegion
         - region
         - population
+        - zone
     collectionFormat: csv
     default:
       - nom
       - code
       - codesPostaux
+      - codeEpci
       - codeDepartement
       - codeRegion
       - population
+  epciFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum:
+        - nom
+        - code
+        - population
+        - financement
+        - type
+        - codesRegions
+        - codesDepartements
+        - centre
+        - surface
+        - contour
+        - bbox
+        - zone
+    collectionFormat: csv
+    default:
+      - nom
+      - code
+      - codesRegions
+      - codesDepartements
   departementFieldsParam:
     name: fields
     in: query
@@ -49,6 +79,7 @@ parameters:
         - code
         - codeRegion
         - region
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -64,6 +95,7 @@ parameters:
       enum:
         - nom
         - code
+        - zone
     collectionFormat: csv
     default:
       - nom
@@ -81,6 +113,23 @@ parameters:
     description: Géométrie à utiliser pour la sortie géographique
     type: string
     enum: ['centre', 'contour', 'mairie', 'bbox']
+    default: centre
+  zoneParam:
+    name: zone
+    in: query
+    description: Zone permettant de filtrer à la métropole, aux DROM et aux COM. Défaut à metro,drom sauf pour les communes à metro,drom,com pour conserver le comportement historique.
+    required: false
+    type: array
+    collectionFormat: csv
+    items:
+      type: string
+      enum: ['metro', 'drom', 'com']
+  epciGeometryParam:
+    name: geometry
+    in: query
+    description: Géométrie à utiliser pour la sortie géographique
+    type: string
+    enum: ['centre', 'contour', 'bbox']
     default: centre
   limitParam:
     name: limit
@@ -122,6 +171,10 @@ paths:
           in: query
           description: Code de la commune
           type: string
+        - name: codeEpci
+          in: query
+          description: Code de l'EPCI associé
+          type: string
         - name: codeDepartement
           in: query
           description: Code du département associé
@@ -130,6 +183,7 @@ paths:
           in: query
           description: Code de la région associée
           type: string
+        - $ref: '#/parameters/zoneParam'
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/communeGeometryParam'
@@ -173,6 +227,104 @@ paths:
           description: Commune introuvable
           schema:
             $ref: '#/definitions/Error'
+  /epcis:
+    get:
+      summary: Recherche des EPCI
+      tags:
+        - EPCI
+      parameters:
+        - name: nom
+          in: query
+          description: Nom de l'EPCI
+          type: string
+        - name: boost
+          in: query
+          description: Mode de boost de la recherche par nom
+          type: string
+        - name: codeEpci
+          in: query
+          description: Code de l'EPCI associé
+          type: string
+        - name: codeDepartement
+          in: query
+          description: Code du département associé
+          type: string
+        - name: codeRegion
+          in: query
+          description: Code de la région associée
+          type: string
+        - $ref: '#/parameters/zoneParam'
+        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/epciGeometryParam'
+      responses:
+        200:
+          description: Liste des EPCI
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Epci'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+  /epcis/{code}:
+    get:
+      summary: Récupérer les informations concernant un EPCI
+      tags:
+        - EPCI
+      parameters:
+        - name: code
+          in: path
+          description: Code INSEE de l'EPCI
+          required: true
+          type: string
+        - $ref: '#/parameters/epciFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/epciGeometryParam'
+      responses:
+        '200':
+          description: Informations concernant une commune
+          schema:
+            $ref: '#/definitions/Epci'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: EPCI introuvable
+          schema:
+            $ref: '#/definitions/Error'
+  /epcis/{code}/communes:
+    get:
+      summary: Renvoi les communes d'un EPCI
+      tags:
+        - EPCI
+        - Communes
+      parameters:
+        - name: code
+          in: path
+          description: Code de l'EPCI
+          required: true
+          type: string
+        - $ref: '#/parameters/communeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeGeometryParam'
+      responses:
+        200:
+          description: Liste des communes de l'EPCI
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: EPCI introuvable
+          schema:
+            $ref: '#/definitions/Error'
 
   /departements:
       get:
@@ -192,6 +344,7 @@ paths:
             in: query
             description: Nom du département
             type: string
+          - $ref: '#/parameters/zoneParam'
           - $ref: '#/parameters/departementFieldsParam'
         responses:
           200:
@@ -250,7 +403,9 @@ paths:
         200:
           description: Liste des communes du département
           schema:
-            $ref: '#/definitions/Commune'
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -274,6 +429,7 @@ paths:
             in: query
             description: Nom de la région
             type: string
+          - $ref: '#/parameters/zoneParam'
           - $ref: '#/parameters/regionFieldsParam'
         responses:
           200:
@@ -303,7 +459,7 @@ paths:
         200:
           description: Informations concernant la région
           schema:
-            $ref: '#/definitions/Departement'
+            $ref: '#/definitions/Region'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -330,7 +486,9 @@ paths:
         200:
           description: Liste des départements de la région
           schema:
-            $ref: '#/definitions/Departement'
+            type: array
+            items:
+              $ref: '#/definitions/Departement'
         400:
           description: Erreur. Requête mal formée
           schema:
@@ -367,12 +525,17 @@ definitions:
         description: Liste des codes postaux associés à la commune
         items:
           type: string
+      codeEpci:
+        type: string
+        description: Code de l'EPCI associé à la commune
       codeDepartement:
         type: string
         description: Code du département associé à la commune
       codeRegion:
         type: string
         description: Code de la région associée à la commune
+      epci:
+        $ref: '#/definitions/Epci'
       departement:
         $ref: '#/definitions/Departement'
       region:
@@ -393,6 +556,47 @@ definitions:
       mairie:
         type: object
         description: Mairie principale de la commune (Point GeoJSON). Pour les COM et les communes mortes pour la France, on retourne le centre.
+      bbox:
+        type: object
+        description: Rectangle englobant la commune (Polygon GeoJSON)
+  Epci:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code SIREN de l'EPCI
+      nom:
+        type: string
+        description: Nom de l'EPCI
+      type:
+        type: string
+        description: Type de l'EPCI, soit communauté d'agglomération (CA), soit communauté de communes (CC), soit communauté urbaine (CU), soit métropole de Lyon (MET69), soit métropole (METRO)
+      financement:
+        type: string
+        description: Financement de l'EPCI, soit fiscalité additionnelle (FA), soit en fiscalité professionnelle unique (FPU)
+      codesDepartements:
+        type: array
+        description: Liste des départements de l'EPCI
+        items:
+          type: string
+      codesRegions:
+        type: array
+        description: Liste des régions de l'EPCI
+        items:
+          type: string
+      population:
+        type: integer
+        description: Population municipale
+      surface:
+        type: number
+        format: float
+        description: Surface de l'EPCI, en hectares
+      centre:
+        type: object
+        description: Centre de l'EPCI (Point GeoJSON)
+      contour:
+        type: object
+        description: Contour de l'EPCI (Polygon GeoJSON)
       bbox:
         type: object
         description: Rectangle englobant la commune (Polygon GeoJSON)
