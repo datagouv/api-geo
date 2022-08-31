@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)

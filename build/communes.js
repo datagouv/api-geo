@@ -39,6 +39,7 @@ async function buildCommunes() {
         code: commune.code,
         type: commune.type,
         nom: commune.nom,
+        siren: commune.siren,
         codeDepartement: commune.departement,
         codeRegion: commune.region,
         codesPostaux: commune.codesPostaux || [],
