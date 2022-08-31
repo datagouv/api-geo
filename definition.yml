@@ -19,6 +19,7 @@ parameters:
         - nom
         - code
         - codesPostaux
+        - siren
         - centre
         - surface
         - contour
@@ -37,6 +38,7 @@ parameters:
       - nom
       - code
       - codesPostaux
+      - siren
       - codeEpci
       - codeDepartement
       - codeRegion
@@ -170,6 +172,10 @@ paths:
         - name: code
           in: query
           description: Code de la commune
+          type: string
+        - name: siren
+          in: query
+          description: Code SIREN de la commune
           type: string
         - name: codeEpci
           in: query
@@ -525,6 +531,9 @@ definitions:
         description: Liste des codes postaux associés à la commune
         items:
           type: string
+      siren:
+        type: string
+        description: Code SIREN de la commune
       codeEpci:
         type: string
         description: Code de l'EPCI associé à la commune
