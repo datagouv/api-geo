@@ -116,6 +116,16 @@ parameters:
     type: string
     enum: ['centre', 'contour', 'mairie', 'bbox']
     default: centre
+  typeCommune:
+    name: type
+    in: query
+    description: Type permettant de filtrer si on retourne les communes, les arrondissements ou les 2. Par défaut à commune-actuelle.
+    required: false
+    type: array
+    collectionFormat: csv
+    items:
+      type: string
+      enum: ['commune-actuelle', 'arrondissement-municipal']
   zoneParam:
     name: zone
     in: query
@@ -190,6 +200,7 @@ paths:
           description: Code de la région associée
           type: string
         - $ref: '#/parameters/zoneParam'
+        - $ref: '#/parameters/typeCommune'
         - $ref: '#/parameters/communeFieldsParam'
         - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/communeGeometryParam'
