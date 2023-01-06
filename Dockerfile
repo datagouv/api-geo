@@ -7,7 +7,7 @@ WORKDIR /usr/src/api-communes
 # Install app dependencies
 COPY package.json /usr/src/api-communes
 COPY yarn.lock /usr/src/api-communes
-RUN yarn --prod
+RUN yarn
 
 # Copy sources
 COPY . /usr/src/api-communes
