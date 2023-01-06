@@ -1,5 +1,7 @@
-api:
-  build: .
-  container_name: api-communes
-  ports:
-    - 5000:5000
+version: "3.2"
+services:
+  api:
+    build: .
+    container_name: api-communes
+    ports:
+      - 5000:5000
