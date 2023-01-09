@@ -42,7 +42,7 @@ async function buildCommunes() {
         siren: commune.siren,
         codeDepartement: commune.departement,
         codeRegion: commune.region,
-        codesPostaux: commune.codesPostaux || [],
+        codesPostaux: [...(commune.codesPostaux || [])].sort(),
         population: commune.population,
         zone: commune.zone
       }
