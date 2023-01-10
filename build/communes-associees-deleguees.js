@@ -24,39 +24,15 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   return acc
 }, {})
 
-const COMMUNES_DELEGUEES_INDEX = communes
-  .filter(commune => {
-    return ['commune-deleguee'].includes(commune.type)
-  }).reduce((acc, curr) => {
-    if (!(curr.chefLieu in acc)) {
-      acc[curr.chefLieu] = []
-    }
-
-    acc[curr.chefLieu].push(curr.code)
-    return acc
-  }, {})
-
-const COMMUNES_ASSOCIEES_INDEX = communes
-  .filter(commune => {
-    return ['commune-associee'].includes(commune.type)
-  }).reduce((acc, curr) => {
-    if (!(curr.chefLieu in acc)) {
-      acc[curr.chefLieu] = []
-    }
-
-    acc[curr.chefLieu].push(curr.code)
-    return acc
-  }, {})
-
-async function buildCommunes() {
+async function buildCommunesAssocieesDeleguees() {
   const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
   const communesFeaturesIndex = keyBy(communesFeatures, f => f.properties.code)
   const communesFeaturesMairie = await readGeoJSONFeatures(COMMUNES_FEATURES_MAIRIE_PATH)
   const communesFeaturesMairieIndex = keyBy(communesFeaturesMairie, f => f.properties.insee_com)
 
-  const communesData = communes
+  const communesAssocieesDelegueesData = communes
     .filter(commune => {
-      return ['commune-actuelle', 'arrondissement-municipal'].includes(commune.type)
+      return ['commune-deleguee', 'commune-associee'].includes(commune.type)
     })
     .map(commune => {
       const communeData = {
@@ -73,14 +49,6 @@ async function buildCommunes() {
 
       if (commune.code in COMMUNES_EPCI_MATCHING) {
         communeData.codeEpci = COMMUNES_EPCI_MATCHING[commune.code]
-      }
-
-      if (commune.code in COMMUNES_ASSOCIEES_INDEX) {
-        communeData.associees = COMMUNES_ASSOCIEES_INDEX[commune.code]
-      }
-
-      if (commune.code in COMMUNES_DELEGUEES_INDEX) {
-        communeData.deleguees = COMMUNES_DELEGUEES_INDEX[commune.code]
       }
 
       if (commune.code in communesFeaturesIndex) {
@@ -106,7 +74,7 @@ async function buildCommunes() {
       return communeData
     })
 
-  await writeData('communes', communesData)
+  await writeData('communes-associees-deleguees', communesAssocieesDelegueesData)
 }
 
-module.exports = {buildCommunes}
+module.exports = {buildCommunesAssocieesDeleguees}
