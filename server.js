@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
+const {initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, communesAssocieesDelegueesDefaultQuery} = require('./lib/communeAssocieesDelegueesHelpers')
 const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
@@ -33,8 +34,8 @@ app.use((req, res, next) => {
 })
 
 /* Communes associées et déléguées */
-app.get('/communes_associees_deleguees', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -65,7 +66,7 @@ app.get('/communes_associees_deleguees', initLimit(), initCommuneFields, initCom
     query.zone = query.zone.split(',')
   }
 
-  const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesDefaultQuery, ...query}))
+  const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesAssocieesDelegueesDefaultQuery, ...query}))
 
   if (req.outputFormat === 'geojson') {
     res.send({
@@ -77,7 +78,7 @@ app.get('/communes_associees_deleguees', initLimit(), initCommuneFields, initCom
   }
 })
 
-app.get('/communes_associees_deleguees/:code', initCommuneFields, initCommuneFormat, (req, res) => {
+app.get('/communes_associees_deleguees/:code', initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
   const communes = dbCommunesAssocieesDeleguees.search({code: req.params.code})
   if (communes.length === 0) {
     res.sendStatus(404)

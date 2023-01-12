@@ -11,10 +11,9 @@ const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
-const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-${resolution}.geojson.gz`)
-const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieux-communes-arrondissements-municipaux.geojson.gz')
-
-const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
+const COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-associees-ou-deleguees-${resolution}.geojson.gz`)
+// Ogr2ogr -f GeoJSON communes-associees-ou-deleguees-5m.geojson COMMUNE_ASSOCIEE_OU_DELEGUEE.shp -dialect SQLite -sql "SELECT \"INSEE_COM\" AS code, \"NOM\" AS nom, substr(\"INSEE_COM\", 1, 2) AS departement, cast('' AS text) AS region, cast('' AS text) AS epci, \"NATURE\" AS nature, geometry FROM \"COMMUNE_ASSOCIEE_OU_DELEGUEE\"" -lco RFC7946=YES -lco WRITE_NAME=NO
+// gzip --keep communes-associees-ou-deleguees-5m.geojson
 
 const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   curr.membres.forEach(membre => {
@@ -25,50 +24,35 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
 }, {})
 
 async function buildCommunesAssocieesDeleguees() {
-  const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
-  const communesFeaturesIndex = keyBy(communesFeatures, f => f.properties.code)
-  const communesFeaturesMairie = await readGeoJSONFeatures(COMMUNES_FEATURES_MAIRIE_PATH)
-  const communesFeaturesMairieIndex = keyBy(communesFeaturesMairie, f => f.properties.insee_com)
+  const communesAssocieesDelegueesFeatures = await readGeoJSONFeatures(COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH)
+  const communesAssocieesDelegueesFeaturesIndex = keyBy(communesAssocieesDelegueesFeatures, f => f.properties.code)
 
   const communesAssocieesDelegueesData = communes
     .filter(commune => {
-      return ['commune-deleguee', 'commune-associee'].includes(commune.type)
+      return ['commune-associee', 'commune-deleguee'].includes(commune.type)
     })
     .map(commune => {
       const communeData = {
         code: commune.code,
         type: commune.type,
         nom: commune.nom,
-        siren: commune.siren,
+        chefLieu: commune.chefLieu,
         codeDepartement: commune.departement,
-        codeRegion: commune.region,
-        codesPostaux: [...(commune.codesPostaux || [])].sort(),
-        population: commune.population,
-        zone: commune.zone
+        codeRegion: commune.region
       }
 
-      if (commune.code in COMMUNES_EPCI_MATCHING) {
-        communeData.codeEpci = COMMUNES_EPCI_MATCHING[commune.code]
-      }
-
-      if (commune.code in communesFeaturesIndex) {
-        const contour = communesFeaturesIndex[commune.code].geometry
+      if (commune.code in communesAssocieesDelegueesFeaturesIndex) {
+        const contour = communesAssocieesDelegueesFeaturesIndex[commune.code].geometry
         communeData.contour = contour
         communeData.surface = fixPrecision(area(contour) / 10000, 2)
         communeData.centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
-        const bboxCommune = bbox(communesFeaturesIndex[commune.code])
+        const bboxCommune = bbox(communesAssocieesDelegueesFeaturesIndex[commune.code])
         const bboxPolygonCommune = bboxPolygon(bboxCommune)
         communeData.bbox = bboxPolygonCommune.geometry
-        if (commune.code in communesFeaturesMairieIndex) {
-          communeData.mairie = truncate(communesFeaturesMairieIndex[commune.code], {precision: 4}).geometry
-        } else {
-          console.log('Pas de mairie associée à', commune.code)
-          communeData.mairie = communeData.centre
-        }
       }
 
-      if (MORTES_POUR_LA_FRANCE.includes(commune.code)) {
-        communeData.mortePourLaFrance = true
+      if (commune.chefLieu in COMMUNES_EPCI_MATCHING) {
+        communeData.codeEpci = COMMUNES_EPCI_MATCHING[commune.chefLieu]
       }
 
       return communeData
