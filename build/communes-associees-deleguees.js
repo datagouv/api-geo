@@ -11,9 +11,7 @@ const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
-const COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-associees-ou-deleguees-${resolution}.geojson.gz`)
-// Ogr2ogr -f GeoJSON communes-associees-ou-deleguees-5m.geojson COMMUNE_ASSOCIEE_OU_DELEGUEE.shp -dialect SQLite -sql "SELECT \"INSEE_COM\" AS code, \"NOM\" AS nom, substr(\"INSEE_COM\", 1, 2) AS departement, cast('' AS text) AS region, cast('' AS text) AS epci, \"NATURE\" AS nature, geometry FROM \"COMMUNE_ASSOCIEE_OU_DELEGUEE\"" -lco RFC7946=YES -lco WRITE_NAME=NO
-// gzip --keep communes-associees-ou-deleguees-5m.geojson
+const COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-associees-deleguees-${resolution}.geojson.gz`)
 
 const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   curr.membres.forEach(membre => {
