@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 
 /* Communes associées et déléguées */
 app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'type', 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -60,10 +60,6 @@ app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegu
 
   if (query.type) {
     query.type = query.type.split(',')
-  }
-
-  if (query.zone) {
-    query.zone = query.zone.split(',')
   }
 
   const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesAssocieesDelegueesDefaultQuery, ...query}))

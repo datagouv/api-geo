@@ -32,7 +32,7 @@ const COMMUNES_DELEGUEES_INDEX = communes
       acc[curr.chefLieu] = []
     }
 
-    acc[curr.chefLieu].push(curr.code)
+    acc[curr.chefLieu].push({code: curr.code, nom: curr.nom})
     return acc
   }, {})
 
@@ -44,7 +44,7 @@ const COMMUNES_ASSOCIEES_INDEX = communes
       acc[curr.chefLieu] = []
     }
 
-    acc[curr.chefLieu].push(curr.code)
+    acc[curr.chefLieu].push({code: curr.code, nom: curr.nom})
     return acc
   }, {})
 
@@ -77,10 +77,14 @@ async function buildCommunes() {
 
       if (commune.code in COMMUNES_ASSOCIEES_INDEX) {
         communeData.associees = COMMUNES_ASSOCIEES_INDEX[commune.code]
+      } else {
+        communeData.associees = null
       }
 
       if (commune.code in COMMUNES_DELEGUEES_INDEX) {
         communeData.deleguees = COMMUNES_DELEGUEES_INDEX[commune.code]
+      } else {
+        communeData.deleguees = null
       }
 
       if (commune.code in communesFeaturesIndex) {
