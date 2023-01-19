@@ -32,6 +32,8 @@ parameters:
         - codeRegion
         - region
         - population
+        - deleguees
+        - associees
         - zone
     collectionFormat: csv
     default:
@@ -43,6 +45,37 @@ parameters:
       - codeDepartement
       - codeRegion
       - population
+  communeAssocieeDelegueeFieldsParam:
+    name: fields
+    in: query
+    description: Liste des champs souhaités dans la réponse
+    type: array
+    items:
+      type: string
+      enum:
+        - nom
+        - code
+        - type
+        - chefLieu
+        - centre
+        - surface
+        - contour
+        - bbox
+        - codeEpci
+        - epci
+        - codeDepartement
+        - departement
+        - codeRegion
+        - region
+    collectionFormat: csv
+    default:
+      - nom
+      - code
+      - type
+      - chefLieu
+      - codeEpci
+      - codeDepartement
+      - codeRegion
   epciFieldsParam:
     name: fields
     in: query
@@ -116,6 +149,13 @@ parameters:
     type: string
     enum: ['centre', 'contour', 'mairie', 'bbox']
     default: centre
+  communeAssocieeDelegueeGeometryParam:
+    name: geometry
+    in: query
+    description: Géométrie à utiliser pour la sortie géographique
+    type: string
+    enum: ['centre', 'contour', 'bbox']
+    default: centre
   typeCommune:
     name: type
     in: query
@@ -126,6 +166,16 @@ parameters:
     items:
       type: string
       enum: ['commune-actuelle', 'arrondissement-municipal']
+  typeCommuneAssocieeDeleguee:
+    name: type
+    in: query
+    description: Type permettant de filtrer si on retourne les communes, les arrondissements ou les 2. Par défaut à commune-actuelle.
+    required: false
+    type: array
+    collectionFormat: csv
+    items:
+      type: string
+      enum: ['commune-associee', 'commune-deleguee']
   zoneParam:
     name: zone
     in: query
@@ -244,6 +294,87 @@ paths:
           description: Commune introuvable
           schema:
             $ref: '#/definitions/Error'
+
+  /communes_associees_deleguees:
+    get:
+      summary: Recherche des communes associées et/ou déléguées
+      tags:
+        - Communes associées et déléguées
+      parameters:
+        - name: lat
+          in: query
+          description: Latitude (en degrés)
+          type: number
+          format: float
+        - name: lon
+          in: query
+          description: Longitude (en degrés)
+          type: number
+          format: float
+        - name: nom
+          in: query
+          description: Nom de la commune
+          type: string
+        - name: code
+          in: query
+          description: Code de la commune
+          type: string
+        - name: codeEpci
+          in: query
+          description: Code de l'EPCI associé
+          type: string
+        - name: codeDepartement
+          in: query
+          description: Code du département associé
+          type: string
+        - name: codeRegion
+          in: query
+          description: Code de la région associée
+          type: string
+        - $ref: '#/parameters/typeCommuneAssocieeDeleguee'
+        - $ref: '#/parameters/communeAssocieeDelegueeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeAssocieeDelegueeGeometryParam'
+      responses:
+        200:
+          description: Liste de communes associées et/ou déléguées
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+
+  /communes_associees_deleguees/{code}:
+    get:
+      summary: Récupérer les informations concernant une commune associée ou déléguée
+      tags:
+        - Communes associées et déléguées
+      parameters:
+        - name: code
+          in: path
+          description: Code INSEE de la commune associée ou déléguée
+          required: true
+          type: string
+        - $ref: '#/parameters/communeAssocieeDelegueeFieldsParam'
+        - $ref: '#/parameters/formatParam'
+        - $ref: '#/parameters/communeAssocieeDelegueeGeometryParam'
+      responses:
+        200:
+          description: Informations concernant une commune associée ou déléguée
+          schema:
+            $ref: '#/definitions/Commune'
+        400:
+          description: Erreur. Requête mal formée
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Commune associée ou déléguée introuvable
+          schema:
+            $ref: '#/definitions/Error'
+
   /epcis:
     get:
       summary: Recherche des EPCI
@@ -560,6 +691,26 @@ definitions:
         $ref: '#/definitions/Departement'
       region:
         $ref: '#/definitions/Region'
+      associees:
+        type: array
+        description: Liste des codes postaux associés à la commune
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+            nom:
+              type: string
+      deleguees:
+        type: array
+        description: Liste des codes postaux associés à la commune
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+            nom:
+              type: string
       population:
         type: integer
         description: Population municipale
@@ -579,6 +730,43 @@ definitions:
       bbox:
         type: object
         description: Rectangle englobant la commune (Polygon GeoJSON)
+  CommuneAssocieeDeleguee:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code INSEE de la commune associée ou déléguée
+      nom:
+        type: string
+        description: Nom de la commune associée ou déléguée
+      codeEpci:
+        type: string
+        description: Code de l'EPCI associé à la commune associée ou déléguée
+      codeDepartement:
+        type: string
+        description: Code du département associé à la commune associée ou déléguée
+      codeRegion:
+        type: string
+        description: Code de la région associée à la commune associée ou déléguée
+      epci:
+        $ref: '#/definitions/Epci'
+      departement:
+        $ref: '#/definitions/Departement'
+      region:
+        $ref: '#/definitions/Region'
+      surface:
+        type: number
+        format: float
+        description: Surface de la commune associée ou déléguée, en hectares
+      centre:
+        type: object
+        description: Centre de la commune associée ou déléguée (Point GeoJSON)
+      contour:
+        type: object
+        description: Contour de la commune associée ou déléguée (Polygon GeoJSON)
+      bbox:
+        type: object
+        description: Rectangle englobant la commune associée ou déléguée (Polygon GeoJSON)
   Epci:
     type: object
     properties:
