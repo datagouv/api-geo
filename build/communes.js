@@ -24,6 +24,30 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   return acc
 }, {})
 
+const COMMUNES_DELEGUEES_INDEX = communes
+  .filter(commune => {
+    return ['commune-deleguee'].includes(commune.type)
+  }).reduce((acc, curr) => {
+    if (!(curr.chefLieu in acc)) {
+      acc[curr.chefLieu] = []
+    }
+
+    acc[curr.chefLieu].push({code: curr.code, nom: curr.nom})
+    return acc
+  }, {})
+
+const COMMUNES_ASSOCIEES_INDEX = communes
+  .filter(commune => {
+    return ['commune-associee'].includes(commune.type)
+  }).reduce((acc, curr) => {
+    if (!(curr.chefLieu in acc)) {
+      acc[curr.chefLieu] = []
+    }
+
+    acc[curr.chefLieu].push({code: curr.code, nom: curr.nom})
+    return acc
+  }, {})
+
 async function buildCommunes() {
   const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
   const communesFeaturesIndex = keyBy(communesFeatures, f => f.properties.code)
@@ -49,6 +73,18 @@ async function buildCommunes() {
 
       if (commune.code in COMMUNES_EPCI_MATCHING) {
         communeData.codeEpci = COMMUNES_EPCI_MATCHING[commune.code]
+      }
+
+      if (commune.code in COMMUNES_ASSOCIEES_INDEX) {
+        communeData.associees = COMMUNES_ASSOCIEES_INDEX[commune.code]
+      } else {
+        communeData.associees = null
+      }
+
+      if (commune.code in COMMUNES_DELEGUEES_INDEX) {
+        communeData.deleguees = COMMUNES_DELEGUEES_INDEX[commune.code]
+      } else {
+        communeData.deleguees = null
       }
 
       if (commune.code in communesFeaturesIndex) {

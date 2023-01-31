@@ -2,11 +2,13 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
+const {initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, communesAssocieesDelegueesDefaultQuery} = require('./lib/communeAssocieesDelegueesHelpers')
 const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
 const {formatOne, initLimit} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
+const dbCommunesAssocieesDeleguees = require('./lib/communesAssocieesDeleguees').getIndexedDb()
 const dbEpci = require('./lib/epcis').getIndexedDb()
 const dbDepartements = require('./lib/departements').getIndexedDb()
 const dbRegions = require('./lib/regions').getIndexedDb()
@@ -23,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res, next) => {
   req.db = {
     communes: dbCommunes,
+    communesAssocieesDeleguees: dbCommunesAssocieesDeleguees,
     dbEpci,
     departements: dbDepartements,
     regions: dbRegions
@@ -30,9 +33,59 @@ app.use((req, res, next) => {
   next()
 })
 
+/* Communes associées et déléguées */
+app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
+  const query = pick(req.query, 'type', 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion')
+  if (req.query.lat && req.query.lon) {
+    const lat = parseFloat(req.query.lat)
+    const lon = parseFloat(req.query.lon)
+    if (Number.isFinite(lat) &&
+      lat >= -90 &&
+      lat <= 90 &&
+      Number.isFinite(lon) &&
+      lon >= -180 &&
+      lon <= 180
+    ) {
+      query.pointInContour = [lon, lat]
+    }
+  }
+
+  if (query.nom) {
+    req.fields.add('_score')
+  }
+
+  if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
+    return res.sendStatus(400)
+  }
+
+  if (query.type) {
+    query.type = query.type.split(',')
+  }
+
+  const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesAssocieesDelegueesDefaultQuery, ...query}))
+
+  if (req.outputFormat === 'geojson') {
+    res.send({
+      type: 'FeatureCollection',
+      features: result.map(commune => formatOne(req, commune))
+    })
+  } else {
+    res.send(result.map(commune => formatOne(req, commune)))
+  }
+})
+
+app.get('/communes_associees_deleguees/:code', initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
+  const communes = dbCommunesAssocieesDeleguees.search({code: req.params.code})
+  if (communes.length === 0) {
+    res.sendStatus(404)
+  } else {
+    res.send(formatOne(req, communes[0]))
+  }
+})
+
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
