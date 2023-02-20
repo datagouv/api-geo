@@ -1,0 +1,32 @@
+# Example of a test plan with 100 iterations and ~25 requests each.
+# A plan with 2500 requests in total at 5 iterations at the same time,
+# and a rampup of 2 seconds.
+
+---
+base: 'http://localhost'
+iterations: 100
+concurrency: 20
+rampup: 2
+
+plan:
+
+  - name: Fetch départements
+    request:
+      url: /departements
+
+  - name: Fetch régions
+    request:
+      url: /regions
+
+  - name: Fetch some communes using their code from CSV, index {{ index }} and {{ item.code }}
+    request:
+      url: /communes/{{ item.code }}
+    shuffle: true
+    with_items_from_csv: ./communes.csv
+
+  - name: Fetch some communes using their name from CSV (alternate syntax), index {{ index }} and {{ item.nom }}
+    request:
+      url: "/communes?nom={{ item.nom }}"
+    with_items_from_csv:
+      file_name: ./communes.csv
+      # quote_char: "\""

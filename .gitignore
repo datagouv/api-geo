@@ -75,3 +75,8 @@ jspm_packages
 ### Project ###
 *.tmp
 data
+
+## Ignore generated files in becnhmark directory
+perfs.*
+flamegraph.htm
+
