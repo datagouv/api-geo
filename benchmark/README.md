@@ -31,9 +31,9 @@ stackvis perf < perfs.out >| flamegraph.htm
 ```bash
 echo "code,nom" >| communes.csv
 # All communes
-jq -c -r '.[] |  select( .type = "commune-actuelle") | [.code, .nom] | @csv' ../data/communes.json >> communes.csv
+jq -c -r '.[] |  select( .type == "commune-actuelle") | [.code, .nom] | @csv' ../data/communes.json >> communes.csv
 # To use only some communes to speedup benchmark
-# jq -c -r '.[] |  select( .type = "commune-actuelle") | [.code, .nom] | @csv' ../data/communes.json \
+# jq -c -r '.[] |  select( .type == "commune-actuelle") | [.code, .nom] | @csv' ../data/communes.json \
 #    | shuf \
 #    | head -n 100 \
 #    >> communes.csv
