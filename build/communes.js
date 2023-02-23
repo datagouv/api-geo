@@ -12,7 +12,7 @@ const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
 const COMMUNES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-${resolution}.geojson.gz`)
-const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'chflieux-communes-arrondissements-municipaux.geojson.gz')
+const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'mairies.geojson.gz')
 
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
 
@@ -52,7 +52,7 @@ async function buildCommunes() {
   const communesFeatures = await readGeoJSONFeatures(COMMUNES_FEATURES_PATH)
   const communesFeaturesIndex = keyBy(communesFeatures, f => f.properties.code)
   const communesFeaturesMairie = await readGeoJSONFeatures(COMMUNES_FEATURES_MAIRIE_PATH)
-  const communesFeaturesMairieIndex = keyBy(communesFeaturesMairie, f => f.properties.insee_com)
+  const communesFeaturesMairieIndex = keyBy(communesFeaturesMairie, f => f.properties.commune)
 
   const communesData = communes
     .filter(commune => {

@@ -11,7 +11,10 @@ const {readGeoJSONFeatures, writeData, fixPrecision} = require('./util')
 
 const resolution = process.env.BUILD_LOW_RESOLUTION === '1' ? '50m' : '5m'
 
-const COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-associees-deleguees-${resolution}.geojson.gz`)
+let COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = ''
+if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
+  COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH = join(__dirname, '..', 'data', `communes-associees-deleguees-${resolution}.geojson.gz`)
+}
 
 const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   curr.membres.forEach(membre => {
@@ -22,8 +25,11 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
 }, {})
 
 async function buildCommunesAssocieesDeleguees() {
-  const communesAssocieesDelegueesFeatures = await readGeoJSONFeatures(COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH)
-  const communesAssocieesDelegueesFeaturesIndex = keyBy(communesAssocieesDelegueesFeatures, f => f.properties.code)
+  let communesAssocieesDelegueesFeaturesIndex = {}
+  if (COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH) {
+    const communesAssocieesDelegueesFeatures = await readGeoJSONFeatures(COMMUNES_ASSOCIEES_DELEGUEES_FEATURES_PATH)
+    communesAssocieesDelegueesFeaturesIndex = keyBy(communesAssocieesDelegueesFeatures, f => f.properties.code)
+  }
 
   const communesAssocieesDelegueesData = communes
     .filter(commune => {
