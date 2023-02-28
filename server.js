@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const Sentry = require('@sentry/node')
+const Tracing = require('@sentry/tracing')
 const {initCommuneFields, initCommuneFormat, communesDefaultQuery} = require('./lib/communeHelpers')
 const {initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, communesAssocieesDelegueesDefaultQuery} = require('./lib/communeAssocieesDelegueesHelpers')
 const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
@@ -19,6 +21,26 @@ app.use(cors({origin: true}))
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
+}
+
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [
+      // Enable HTTP calls tracing
+      new Sentry.Integrations.Http({tracing: true}),
+      // Enable Express.js middleware tracing
+      new Tracing.Integrations.Express({app})
+    ],
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0
+  })
+  app.use(Sentry.Handlers.requestHandler())
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler())
 }
 
 // Inject databases references
@@ -289,6 +311,10 @@ app.get('/raw/regions.json', (req, res) => {
 app.get('/definition.yml', (req, res) => {
   res.sendFile(__dirname + '/definition.yml')
 })
+
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.errorHandler())
+}
 
 const port = process.env.PORT || 5000
 
