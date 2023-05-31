@@ -16,6 +16,8 @@ const COMMUNES_FEATURES_MAIRIE_PATH = join(__dirname, '..', 'data', 'mairies.geo
 
 const MORTES_POUR_LA_FRANCE = ['55189', '55039', '55050', '55239', '55307', '55139']
 
+const COMMUNES_AVEC_ARRONDISSEMENTS = ['13055', '69123', '75056']
+
 const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
   curr.membres.forEach(membre => {
     acc[membre.code] = curr.code
@@ -69,6 +71,10 @@ async function buildCommunes() {
         codesPostaux: [...(commune.codesPostaux || [])].sort(),
         population: commune.population,
         zone: commune.zone
+      }
+
+      if (commune.type === 'arrondissement-municipal' && COMMUNES_AVEC_ARRONDISSEMENTS.map(com => com.slice(0, 2)).includes(commune.departement)) {
+        communeData.codeParent = COMMUNES_AVEC_ARRONDISSEMENTS.find(el => el.slice(0, 2) === commune.departement)
       }
 
       if (commune.code in COMMUNES_EPCI_MATCHING) {
