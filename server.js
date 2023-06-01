@@ -8,7 +8,7 @@ const {initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, co
 const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
-const {formatOne, initLimit} = require('./lib/helpers')
+const {formatOne, initLimit, allowOnlyGet} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
 const dbCommunesAssocieesDeleguees = require('./lib/communesAssocieesDeleguees').getIndexedDb()
 const dbEpci = require('./lib/epcis').getIndexedDb()
@@ -42,6 +42,8 @@ if (process.env.SENTRY_DSN) {
   // TracingHandler creates a trace for every incoming request
   app.use(Sentry.Handlers.tracingHandler())
 }
+
+app.use(allowOnlyGet)
 
 // Inject databases references
 app.use((req, res, next) => {
@@ -299,6 +301,14 @@ app.get('/regions/:code/departements', initLimit(), initDepartementFields, (req,
 /* Raw data */
 app.get('/raw/communes.json', (req, res) => {
   res.download('data/communes.json')
+})
+
+app.get('/raw/communes-associees-deleguees.json', (req, res) => {
+  res.download('data/communes-associees-deleguees.json')
+})
+
+app.get('/raw/epci.json', (req, res) => {
+  res.download('data/epci.json')
 })
 
 app.get('/raw/departements.json', (req, res) => {
