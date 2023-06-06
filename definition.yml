@@ -18,6 +18,7 @@ parameters:
       enum:
         - nom
         - code
+        - codeParent
         - codesPostaux
         - siren
         - centre
@@ -248,6 +249,10 @@ paths:
         - name: codeRegion
           in: query
           description: Code de la région associée
+          type: string
+        - name: codeParent
+          in: query
+          description: Code de la commune si on a un arrondissement
           type: string
         - $ref: '#/parameters/zoneParam'
         - $ref: '#/parameters/typeCommune'
