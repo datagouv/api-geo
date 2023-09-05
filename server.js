@@ -8,7 +8,7 @@ const {initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, co
 const {initEpciFields, initEpciFormat, epciDefaultQuery} = require('./lib/epciHelpers')
 const {initDepartementFields, departementsDefaultQuery} = require('./lib/departementHelpers')
 const {initRegionFields, regionsDefaultQuery} = require('./lib/regionHelpers')
-const {formatOne, initLimit, allowOnlyGet} = require('./lib/helpers')
+const {formatOne, initLimit, allowOnlyGetAndHead} = require('./lib/helpers')
 const dbCommunes = require('./lib/communes').getIndexedDb()
 const dbCommunesAssocieesDeleguees = require('./lib/communesAssocieesDeleguees').getIndexedDb()
 const dbEpci = require('./lib/epcis').getIndexedDb()
@@ -43,7 +43,7 @@ if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.tracingHandler())
 }
 
-app.use(allowOnlyGet)
+app.use(allowOnlyGetAndHead)
 
 // Inject databases references
 app.use((req, res, next) => {
