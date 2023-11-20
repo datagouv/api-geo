@@ -33,6 +33,7 @@ parameters:
         - codeRegion
         - region
         - population
+        - anciensCodes
         - deleguees
         - associees
         - zone
@@ -253,6 +254,10 @@ paths:
         - name: codeParent
           in: query
           description: Code de la commune si on a un arrondissement
+          type: string
+        - name: ancienCode
+          in: query
+          description: Code INSEE ancien de la commune
           type: string
         - $ref: '#/parameters/zoneParam'
         - $ref: '#/parameters/typeCommune'
@@ -719,6 +724,11 @@ definitions:
       population:
         type: integer
         description: Population municipale
+      anciensCodes:
+        type: array
+        description: Liste des anciens codes INSEE associés à la commune
+        items:
+          type: string
       surface:
         type: number
         format: float

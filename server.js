@@ -111,7 +111,7 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone', 'codeParent')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone', 'codeParent', 'ancienCode')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
