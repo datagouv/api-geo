@@ -1,6 +1,6 @@
 {
   "name": "@etalab/api-geo",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Interroger les référentiels géographiques plus facilement",
   "repository": {
     "type": "git",
