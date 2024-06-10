@@ -1,5 +1,5 @@
 #!/bin/bash
-YEAR=${YEAR:-2023}
+YEAR=${YEAR:-2024}
 COMMUNES_ASSOCIEES_DELEGUEES=${COMMUNES_ASSOCIEES_DELEGUEES:-NO}
 echo "Create data directory"
 mkdir -p data
