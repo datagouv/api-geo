@@ -1,7 +1,10 @@
 version: "3.2"
 services:
   api:
-    build: .
+    build: 
+      context: .
+      args:
+        COMMUNES_ASSOCIEES_DELEGUEES: 'YES'
     container_name: api-communes
     ports:
       - 5000:5000
