@@ -18,7 +18,7 @@ cp Dockerfile DockerfileTemp
 if [ -z ${GIT_REF+x} ];
 then
   echo "No GIT_REF in this case"
-  GIT_REF=temporary
+  GIT_REF=$(git log -n1 --format="%h")
 else
   echo "GIT_REF set"
   git checkout $GIT_REF;
