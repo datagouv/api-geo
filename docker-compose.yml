@@ -4,6 +4,7 @@ services:
     build: 
       context: .
       args:
+        YEAR: '2024'
         COMMUNES_ASSOCIEES_DELEGUEES: 'YES'
     container_name: api-communes
     ports:
