@@ -13,7 +13,6 @@ RUN mkdir -p /usr/src/api-communes
 WORKDIR /usr/src/api-communes
 
 # Install app dependencies
-RUN git checkout v2.4.0
 COPY package.json /usr/src/api-communes
 COPY yarn.lock /usr/src/api-communes
 RUN NODE_ENV=development yarn add yarn
