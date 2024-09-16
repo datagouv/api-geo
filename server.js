@@ -319,6 +319,22 @@ app.get('/raw/regions.json', (req, res) => {
   res.download('data/regions.json')
 })
 
+app.get('/healthcheck', (req, res) => {
+  const hrtimeIntAsString = String(process.hrtime.bigint())
+  const healthcheck = {
+    uptime: process.uptime(),
+    responsetime: hrtimeIntAsString,
+    message: 'OK',
+    timestamp: Date.now()
+  }
+  try {
+    res.send(healthcheck)
+  } catch (error) {
+    healthcheck.message = error
+    res.status(503).send()
+  }
+})
+
 /* Definition */
 app.get('/definition.yml', (req, res) => {
   res.sendFile(__dirname + '/definition.yml')
