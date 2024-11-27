@@ -1,3 +1,4 @@
+const fs = require('fs')
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
@@ -21,6 +22,12 @@ app.use(cors({origin: true}))
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
+}
+
+const api_info_filename = 'api_infos.json'
+let api_infos = {}
+if (fs.existsSync(api_info_filename)) {
+  api_infos = JSON.parse(fs.readFileSync(api_info_filename))
 }
 
 if (process.env.SENTRY_DSN) {
@@ -331,6 +338,14 @@ app.get('/healthcheck', (req, res) => {
     res.send(healthcheck)
   } catch (error) {
     healthcheck.message = error
+    res.status(503).send()
+  }
+})
+
+ app.get('/infos', (req, res) => {
+  try {
+    res.send(api_infos)
+  } catch (error) {
     res.status(503).send()
   }
 })

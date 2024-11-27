@@ -44,7 +44,8 @@
     "test": "NODE_OPTIONS=--max_old_space_size=2048 nyc mocha --exit --timeout 5000",
     "download-sources": "./download-sources.sh",
     "build-only": "node --max_old_space_size=4096 build",
-    "build": "yarn download-sources && yarn build-only"
+    "build": "yarn download-sources && yarn build-only",
+    "generate-api-infos": "node generate-infos.js"
   },
   "xo": {
     "semicolon": false,
