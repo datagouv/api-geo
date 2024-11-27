@@ -55,7 +55,8 @@
       "unicorn/filename-case": "off",
       "import/order": "off",
       "no-return-assign": "off",
-      "ava/no-import-test-files": "off"
+      "ava/no-import-test-files": "off",
+      "import/extensions": "off"
     },
     "ignores": "test/*.js"
   },
