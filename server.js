@@ -24,10 +24,10 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
 }
 
-const api_info_filename = 'api_infos.json'
-let api_infos = {}
-if (fs.existsSync(api_info_filename)) {
-  api_infos = JSON.parse(fs.readFileSync(api_info_filename))
+const apiInfoFilename = 'api_infos.json'
+let apiInfos = {}
+if (fs.existsSync(apiInfoFilename)) {
+  apiInfos = JSON.parse(fs.readFileSync(apiInfoFilename))
 }
 
 if (process.env.SENTRY_DSN) {
@@ -342,9 +342,9 @@ app.get('/healthcheck', (req, res) => {
   }
 })
 
- app.get('/infos', (req, res) => {
+app.get('/infos', (req, res) => {
   try {
-    res.send(api_infos)
+    res.send(apiInfos)
   } catch (error) {
     res.status(503).send()
   }
