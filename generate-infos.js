@@ -1,5 +1,5 @@
 const {exec} = require('child_process')
-const {readFile, writeFile} = require('fs/promises')
+const {readFile, writeFile} = require('fs').promises
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
