@@ -1,3 +1,4 @@
+const fs = require('fs')
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
@@ -21,6 +22,12 @@ app.use(cors({origin: true}))
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
+}
+
+const apiInfoFilename = 'api_infos.json'
+let apiInfos = {}
+if (fs.existsSync(apiInfoFilename)) {
+  apiInfos = JSON.parse(fs.readFileSync(apiInfoFilename))
 }
 
 if (process.env.SENTRY_DSN) {
@@ -317,6 +324,30 @@ app.get('/raw/departements.json', (req, res) => {
 
 app.get('/raw/regions.json', (req, res) => {
   res.download('data/regions.json')
+})
+
+app.get('/healthcheck', (req, res) => {
+  const hrtimeIntAsString = String(process.hrtime.bigint())
+  const healthcheck = {
+    uptime: process.uptime(),
+    responsetime: hrtimeIntAsString,
+    message: 'OK',
+    timestamp: Date.now()
+  }
+  try {
+    res.send(healthcheck)
+  } catch (error) {
+    healthcheck.message = error
+    res.status(503).send()
+  }
+})
+
+app.get('/infos', (req, res) => {
+  try {
+    res.send(apiInfos)
+  } catch (error) {
+    res.status(503).send()
+  }
 })
 
 /* Definition */
