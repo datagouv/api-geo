@@ -87,7 +87,6 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
       query.type = query.type.split(',')
     }
 
-    console.log({...communesAssocieesDelegueesDefaultQuery, ...query})
     const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesAssocieesDelegueesDefaultQuery, ...query}))
 
     if (req.outputFormat === 'geojson') {
