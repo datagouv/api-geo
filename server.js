@@ -60,7 +60,7 @@ app.use((req, res, next) => {
 if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
   /* Communes associées et déléguées */
   app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
-    const query = pick(req.query, 'type', 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion')
+    const query = pick(req.query, 'type', 'chefLieu', 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion')
     if (req.query.lat && req.query.lon) {
       const lat = parseFloat(req.query.lat)
       const lon = parseFloat(req.query.lon)
@@ -87,6 +87,7 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
       query.type = query.type.split(',')
     }
 
+    console.log({...communesAssocieesDelegueesDefaultQuery, ...query})
     const result = req.applyLimit(dbCommunesAssocieesDeleguees.search({...communesAssocieesDelegueesDefaultQuery, ...query}))
 
     if (req.outputFormat === 'geojson') {
