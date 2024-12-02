@@ -87,7 +87,7 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
     }
 
     if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
-      return res.sendStatus(400)
+      return res.status(400).send('This endpoint does not support an unfiltered API call with a geojson format output or a field with contour')
     }
 
     if (query.type) {
@@ -138,7 +138,7 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
   }
 
   if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
-    return res.sendStatus(400)
+    return res.status(400).send('This endpoint does not support an unfiltered API call with a geojson format output or a field with contour')
   }
 
   if (query.type) {
@@ -179,7 +179,7 @@ app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   }
 
   if (Object.keys(query).length === 0 && (req.outputFormat === 'geojson' || req.fields.has('contour'))) {
-    return res.sendStatus(400)
+    return res.status(400).send('This endpoint does not support an unfiltered API call with a geojson format output or a field with contour')
   }
 
   if (query.zone) {
