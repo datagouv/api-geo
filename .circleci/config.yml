@@ -7,7 +7,7 @@ defaults:
   nodejs_container: &nodejs_container
     working_directory: *workspace_root
     docker:
-      - image: circleci/node:10-stretch
+      - image: cimg/node:20.18
 
   filters: &default_filters
     tags:
