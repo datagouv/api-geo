@@ -117,6 +117,7 @@ parameters:
         - codeRegion
         - region
         - zone
+        - chefLieu
     collectionFormat: csv
     default:
       - nom
@@ -133,6 +134,7 @@ parameters:
         - nom
         - code
         - zone
+        - chefLieu
     collectionFormat: csv
     default:
       - nom
