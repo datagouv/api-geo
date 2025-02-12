@@ -90,10 +90,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@etalab/decoupage-administratif@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@etalab/decoupage-administratif/-/decoupage-administratif-4.0.0.tgz#b5d048efc43a688312a42f6daa2bef93c0d2c63b"
-  integrity sha512-TMGZT4rFaQdkovoAZF5iMNJnxc2To8GXiC4x/N8Z5j6I0j29AeInE2Js86Wy9W2ZnjGFbKkSpmnsbLYwWYAFsw==
+"@etalab/decoupage-administratif@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@etalab/decoupage-administratif/-/decoupage-administratif-4.1.0.tgz#a06c1fd4bf690a25b55e34846f479850cf2fcb85"
+  integrity sha512-r0lO1qhb/R7golWwfPbkstpN3WeGuROIHoJhExY7251bkc7tjL48wsnh4/cWAQYux1y/EMSTuOEwiMkh0/mK8g==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
