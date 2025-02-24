@@ -6,6 +6,7 @@ async function buildRegions() {
     .map(region => {
       return {
         code: region.code,
+        chefLieu: region.chefLieu,
         nom: region.nom,
         zone: region.zone
       }

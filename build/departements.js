@@ -7,6 +7,7 @@ async function buildDepartements() {
       return {
         code: departement.code,
         nom: departement.nom,
+        chefLieu: departement.chefLieu,
         codeRegion: departement.region,
         zone: departement.zone
       }
