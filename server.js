@@ -270,7 +270,7 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
 
 /* Régions */
 app.get('/regions', initLimit(), initRegionFields, (req, res) => {
-  const query = pick(req.query, 'code', 'nom', 'zone')
+  const query = pick(req.query, 'code', 'nom', 'zone', 'chefLieu')
 
   if (query.nom) {
     req.fields.add('_score')
