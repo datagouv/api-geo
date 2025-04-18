@@ -20,7 +20,6 @@ COPY . /usr/src/api-communes
 
 # Prepare data
 RUN yarn build
-RUN yarn generate-api-infos
 
 EXPOSE 5000
 CMD [ "yarn", "start" ]
