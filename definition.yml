@@ -444,7 +444,7 @@ paths:
         - $ref: '#/parameters/epciGeometryParam'
       responses:
         '200':
-          description: Informations concernant une commune
+          description: Informations concernant un EPCI
           schema:
             $ref: '#/definitions/Epci'
         400:
@@ -705,7 +705,7 @@ definitions:
         $ref: '#/definitions/Region'
       associees:
         type: array
-        description: Liste des codes postaux associés à la commune
+        description: Liste des codes INSEE des communes associées de la commune, si présentes
         items:
           type: object
           properties:
@@ -715,7 +715,7 @@ definitions:
               type: string
       deleguees:
         type: array
-        description: Liste des codes postaux associés à la commune
+        description: Liste des codes INSEE des communes déléguées de la commune, si présentes
         items:
           type: object
           properties:
