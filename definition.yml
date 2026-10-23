@@ -28,6 +28,7 @@ parameters:
         - bbox
         - codeEpci
         - epci
+        - codeArrondissement
         - codeDepartement
         - departement
         - codeRegion
@@ -93,6 +94,7 @@ parameters:
         - type
         - codesRegions
         - codesDepartements
+        - codesArrondissements
         - centre
         - surface
         - contour
@@ -244,6 +246,10 @@ paths:
         - name: codeEpci
           in: query
           description: Code de l'EPCI associé
+          type: string
+        - name: codeArrondissement
+          in: query
+          description: Code de l'arrondissement départemental associé
           type: string
         - name: codeDepartement
           in: query
@@ -404,6 +410,10 @@ paths:
         - name: codeEpci
           in: query
           description: Code de l'EPCI associé
+          type: string
+        - name: codeArrondissement
+          in: query
+          description: Code d'un arrondissement départemental couvert par l'EPCI
           type: string
         - name: codeDepartement
           in: query
@@ -691,6 +701,9 @@ definitions:
       codeEpci:
         type: string
         description: Code de l'EPCI associé à la commune
+      codeArrondissement:
+        type: string
+        description: Code de l'arrondissement départemental associé à la commune
       codeDepartement:
         type: string
         description: Code du département associé à la commune
@@ -802,6 +815,11 @@ definitions:
       codesDepartements:
         type: array
         description: Liste des départements de l'EPCI
+        items:
+          type: string
+      codesArrondissements:
+        type: array
+        description: Liste des arrondissements départementaux de l'EPCI
         items:
           type: string
       codesRegions:

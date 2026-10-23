@@ -118,7 +118,7 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
 
 /* Communes */
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
-  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone', 'codeParent', 'ancienCode')
+  const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeArrondissement', 'codeDepartement', 'codeRegion', 'boost', 'zone', 'codeParent', 'ancienCode')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
@@ -172,7 +172,7 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
 
 /* EPCI */
 app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
-  const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
+  const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeArrondissement', 'codeDepartement', 'codeRegion', 'boost', 'zone')
 
   if (query.nom) {
     req.fields.add('_score')

@@ -1,6 +1,7 @@
 const {join} = require('path')
 const {keyBy} = require('lodash')
 const epcis = require('@etalab/decoupage-administratif/data/epci.json')
+const communes = require('@etalab/decoupage-administratif/data/communes.json')
 const departements = require('@etalab/decoupage-administratif/data/departements.json')
 const area = require('@turf/area').default
 const bbox = require('@turf/bbox').default
@@ -25,6 +26,13 @@ function getDepartementsFromMembresEPCI(membres) {
   })
   // On enlève les doublons avec Set puis on trie pour avoir les codes départements dans l'ordre
   return [...new Set(departementsDuplicated)].sort()
+}
+
+function getArrondissementsFromMembresEPCI(membres, communesIndex) {
+  const arrondissements = membres
+    .map(membre => communesIndex[membre.code].arrondissement)
+    .filter(Boolean)
+  return [...new Set(arrondissements)].sort()
 }
 
 function getRegionsFromDepartements(codesDepartements, departementsIndex) {
@@ -55,9 +63,11 @@ async function buildEpcis() {
   const epciFeatures = await readGeoJSONFeatures(EPCI_FEATURES_PATH)
   const epciFeaturesIndex = keyBy(epciFeatures, f => f.properties.code)
   const departementsIndex = keyBy(departements, f => f.code)
+  const communesIndex = keyBy(communes.filter(commune => commune.type === 'commune-actuelle'), c => c.code)
 
   const epcisData = epcis
     .map(epci => {
+      const codesArrondissements = getArrondissementsFromMembresEPCI(epci.membres, communesIndex)
       const codesDepartements = getDepartementsFromMembresEPCI(epci.membres)
       const codesRegions = getRegionsFromDepartements(codesDepartements, departementsIndex)
       const {code, type, nom} = epci
@@ -66,6 +76,7 @@ async function buildEpcis() {
         type,
         financement: epci.modeFinancement,
         nom,
+        codesArrondissements,
         codesDepartements,
         codesRegions,
         population: epci.populationMunicipale,

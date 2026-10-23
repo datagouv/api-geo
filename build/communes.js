@@ -66,6 +66,7 @@ async function buildCommunes() {
         type: commune.type,
         nom: commune.nom,
         siren: commune.siren,
+        codeArrondissement: commune.arrondissement,
         codeDepartement: commune.departement,
         codeRegion: commune.region,
         codesPostaux: [...(commune.codesPostaux || [])].sort(),
