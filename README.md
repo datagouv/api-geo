@@ -32,9 +32,16 @@ yarn test
 
 ## Docker
 
+Depuis le dépôt
+
 ```bash
 docker-compose up
 ```
+
+Depuis une image prête à l'emploi :
+
+- Pour les données 2026 `docker pull 3776n4y0.gra7.container-registry.ovh.net/datagouv_api-geo/api-2026:latest`
+- Pour les données 2025 `docker pull 3776n4y0.gra7.container-registry.ovh.net/datagouv_api-geo/api-2025:latest`
 
 ## Utilisations de l'API géo
 
