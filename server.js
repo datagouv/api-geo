@@ -362,7 +362,6 @@ if (process.env.SENTRY_DSN) {
 const port = process.env.PORT || 5000
 
 app.listen(port, () => {
-  /* eslint no-console: 0 */
   console.log('Start listening on port %d', port)
 })
 
