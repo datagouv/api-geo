@@ -71,13 +71,8 @@
         "import-x/extensions": "off",
         "no-return-assign": "off",
         "@eslint-community/eslint-comments/require-description": "off",
-        "@stylistic/comma-dangle": "off",
-        "@stylistic/object-curly-newline": "off",
-        "@stylistic/operator-linebreak": "off",
-        "arrow-body-style": "off",
         "n/prefer-global/process": "off",
         "no-unused-vars": "off",
-        "object-shorthand": "off",
         "regexp/no-useless-flag": "off",
         "regexp/prefer-named-capture-group": "off",
         "require-unicode-regexp": "off",
@@ -96,22 +91,18 @@
         "unicorn/no-immediate-mutation": "off",
         "unicorn/no-lonely-if": "off",
         "unicorn/no-undeclared-class-members": "off",
-        "unicorn/numeric-separators-style": "off",
         "unicorn/prefer-early-return": "off",
         "unicorn/prefer-logical-operator-over-ternary": "off",
         "unicorn/prefer-module": "off",
-        "unicorn/prefer-node-protocol": "off",
         "unicorn/prefer-number-coercion": "off",
         "unicorn/prefer-number-is-safe-integer": "off",
         "unicorn/prefer-number-properties": "off",
-        "unicorn/prefer-optional-catch-binding": "off",
         "unicorn/prefer-set-has": "off",
         "unicorn/prefer-string-replace-all": "off",
         "unicorn/prefer-string-slice": "off",
         "unicorn/prefer-ternary": "off",
         "unicorn/prefer-top-level-await": "off",
-        "unicorn/require-array-sort-compare": "off",
-        "unicorn/single-line-block-comment-style": "off"
+        "unicorn/require-array-sort-compare": "off"
       }
     }
   ]
