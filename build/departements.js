@@ -3,15 +3,13 @@ const {writeData} = require('./util')
 
 async function buildDepartements() {
   const departementsData = departements
-    .map(departement => {
-      return {
-        code: departement.code,
-        nom: departement.nom,
-        chefLieu: departement.chefLieu,
-        codeRegion: departement.region,
-        zone: departement.zone
-      }
-    })
+    .map(departement => ({
+      code: departement.code,
+      nom: departement.nom,
+      chefLieu: departement.chefLieu,
+      codeRegion: departement.region,
+      zone: departement.zone,
+    }))
 
   await writeData('departements', departementsData)
 }

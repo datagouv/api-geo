@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('node:fs')
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
@@ -37,13 +37,13 @@ if (process.env.SENTRY_DSN) {
       // Enable HTTP calls tracing
       new Sentry.Integrations.Http({tracing: true}),
       // Enable Express.js middleware tracing
-      new Tracing.Integrations.Express({app})
+      new Tracing.Integrations.Express({app}),
     ],
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    tracesSampleRate: 0.02
+    tracesSampleRate: 0.02,
   })
   app.use(Sentry.Handlers.requestHandler())
   // TracingHandler creates a trace for every incoming request
@@ -59,24 +59,26 @@ app.use((req, res, next) => {
     communesAssocieesDeleguees: dbCommunesAssocieesDeleguees,
     dbEpci,
     departements: dbDepartements,
-    regions: dbRegions
+    regions: dbRegions,
   }
   next()
 })
 
 if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
-  /* Communes associées et déléguées */
+  /*
+  Communes associées et déléguées
+  */
   app.get('/communes_associees_deleguees', initLimit(), initCommunesAssocieeDelegueeFields, initCommuneAssocieeDelegueeFormat, (req, res) => {
     const query = pick(req.query, 'type', 'chefLieu', 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion')
     if (req.query.lat && req.query.lon) {
       const lat = parseFloat(req.query.lat)
       const lon = parseFloat(req.query.lon)
-      if (Number.isFinite(lat) &&
-        lat >= -90 &&
-        lat <= 90 &&
-        Number.isFinite(lon) &&
-        lon >= -180 &&
-        lon <= 180
+      if (Number.isFinite(lat)
+        && lat >= -90
+        && lat <= 90
+        && Number.isFinite(lon)
+        && lon >= -180
+        && lon <= 180
       ) {
         query.pointInContour = [lon, lat]
       }
@@ -99,7 +101,7 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
-        features: result.map(commune => formatOne(req, commune))
+        features: result.map(commune => formatOne(req, commune)),
       })
     } else {
       res.send(result.map(commune => formatOne(req, commune)))
@@ -116,18 +118,20 @@ if (process.env.COMMUNES_ASSOCIEES_DELEGUEES) {
   })
 }
 
-/* Communes */
+/*
+Communes
+*/
 app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, res) => {
   const query = pick(req.query, 'type', 'code', 'codePostal', 'nom', 'siren', 'deleguees', 'associees', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone', 'codeParent', 'ancienCode')
   if (req.query.lat && req.query.lon) {
     const lat = parseFloat(req.query.lat)
     const lon = parseFloat(req.query.lon)
-    if (Number.isFinite(lat) &&
-      lat >= -90 &&
-      lat <= 90 &&
-      Number.isFinite(lon) &&
-      lon >= -180 &&
-      lon <= 180
+    if (Number.isFinite(lat)
+      && lat >= -90
+      && lat <= 90
+      && Number.isFinite(lon)
+      && lon >= -180
+      && lon <= 180
     ) {
       query.pointInContour = [lon, lat]
     }
@@ -154,7 +158,7 @@ app.get('/communes', initLimit(), initCommuneFields, initCommuneFormat, (req, re
   if (req.outputFormat === 'geojson') {
     res.send({
       type: 'FeatureCollection',
-      features: result.map(commune => formatOne(req, commune))
+      features: result.map(commune => formatOne(req, commune)),
     })
   } else {
     res.send(result.map(commune => formatOne(req, commune)))
@@ -170,7 +174,9 @@ app.get('/communes/:code', initCommuneFields, initCommuneFormat, (req, res) => {
   }
 })
 
-/* EPCI */
+/*
+EPCI
+*/
 app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeEpci', 'codeDepartement', 'codeRegion', 'boost', 'zone')
 
@@ -191,7 +197,7 @@ app.get('/epcis', initLimit(), initEpciFields, initEpciFormat, (req, res) => {
   if (req.outputFormat === 'geojson') {
     res.send({
       type: 'FeatureCollection',
-      features: result.map(commune => formatOne(req, commune))
+      features: result.map(commune => formatOne(req, commune)),
     })
   } else {
     res.send(result.map(commune => formatOne(req, commune)))
@@ -216,7 +222,7 @@ app.get('/epcis/:code/communes', initLimit(), initCommuneFields, initCommuneForm
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
-        features: communes.map(commune => formatOne(req, commune))
+        features: communes.map(commune => formatOne(req, commune)),
       })
     } else {
       res.send(communes.map(commune => formatOne(req, commune)))
@@ -224,7 +230,9 @@ app.get('/epcis/:code/communes', initLimit(), initCommuneFields, initCommuneForm
   }
 })
 
-/* Départements */
+/*
+Départements
+*/
 app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'codeRegion', 'zone')
 
@@ -238,7 +246,7 @@ app.get('/departements', initLimit(), initDepartementFields, (req, res) => {
 
   res.send(
     req.applyLimit(dbDepartements.search({...departementsDefaultQuery, ...query}))
-      .map(departement => formatOne(req, departement))
+      .map(departement => formatOne(req, departement)),
   )
 })
 
@@ -260,7 +268,7 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
     if (req.outputFormat === 'geojson') {
       res.send({
         type: 'FeatureCollection',
-        features: communes.map(commune => formatOne(req, commune))
+        features: communes.map(commune => formatOne(req, commune)),
       })
     } else {
       res.send(communes.map(commune => formatOne(req, commune)))
@@ -268,7 +276,9 @@ app.get('/departements/:code/communes', initLimit(), initCommuneFields, initComm
   }
 })
 
-/* Régions */
+/*
+Régions
+*/
 app.get('/regions', initLimit(), initRegionFields, (req, res) => {
   const query = pick(req.query, 'code', 'nom', 'zone', 'chefLieu')
 
@@ -282,7 +292,7 @@ app.get('/regions', initLimit(), initRegionFields, (req, res) => {
 
   res.send(
     req.applyLimit(dbRegions.search({...regionsDefaultQuery, ...query}))
-      .map(region => formatOne(req, region))
+      .map(region => formatOne(req, region)),
   )
 })
 
@@ -305,7 +315,9 @@ app.get('/regions/:code/departements', initLimit(), initDepartementFields, (req,
   }
 })
 
-/* Raw data */
+/*
+Raw data
+*/
 app.get('/raw/communes.json', (req, res) => {
   res.download('data/communes.json')
 })
@@ -332,7 +344,7 @@ app.get('/healthcheck', (req, res) => {
     uptime: process.uptime(),
     responsetime: hrtimeIntAsString,
     message: 'OK',
-    timestamp: Date.now()
+    timestamp: Date.now(),
   }
   try {
     res.send(healthcheck)
@@ -345,12 +357,14 @@ app.get('/healthcheck', (req, res) => {
 app.get('/infos', (req, res) => {
   try {
     res.send(apiInfos)
-  } catch (error) {
+  } catch {
     res.status(503).send()
   }
 })
 
-/* Definition */
+/*
+Definition
+*/
 app.get('/definition.yml', (req, res) => {
   res.sendFile(__dirname + '/definition.yml')
 })

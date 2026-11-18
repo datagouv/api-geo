@@ -1,7 +1,7 @@
-const zlib = require('zlib')
-const fs = require('fs')
-const {promisify} = require('util')
-const {join} = require('path')
+const zlib = require('node:zlib')
+const fs = require('node:fs')
+const {promisify} = require('node:util')
+const {join} = require('node:path')
 
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)

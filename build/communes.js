@@ -1,4 +1,4 @@
-const {join} = require('path')
+const {join} = require('node:path')
 const {keyBy} = require('lodash')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
 const epci = require('@etalab/decoupage-administratif/data/epci.json')
@@ -27,9 +27,7 @@ const COMMUNES_EPCI_MATCHING = epci.reduce((acc, curr) => {
 }, {})
 
 const COMMUNES_DELEGUEES_INDEX = communes
-  .filter(commune => {
-    return ['commune-deleguee'].includes(commune.type)
-  }).reduce((acc, curr) => {
+  .filter(commune => ['commune-deleguee'].includes(commune.type)).reduce((acc, curr) => {
     if (!(curr.chefLieu in acc)) {
       acc[curr.chefLieu] = []
     }
@@ -39,9 +37,7 @@ const COMMUNES_DELEGUEES_INDEX = communes
   }, {})
 
 const COMMUNES_ASSOCIEES_INDEX = communes
-  .filter(commune => {
-    return ['commune-associee'].includes(commune.type)
-  }).reduce((acc, curr) => {
+  .filter(commune => ['commune-associee'].includes(commune.type)).reduce((acc, curr) => {
     if (!(curr.chefLieu in acc)) {
       acc[curr.chefLieu] = []
     }
@@ -57,9 +53,7 @@ async function buildCommunes() {
   const communesFeaturesMairieIndex = keyBy(communesFeaturesMairie, f => f.properties.commune)
 
   const communesData = communes
-    .filter(commune => {
-      return ['commune-actuelle', 'arrondissement-municipal'].includes(commune.type)
-    })
+    .filter(commune => ['commune-actuelle', 'arrondissement-municipal'].includes(commune.type))
     .map(commune => {
       const communeData = {
         code: commune.code,
@@ -71,7 +65,7 @@ async function buildCommunes() {
         codesPostaux: [...(commune.codesPostaux || [])].sort(),
         population: commune.population,
         anciensCodes: commune.anciensCodes || [],
-        zone: commune.zone
+        zone: commune.zone,
       }
 
       if (commune.type === 'arrondissement-municipal' && COMMUNES_AVEC_ARRONDISSEMENTS.map(com => com.slice(0, 2)).includes(commune.departement)) {
@@ -97,7 +91,7 @@ async function buildCommunes() {
       if (commune.code in communesFeaturesIndex) {
         const contour = communesFeaturesIndex[commune.code].geometry
         communeData.contour = contour
-        communeData.surface = fixPrecision(area(contour) / 10000, 2)
+        communeData.surface = fixPrecision(area(contour) / 10_000, 2)
         communeData.centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
         const bboxCommune = bbox(communesFeaturesIndex[commune.code])
         const bboxPolygonCommune = bboxPolygon(bboxCommune)

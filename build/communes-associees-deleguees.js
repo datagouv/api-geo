@@ -1,4 +1,4 @@
-const {join} = require('path')
+const {join} = require('node:path')
 const {keyBy} = require('lodash')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
 const epci = require('@etalab/decoupage-administratif/data/epci.json')
@@ -32,9 +32,7 @@ async function buildCommunesAssocieesDeleguees() {
   }
 
   const communesAssocieesDelegueesData = communes
-    .filter(commune => {
-      return ['commune-associee', 'commune-deleguee'].includes(commune.type)
-    })
+    .filter(commune => ['commune-associee', 'commune-deleguee'].includes(commune.type))
     .map(commune => {
       const communeData = {
         code: commune.code,
@@ -42,13 +40,13 @@ async function buildCommunesAssocieesDeleguees() {
         nom: commune.nom,
         chefLieu: commune.chefLieu,
         codeDepartement: commune.departement,
-        codeRegion: commune.region
+        codeRegion: commune.region,
       }
 
       if (commune.code in communesAssocieesDelegueesFeaturesIndex) {
         const contour = communesAssocieesDelegueesFeaturesIndex[commune.code].geometry
         communeData.contour = contour
-        communeData.surface = fixPrecision(area(contour) / 10000, 2)
+        communeData.surface = fixPrecision(area(contour) / 10_000, 2)
         communeData.centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
         const bboxCommune = bbox(communesAssocieesDelegueesFeaturesIndex[commune.code])
         const bboxPolygonCommune = bboxPolygon(bboxCommune)

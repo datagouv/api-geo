@@ -1,4 +1,4 @@
-const {join} = require('path')
+const {join} = require('node:path')
 const {keyBy} = require('lodash')
 const epcis = require('@etalab/decoupage-administratif/data/epci.json')
 const departements = require('@etalab/decoupage-administratif/data/departements.json')
@@ -36,7 +36,7 @@ function getRegionsFromDepartements(codesDepartements, departementsIndex) {
 function getInfosFromFeatures(codeEpci, epciFeaturesIndex) {
   if (codeEpci in epciFeaturesIndex) {
     const contour = epciFeaturesIndex[codeEpci].geometry
-    const surface = fixPrecision(area(contour) / 10000, 2)
+    const surface = fixPrecision(area(contour) / 10_000, 2)
     const centre = truncate(pointOnFeature(contour), {precision: 4}).geometry
     const bboxEpci = bbox(epciFeaturesIndex[codeEpci])
     const bboxPolygonEpci = bboxPolygon(bboxEpci)
@@ -44,7 +44,7 @@ function getInfosFromFeatures(codeEpci, epciFeaturesIndex) {
       contour,
       surface,
       centre,
-      bbox: bboxPolygonEpci.geometry
+      bbox: bboxPolygonEpci.geometry,
     }
   }
 
@@ -70,7 +70,7 @@ async function buildEpcis() {
         codesRegions,
         population: epci.populationMunicipale,
         zone: codesDepartements.some(dep => dep.length === 3) ? 'drom' : 'metro',
-        ...getInfosFromFeatures(epci.code, epciFeaturesIndex)
+        ...getInfosFromFeatures(epci.code, epciFeaturesIndex),
       }
 
       return epciData

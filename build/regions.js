@@ -3,14 +3,12 @@ const {writeData} = require('./util')
 
 async function buildRegions() {
   const regionsData = regions
-    .map(region => {
-      return {
-        code: region.code,
-        chefLieu: region.chefLieu,
-        nom: region.nom,
-        zone: region.zone
-      }
-    })
+    .map(region => ({
+      code: region.code,
+      chefLieu: region.chefLieu,
+      nom: region.nom,
+      zone: region.zone,
+    }))
 
   await writeData('regions', regionsData)
 }
