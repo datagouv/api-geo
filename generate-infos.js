@@ -1,5 +1,5 @@
-const {exec} = require('child_process')
-const {readFile, writeFile} = require('fs').promises
+const {exec} = require('node:child_process')
+const {readFile, writeFile} = require('node:fs').promises
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
@@ -32,6 +32,6 @@ function run(cmd) {
     // eslint-disable-next-line camelcase
     git_hash_api_geo: gitCurrentHash,
     [packageNameApiGeo]: apiGeoPackageVersion,
-    [packageNameDecoupageAdmin]: decoupageAdminPackageVersion
+    [packageNameDecoupageAdmin]: decoupageAdminPackageVersion,
   }))
 })()

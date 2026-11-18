@@ -24,18 +24,15 @@
   "devDependencies": {
     "@etalab/decoupage-administratif": "6.0.0",
     "@turf/area": "^6.0.1",
-    "@turf/bbox": "^6.5.0",
-    "@turf/bbox-polygon": "^6.5.0",
     "@turf/point-on-feature": "^6.0.2",
     "@turf/truncate": "^6.0.1",
     "benchmark": "^2.1.0",
-    "codecov": "^3.5.0",
     "debug": "^4.1.1",
     "expect.js": "^0.3.1",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
-    "supertest": "^3.4.2",
-    "xo": "^0.24.0"
+    "mocha": "^12.0.3",
+    "nyc": "^18.0.0",
+    "supertest": "^7.3.2",
+    "xo": "^5.0.1"
   },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
@@ -47,19 +44,6 @@
     "build": "yarn download-sources && yarn build-only",
     "generate-api-infos": "node generate-infos.js"
   },
-  "xo": {
-    "semicolon": false,
-    "space": 2,
-    "rules": {
-      "no-path-concat": "off",
-      "unicorn/filename-case": "off",
-      "import/order": "off",
-      "no-return-assign": "off",
-      "ava/no-import-test-files": "off",
-      "import/extensions": "off"
-    },
-    "ignores": "test/*.js"
-  },
   "engines": {
     "node": ">= 10"
   },
@@ -68,5 +52,58 @@
     "Théophile Merlière <theophile.merliere@data.gouv.fr>",
     "Thomas Gratier <thomas.gratier@data.gouv.fr>"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "xo": [
+    {
+      "ignores": [
+        "test/*.js",
+        "**/*.json",
+        "**/*.md"
+      ]
+    },
+    {
+      "semicolon": false,
+      "space": 2,
+      "rules": {
+        "n/no-path-concat": "off",
+        "unicorn/filename-case": "off",
+        "import-x/order": "off",
+        "import-x/extensions": "off",
+        "no-return-assign": "off",
+        "@eslint-community/eslint-comments/require-description": "off",
+        "n/prefer-global/process": "off",
+        "no-unused-vars": "off",
+        "regexp/no-useless-flag": "off",
+        "regexp/prefer-named-capture-group": "off",
+        "require-unicode-regexp": "off",
+        "unicorn/consistent-boolean-name": "off",
+        "unicorn/consistent-json-file-read": "off",
+        "unicorn/import-style": "off",
+        "unicorn/logical-assignment-operators": "off",
+        "unicorn/name-replacements": "off",
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/no-array-method-this-argument": "off",
+        "unicorn/no-array-reduce": "off",
+        "unicorn/no-array-sort": "off",
+        "unicorn/no-computed-property-existence-check": "off",
+        "unicorn/no-for-each": "off",
+        "unicorn/no-for-loop": "off",
+        "unicorn/no-immediate-mutation": "off",
+        "unicorn/no-lonely-if": "off",
+        "unicorn/no-undeclared-class-members": "off",
+        "unicorn/prefer-early-return": "off",
+        "unicorn/prefer-logical-operator-over-ternary": "off",
+        "unicorn/prefer-module": "off",
+        "unicorn/prefer-number-coercion": "off",
+        "unicorn/prefer-number-is-safe-integer": "off",
+        "unicorn/prefer-number-properties": "off",
+        "unicorn/prefer-set-has": "off",
+        "unicorn/prefer-string-replace-all": "off",
+        "unicorn/prefer-string-slice": "off",
+        "unicorn/prefer-ternary": "off",
+        "unicorn/prefer-top-level-await": "off",
+        "unicorn/require-array-sort-compare": "off"
+      }
+    }
+  ]
 }
