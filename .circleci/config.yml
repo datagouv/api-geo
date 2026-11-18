@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 defaults:
   workspace_root: &workspace_root
