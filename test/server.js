@@ -80,6 +80,19 @@ describe('Test api', () => {
         })
       })
 
+      describe('with code arrondissement', () => {
+        it('should return only communes of arrondissement 552', done => {
+          request(server)
+            .get('/communes/?codeArrondissement=552&fields=codeArrondissement')
+            .expect(res => {
+              const communes = res.body
+              expect(communes.map(commune => commune.code)).to.contain('55001')
+              communes.forEach(commune => expect(commune.codeArrondissement).to.equal('552'))
+            })
+            .end(done)
+        })
+      })
+
       it('should reply a commune', done => {
         request(server)
           .get('/communes/?code=55001')
@@ -129,6 +142,22 @@ describe('Test api', () => {
           .expect(res => {
             const commune = res.body
             expect(commune).to.only.have.keys(fields)
+          })
+          .end(done)
+      })
+    })
+  })
+
+  /* EPCI */
+  describe('EPCI', () => {
+    describe('with code arrondissement', () => {
+      it('should return EPCI covering arrondissement 751', done => {
+        request(server)
+          .get('/epcis/?codeArrondissement=751&fields=codesArrondissements')
+          .expect(res => {
+            const epcis = res.body
+            expect(epcis.map(epci => epci.code)).to.eql(['200054781'])
+            expect(epcis[0].codesArrondissements).to.contain('751')
           })
           .end(done)
       })
