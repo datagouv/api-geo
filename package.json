@@ -34,6 +34,11 @@
     "supertest": "^7.3.2",
     "xo": "^5.0.1"
   },
+  "resolutions": {
+    "glob": "^14.0.6",
+    "minimatch": "^11.0.9",
+    "katex": "^0.19.1"
+  },
   "scripts": {
     "bench": "DEBUG=store,bench node bench",
     "lint": "xo",
