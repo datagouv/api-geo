@@ -1,5 +1,7 @@
 # API Géo
 
+[![CI](https://github.com/datagouv/api-geo/actions/workflows/ci.yml/badge.svg)](https://github.com/datagouv/api-geo/actions/workflows/ci.yml)
+
 ## Informations et documentation
 
 [Consulter la fiche sur api.gouv.fr](https://api.gouv.fr/api/api-geo.html)
